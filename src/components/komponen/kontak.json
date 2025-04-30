@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_komponen_kontaks",
+  "info": {
+    "displayName": "Kontak"
+  },
+  "options": {},
+  "attributes": {
+    "nama": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "telepon": {
+      "type": "string"
+    },
+    "alamat": {
+      "type": "text"
+    }
+  }
+}

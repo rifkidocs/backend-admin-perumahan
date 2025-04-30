@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "konsumens",
+  "info": {
+    "singularName": "konsumen",
+    "pluralName": "konsumens",
+    "displayName": "Konsumen"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_lengkap": {
+      "type": "string",
+      "required": true
+    },
+    "nomor_ktp": {
+      "type": "string",
+      "required": true
+    },
+    "kontak": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.kontak"
+    },
+    "pekerjaan": {
+      "type": "string"
+    },
+    "penghasilan_per_bulan": {
+      "type": "decimal"
+    },
+    "status_kpr": {
+      "type": "enumeration",
+      "enum": [
+        "Belum Mengajukan",
+        "Dalam Proses",
+        "Disetujui",
+        "Ditolak"
+      ]
+    },
+    "metode_pembayaran": {
+      "type": "enumeration",
+      "enum": [
+        "KPR",
+        "Tunai Keras",
+        "Tunai Bertahap"
+      ]
+    },
+    "dokumen_konsumen": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    },
+    "riwayat_pembayaran": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.transaksi"
+    }
+  }
+}

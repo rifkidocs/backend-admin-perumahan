@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_komponen_status_proyeks",
+  "info": {
+    "displayName": "Status Proyek"
+  },
+  "options": {},
+  "attributes": {
+    "status_proyek": {
+      "type": "enumeration",
+      "enum": [
+        "Perencanaan",
+        "Pembangunan",
+        "Selesai",
+        "Terjual Habis"
+      ]
+    },
+    "persentase_penyelesaian": {
+      "type": "decimal"
+    },
+    "tanggal_update": {
+      "type": "date"
+    },
+    "keterangan": {
+      "type": "text"
+    }
+  }
+}

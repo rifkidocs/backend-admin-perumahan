@@ -369,100 +369,34 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiAboutAbout extends Struct.SingleTypeSchema {
-  collectionName: 'abouts';
+export interface ApiJabatanJabatan extends Struct.CollectionTypeSchema {
+  collectionName: 'jabatans';
   info: {
-    description: 'Write about yourself and the content you create';
-    displayName: 'About';
-    pluralName: 'abouts';
-    singularName: 'about';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    blocks: Schema.Attribute.DynamicZone<
-      ['shared.media', 'shared.quote', 'shared.rich-text', 'shared.slider']
-    >;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::about.about'> &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    title: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
-  collectionName: 'articles';
-  info: {
-    description: 'Create your blog content';
-    displayName: 'Article';
-    pluralName: 'articles';
-    singularName: 'article';
+    displayName: 'Jabatan';
+    pluralName: 'jabatans';
+    singularName: 'jabatan';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
-    blocks: Schema.Attribute.DynamicZone<
-      ['shared.media', 'shared.quote', 'shared.rich-text', 'shared.slider']
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deskripsi_jabatan: Schema.Attribute.Text;
+    gaji_maksimum: Schema.Attribute.Decimal;
+    gaji_minimum: Schema.Attribute.Decimal;
+    kode_jabatan: Schema.Attribute.String;
+    level_jabatan: Schema.Attribute.Enumeration<
+      ['Staff', 'Supervisor', 'Manager', 'Direktur']
     >;
-    category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
-    cover: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::article.article'
+      'api::jabatan.jabatan'
     > &
       Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'title'>;
-    title: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
-  collectionName: 'authors';
-  info: {
-    description: 'Create authors for your content';
-    displayName: 'Author';
-    pluralName: 'authors';
-    singularName: 'author';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    articles: Schema.Attribute.Relation<'oneToMany', 'api::article.article'>;
-    avatar: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    email: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::author.author'
-    > &
-      Schema.Attribute.Private;
-    name: Schema.Attribute.String;
+    nama_jabatan: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -470,64 +404,184 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
-  collectionName: 'categories';
+export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
+  collectionName: 'karyawans';
   info: {
-    description: 'Organize your content into categories';
-    displayName: 'Category';
-    pluralName: 'categories';
-    singularName: 'category';
+    displayName: 'Karyawan';
+    pluralName: 'karyawans';
+    singularName: 'karyawan';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
-    articles: Schema.Attribute.Relation<'oneToMany', 'api::article.article'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
+    dokumen_karyawan: Schema.Attribute.Component<'komponen.dokumen', true>;
+    foto_karyawan: Schema.Attribute.Media<'images'>;
+    jenis_kelamin: Schema.Attribute.Enumeration<['Laki-laki', 'Perempuan']>;
+    kontak: Schema.Attribute.Component<'komponen.kontak', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::category.category'
+      'api::karyawan.karyawan'
     > &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String;
+    nama_bank: Schema.Attribute.String;
+    nama_lengkap: Schema.Attribute.String & Schema.Attribute.Required;
+    nik_karyawan: Schema.Attribute.String & Schema.Attribute.Required;
+    npwp: Schema.Attribute.String;
+    penggajian: Schema.Attribute.Component<'komponen.penggajian', false>;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID;
+    rekening_bank: Schema.Attribute.String;
+    status_kepegawaian: Schema.Attribute.Enumeration<
+      ['Tetap', 'Kontrak', 'Freelance']
+    >;
+    status_pernikahan: Schema.Attribute.Enumeration<
+      ['Belum Menikah', 'Menikah', 'Cerai']
+    >;
+    tanggal_akhir_kontrak: Schema.Attribute.Date;
+    tanggal_lahir: Schema.Attribute.Date;
+    tanggal_masuk: Schema.Attribute.Date;
+    tempat_lahir: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
   };
 }
 
-export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
-  collectionName: 'globals';
+export interface ApiKonsumenKonsumen extends Struct.CollectionTypeSchema {
+  collectionName: 'konsumens';
   info: {
-    description: 'Define global settings';
-    displayName: 'Global';
-    pluralName: 'globals';
-    singularName: 'global';
+    displayName: 'Konsumen';
+    pluralName: 'konsumens';
+    singularName: 'konsumen';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    defaultSeo: Schema.Attribute.Component<'shared.seo', false>;
-    favicon: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    dokumen_konsumen: Schema.Attribute.Component<'komponen.dokumen', true>;
+    kontak: Schema.Attribute.Component<'komponen.kontak', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::global.global'
+      'api::konsumen.konsumen'
     > &
       Schema.Attribute.Private;
+    metode_pembayaran: Schema.Attribute.Enumeration<
+      ['KPR', 'Tunai Keras', 'Tunai Bertahap']
+    >;
+    nama_lengkap: Schema.Attribute.String & Schema.Attribute.Required;
+    nomor_ktp: Schema.Attribute.String & Schema.Attribute.Required;
+    pekerjaan: Schema.Attribute.String;
+    penghasilan_per_bulan: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
-    siteDescription: Schema.Attribute.Text & Schema.Attribute.Required;
-    siteName: Schema.Attribute.String & Schema.Attribute.Required;
+    riwayat_pembayaran: Schema.Attribute.Component<'komponen.transaksi', true>;
+    status_kpr: Schema.Attribute.Enumeration<
+      ['Belum Mengajukan', 'Dalam Proses', 'Disetujui', 'Ditolak']
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProyekPerumahanProyekPerumahan
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'proyek_perumahans';
+  info: {
+    displayName: 'Proyek Perumahan';
+    pluralName: 'proyek-perumahans';
+    singularName: 'proyek-perumahan';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    alamat: Schema.Attribute.Component<'komponen.alamat', false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deskripsi: Schema.Attribute.Text;
+    dokumen_legal: Schema.Attribute.Component<'komponen.dokumen', true>;
+    foto_utama: Schema.Attribute.Media<'images'>;
+    galeri_foto: Schema.Attribute.Media<'images', true>;
+    jenis_proyek: Schema.Attribute.Enumeration<
+      ['Subsidi', 'Komersial', 'Mixed-Use']
+    >;
+    koordinat_gps: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::proyek-perumahan.proyek-perumahan'
+    > &
+      Schema.Attribute.Private;
+    luas_lahan: Schema.Attribute.Decimal;
+    nama_proyek: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    site_plan: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    status_proyek: Schema.Attribute.Component<'komponen.status-proyek', false>;
+    tahap_pengembangan: Schema.Attribute.String;
+    tanggal_mulai: Schema.Attribute.Date;
+    tanggal_selesai_aktual: Schema.Attribute.Date;
+    tanggal_selesai_estimasi: Schema.Attribute.Date;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
+  collectionName: 'unit_rumahs';
+  info: {
+    displayName: 'Unit Rumah';
+    pluralName: 'unit-rumahs';
+    singularName: 'unit-rumah';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    blok: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dokumen_unit: Schema.Attribute.Component<'komponen.dokumen', true>;
+    estimasi_biaya_pembangunan: Schema.Attribute.Decimal;
+    foto_progress: Schema.Attribute.Media<'images', true>;
+    gambar_3d: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    gambar_denah: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    harga: Schema.Attribute.Component<'komponen.harga', false>;
+    kavling: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::unit-rumah.unit-rumah'
+    > &
+      Schema.Attribute.Private;
+    luas_bangunan: Schema.Attribute.Decimal;
+    luas_tanah: Schema.Attribute.Decimal;
+    nomor_unit: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    status_pembangunan: Schema.Attribute.Component<
+      'komponen.progres-proyek',
+      true
+    >;
+    status_unit: Schema.Attribute.Enumeration<
+      ['Tersedia', 'Dipesan', 'Terjual', 'Dalam Pembangunan']
+    >;
+    tipe_unit: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1043,11 +1097,11 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::about.about': ApiAboutAbout;
-      'api::article.article': ApiArticleArticle;
-      'api::author.author': ApiAuthorAuthor;
-      'api::category.category': ApiCategoryCategory;
-      'api::global.global': ApiGlobalGlobal;
+      'api::jabatan.jabatan': ApiJabatanJabatan;
+      'api::karyawan.karyawan': ApiKaryawanKaryawan;
+      'api::konsumen.konsumen': ApiKonsumenKonsumen;
+      'api::proyek-perumahan.proyek-perumahan': ApiProyekPerumahanProyekPerumahan;
+      'api::unit-rumah.unit-rumah': ApiUnitRumahUnitRumah;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

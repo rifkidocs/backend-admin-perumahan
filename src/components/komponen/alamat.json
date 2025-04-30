@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_komponen_alamats",
+  "info": {
+    "displayName": "Alamat"
+  },
+  "options": {},
+  "attributes": {
+    "jalan": {
+      "type": "string"
+    },
+    "kota": {
+      "type": "string"
+    },
+    "provinsi": {
+      "type": "string"
+    },
+    "kode_pos": {
+      "type": "string"
+    },
+    "negara": {
+      "type": "string",
+      "default": "Indonesia"
+    }
+  }
+}

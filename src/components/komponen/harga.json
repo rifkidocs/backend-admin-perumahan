@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_komponen_hargas",
+  "info": {
+    "displayName": "Harga"
+  },
+  "options": {},
+  "attributes": {
+    "harga_dasar": {
+      "type": "decimal"
+    },
+    "diskon": {
+      "type": "decimal"
+    },
+    "harga_setelah_diskon": {
+      "type": "decimal"
+    },
+    "ppn": {
+      "type": "decimal"
+    },
+    "harga_total": {
+      "type": "decimal"
+    }
+  }
+}

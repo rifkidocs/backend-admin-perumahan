@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_komponen_penggajians",
+  "info": {
+    "displayName": "Penggajian"
+  },
+  "options": {},
+  "attributes": {
+    "gaji_pokok": {
+      "type": "decimal"
+    },
+    "tunjangan_jabatan": {
+      "type": "decimal"
+    },
+    "tunjangan_transport": {
+      "type": "decimal"
+    },
+    "bonus": {
+      "type": "decimal"
+    },
+    "potongan_bpjs": {
+      "type": "decimal"
+    },
+    "potongan_pph21": {
+      "type": "decimal"
+    },
+    "kasbon": {
+      "type": "decimal"
+    },
+    "total_gaji": {
+      "type": "decimal"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_komponen_transaksis",
+  "info": {
+    "displayName": "Transaksi"
+  },
+  "options": {},
+  "attributes": {
+    "tanggal": {
+      "type": "datetime"
+    },
+    "nominal": {
+      "type": "decimal"
+    },
+    "metode_pembayaran": {
+      "type": "enumeration",
+      "enum": [
+        "Transfer",
+        "Tunai",
+        "Cek",
+        "Debit",
+        "Kredit"
+      ]
+    },
+    "status_transaksi": {
+      "type": "enumeration",
+      "enum": [
+        "Pending",
+        "Sukses",
+        "Gagal"
+      ]
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "bukti_pembayaran": {
+      "allowedTypes": [
+        "files",
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

@@ -1,75 +1,140 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
-export interface SharedMedia extends Struct.ComponentSchema {
-  collectionName: 'components_shared_media';
+export interface KomponenAlamat extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_alamats';
   info: {
-    displayName: 'Media';
-    icon: 'file-video';
+    displayName: 'Alamat';
   };
   attributes: {
-    file: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    jalan: Schema.Attribute.String;
+    kode_pos: Schema.Attribute.String;
+    kota: Schema.Attribute.String;
+    negara: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Indonesia'>;
+    provinsi: Schema.Attribute.String;
   };
 }
 
-export interface SharedQuote extends Struct.ComponentSchema {
-  collectionName: 'components_shared_quotes';
+export interface KomponenDokumen extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_dokumen';
   info: {
-    displayName: 'Quote';
-    icon: 'indent';
+    displayName: 'Dokumen';
   };
   attributes: {
-    body: Schema.Attribute.Text;
-    title: Schema.Attribute.String;
+    nama_dokumen: Schema.Attribute.String;
+    nomor_dokumen: Schema.Attribute.String;
+    status_dokumen: Schema.Attribute.Enumeration<
+      ['Aktif', 'Dalam Proses', 'Kadaluarsa']
+    >;
+    tanggal_kadaluarsa: Schema.Attribute.String;
+    tanggal_terbit: Schema.Attribute.String;
   };
 }
 
-export interface SharedRichText extends Struct.ComponentSchema {
-  collectionName: 'components_shared_rich_texts';
+export interface KomponenHarga extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_hargas';
   info: {
-    description: '';
-    displayName: 'Rich text';
-    icon: 'align-justify';
+    displayName: 'Harga';
   };
   attributes: {
-    body: Schema.Attribute.RichText;
+    diskon: Schema.Attribute.Decimal;
+    harga_dasar: Schema.Attribute.Decimal;
+    harga_setelah_diskon: Schema.Attribute.Decimal;
+    harga_total: Schema.Attribute.Decimal;
+    ppn: Schema.Attribute.Decimal;
   };
 }
 
-export interface SharedSeo extends Struct.ComponentSchema {
-  collectionName: 'components_shared_seos';
+export interface KomponenKontak extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_kontaks';
   info: {
-    description: '';
-    displayName: 'Seo';
-    icon: 'allergies';
-    name: 'Seo';
+    displayName: 'Kontak';
   };
   attributes: {
-    metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
-    metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
-    shareImage: Schema.Attribute.Media<'images'>;
+    alamat: Schema.Attribute.Text;
+    email: Schema.Attribute.Email;
+    nama: Schema.Attribute.String;
+    telepon: Schema.Attribute.String;
   };
 }
 
-export interface SharedSlider extends Struct.ComponentSchema {
-  collectionName: 'components_shared_sliders';
+export interface KomponenPenggajian extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_penggajians';
   info: {
-    description: '';
-    displayName: 'Slider';
-    icon: 'address-book';
+    displayName: 'Penggajian';
   };
   attributes: {
-    files: Schema.Attribute.Media<'images', true>;
+    bonus: Schema.Attribute.Decimal;
+    gaji_pokok: Schema.Attribute.Decimal;
+    kasbon: Schema.Attribute.Decimal;
+    potongan_bpjs: Schema.Attribute.Decimal;
+    potongan_pph21: Schema.Attribute.Decimal;
+    total_gaji: Schema.Attribute.Decimal;
+    tunjangan_jabatan: Schema.Attribute.Decimal;
+    tunjangan_transport: Schema.Attribute.Decimal;
+  };
+}
+
+export interface KomponenProgresProyek extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_progres_proyeks';
+  info: {
+    displayName: 'Progres Proyek';
+  };
+  attributes: {
+    persentase: Schema.Attribute.Decimal;
+    status_progres_proyek: Schema.Attribute.Enumeration<
+      ['Belum Dimulai', 'Proses', 'Selesai', 'Tertunda']
+    >;
+    tahap: Schema.Attribute.String;
+    tanggal_mulai: Schema.Attribute.Date;
+    tanggal_selesai: Schema.Attribute.Date;
+  };
+}
+
+export interface KomponenStatusProyek extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_status_proyeks';
+  info: {
+    displayName: 'Status Proyek';
+  };
+  attributes: {
+    keterangan: Schema.Attribute.Text;
+    persentase_penyelesaian: Schema.Attribute.Decimal;
+    status_proyek: Schema.Attribute.Enumeration<
+      ['Perencanaan', 'Pembangunan', 'Selesai', 'Terjual Habis']
+    >;
+    tanggal_update: Schema.Attribute.Date;
+  };
+}
+
+export interface KomponenTransaksi extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_transaksis';
+  info: {
+    displayName: 'Transaksi';
+  };
+  attributes: {
+    bukti_pembayaran: Schema.Attribute.Media<'files' | 'images'>;
+    keterangan: Schema.Attribute.String;
+    metode_pembayaran: Schema.Attribute.Enumeration<
+      ['Transfer', 'Tunai', 'Cek', 'Debit', 'Kredit']
+    >;
+    nominal: Schema.Attribute.Decimal;
+    status_transaksi: Schema.Attribute.Enumeration<
+      ['Pending', 'Sukses', 'Gagal']
+    >;
+    tanggal: Schema.Attribute.DateTime;
   };
 }
 
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
-      'shared.media': SharedMedia;
-      'shared.quote': SharedQuote;
-      'shared.rich-text': SharedRichText;
-      'shared.seo': SharedSeo;
-      'shared.slider': SharedSlider;
+      'komponen.alamat': KomponenAlamat;
+      'komponen.dokumen': KomponenDokumen;
+      'komponen.harga': KomponenHarga;
+      'komponen.kontak': KomponenKontak;
+      'komponen.penggajian': KomponenPenggajian;
+      'komponen.progres-proyek': KomponenProgresProyek;
+      'komponen.status-proyek': KomponenStatusProyek;
+      'komponen.transaksi': KomponenTransaksi;
     }
   }
 }

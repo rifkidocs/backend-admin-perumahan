@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jabatans",
+  "info": {
+    "singularName": "jabatan",
+    "pluralName": "jabatans",
+    "displayName": "Jabatan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_jabatan": {
+      "type": "string",
+      "required": true
+    },
+    "kode_jabatan": {
+      "type": "string"
+    },
+    "level_jabatan": {
+      "type": "enumeration",
+      "enum": [
+        "Staff",
+        "Supervisor",
+        "Manager",
+        "Direktur"
+      ]
+    },
+    "deskripsi_jabatan": {
+      "type": "text"
+    },
+    "gaji_minimum": {
+      "type": "decimal"
+    },
+    "gaji_maksimum": {
+      "type": "decimal"
+    }
+  }
+}

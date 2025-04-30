@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_komponen_dokumen",
+  "info": {
+    "displayName": "Dokumen"
+  },
+  "options": {},
+  "attributes": {
+    "nama_dokumen": {
+      "type": "string"
+    },
+    "nomor_dokumen": {
+      "type": "string"
+    },
+    "tanggal_terbit": {
+      "type": "string"
+    },
+    "tanggal_kadaluarsa": {
+      "type": "string"
+    },
+    "status_dokumen": {
+      "type": "enumeration",
+      "enum": [
+        "Aktif",
+        "Dalam Proses",
+        "Kadaluarsa"
+      ]
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "kind": "collectionType",
+  "collectionName": "unit_rumahs",
+  "info": {
+    "singularName": "unit-rumah",
+    "pluralName": "unit-rumahs",
+    "displayName": "Unit Rumah"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_unit": {
+      "type": "string",
+      "required": true
+    },
+    "tipe_unit": {
+      "type": "string",
+      "required": true
+    },
+    "luas_bangunan": {
+      "type": "decimal"
+    },
+    "luas_tanah": {
+      "type": "decimal"
+    },
+    "blok": {
+      "type": "string"
+    },
+    "kavling": {
+      "type": "string"
+    },
+    "status_unit": {
+      "type": "enumeration",
+      "enum": [
+        "Tersedia",
+        "Dipesan",
+        "Terjual",
+        "Dalam Pembangunan"
+      ]
+    },
+    "harga": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.harga"
+    },
+    "estimasi_biaya_pembangunan": {
+      "type": "decimal"
+    },
+    "gambar_3d": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "gambar_denah": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "foto_progress": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "status_pembangunan": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.progres-proyek"
+    },
+    "dokumen_unit": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    }
+  }
+}

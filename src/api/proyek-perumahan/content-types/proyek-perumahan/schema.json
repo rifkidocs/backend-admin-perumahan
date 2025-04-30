@@ -1,0 +1,86 @@
+{
+  "kind": "collectionType",
+  "collectionName": "proyek_perumahans",
+  "info": {
+    "singularName": "proyek-perumahan",
+    "pluralName": "proyek-perumahans",
+    "displayName": "Proyek Perumahan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_proyek": {
+      "type": "string",
+      "required": true
+    },
+    "alamat": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.alamat"
+    },
+    "koordinat_gps": {
+      "type": "string"
+    },
+    "luas_lahan": {
+      "type": "decimal"
+    },
+    "jenis_proyek": {
+      "type": "enumeration",
+      "enum": [
+        "Subsidi",
+        "Komersial",
+        "Mixed-Use"
+      ]
+    },
+    "tahap_pengembangan": {
+      "type": "string"
+    },
+    "status_proyek": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.status-proyek"
+    },
+    "tanggal_mulai": {
+      "type": "date"
+    },
+    "tanggal_selesai_estimasi": {
+      "type": "date"
+    },
+    "tanggal_selesai_aktual": {
+      "type": "date"
+    },
+    "deskripsi": {
+      "type": "text"
+    },
+    "foto_utama": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "galeri_foto": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "site_plan": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "dokumen_legal": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    }
+  }
+}

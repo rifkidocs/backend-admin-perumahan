@@ -1,0 +1,88 @@
+{
+  "kind": "collectionType",
+  "collectionName": "karyawans",
+  "info": {
+    "singularName": "karyawan",
+    "pluralName": "karyawans",
+    "displayName": "Karyawan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nik_karyawan": {
+      "type": "string",
+      "required": true
+    },
+    "nama_lengkap": {
+      "type": "string",
+      "required": true
+    },
+    "jenis_kelamin": {
+      "type": "enumeration",
+      "enum": [
+        "Laki-laki",
+        "Perempuan"
+      ]
+    },
+    "tempat_lahir": {
+      "type": "string"
+    },
+    "tanggal_lahir": {
+      "type": "date"
+    },
+    "kontak": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.kontak"
+    },
+    "status_pernikahan": {
+      "type": "enumeration",
+      "enum": [
+        "Belum Menikah",
+        "Menikah",
+        "Cerai"
+      ]
+    },
+    "foto_karyawan": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "npwp": {
+      "type": "string"
+    },
+    "status_kepegawaian": {
+      "type": "enumeration",
+      "enum": [
+        "Tetap",
+        "Kontrak",
+        "Freelance"
+      ]
+    },
+    "tanggal_masuk": {
+      "type": "date"
+    },
+    "tanggal_akhir_kontrak": {
+      "type": "date"
+    },
+    "penggajian": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.penggajian"
+    },
+    "rekening_bank": {
+      "type": "string"
+    },
+    "nama_bank": {
+      "type": "string"
+    },
+    "dokumen_karyawan": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    }
+  }
+}
