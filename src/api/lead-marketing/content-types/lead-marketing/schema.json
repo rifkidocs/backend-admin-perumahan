@@ -4,7 +4,8 @@
   "info": {
     "singularName": "lead-marketing",
     "pluralName": "lead-marketings",
-    "displayName": "Lead Marketing"
+    "displayName": "Lead Marketing",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -60,6 +61,12 @@
     },
     "catatan": {
       "type": "string"
+    },
+    "marketing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "lead_marketings"
     }
   }
 }

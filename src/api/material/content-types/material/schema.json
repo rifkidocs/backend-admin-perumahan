@@ -4,7 +4,8 @@
   "info": {
     "singularName": "material",
     "pluralName": "materials",
-    "displayName": "Material"
+    "displayName": "Material",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -42,14 +43,21 @@
       ]
     },
     "foto_material": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
+    },
+    "supplier": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::vendor.vendor",
+      "inversedBy": "material"
     }
   }
 }

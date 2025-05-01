@@ -4,7 +4,8 @@
   "info": {
     "singularName": "rab",
     "pluralName": "rabs",
-    "displayName": "RAB"
+    "displayName": "RAB",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -31,14 +32,39 @@
       "type": "json"
     },
     "dokumen_rab": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "rabs"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "rabs"
+    },
+    "pembuat": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "rabs"
+    },
+    "realisasi_anggarans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::realisasi-anggaran.realisasi-anggaran",
+      "mappedBy": "rab"
     }
   }
 }

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "karyawan",
     "pluralName": "karyawans",
-    "displayName": "Karyawan"
+    "displayName": "Karyawan",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -45,11 +46,12 @@
       ]
     },
     "foto_karyawan": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "npwp": {
       "type": "string"
@@ -83,6 +85,120 @@
       "type": "component",
       "repeatable": true,
       "component": "komponen.dokumen"
+    },
+    "proyek_perumahans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "mappedBy": "manager_proyek"
+    },
+    "konsumen": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::konsumen.konsumen",
+      "mappedBy": "marketing"
+    },
+    "jabatan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::jabatan.jabatan",
+      "inversedBy": "karyawans"
+    },
+    "proyek_ditangani": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "karyawans"
+    },
+    "absensi": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::absensi.absensi",
+      "mappedBy": "karyawan"
+    },
+    "penjualan": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-rumah.unit-rumah",
+      "mappedBy": "karyawan"
+    },
+    "departemen": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::departemen.departemen",
+      "mappedBy": "kepala_departemen"
+    },
+    "cuti": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::cuti.cuti",
+      "mappedBy": "penyetuju"
+    },
+    "permintaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::permintaan-material.permintaan-material",
+      "mappedBy": "penyetuju"
+    },
+    "penerimaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penerimaan-material.penerimaan-material",
+      "mappedBy": "penerima"
+    },
+    "pengeluaran_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pengeluaran-material.pengeluaran-material",
+      "mappedBy": "penyetuju"
+    },
+    "kas_masuks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-masuk.kas-masuk",
+      "mappedBy": "penerima"
+    },
+    "lead_marketings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-marketing.lead-marketing",
+      "mappedBy": "marketing"
+    },
+    "departemens": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::departemen.departemen",
+      "inversedBy": "karyawan"
+    },
+    "bookings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::booking.booking",
+      "mappedBy": "marketing"
+    },
+    "target_marketings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::target-marketing.target-marketing",
+      "mappedBy": "marketing"
+    },
+    "rabs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rab.rab",
+      "mappedBy": "pembuat"
+    },
+    "progres_harians": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::progres-harian.progres-harian",
+      "mappedBy": "pelapor"
+    },
+    "serah_terima_units": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::serah-terima-unit.serah-terima-unit",
+      "mappedBy": "pihak_developer"
     }
   }
 }

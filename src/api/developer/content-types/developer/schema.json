@@ -1,0 +1,64 @@
+{
+  "kind": "collectionType",
+  "collectionName": "developers",
+  "info": {
+    "singularName": "developer",
+    "pluralName": "developers",
+    "displayName": "Developer"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_perusahaan": {
+      "type": "string",
+      "required": true
+    },
+    "kontak": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.kontak"
+    },
+    "alamat": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.alamat"
+    },
+    "npwp": {
+      "type": "string"
+    },
+    "logo": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "website": {
+      "type": "string"
+    },
+    "tahun_berdiri": {
+      "type": "integer"
+    },
+    "deskripsi": {
+      "type": "text"
+    },
+    "direktur_utama": {
+      "type": "string"
+    },
+    "dokumen_legal": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    },
+    "proyek_perumahans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "mappedBy": "developer"
+    }
+  }
+}

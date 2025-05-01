@@ -4,7 +4,8 @@
   "info": {
     "singularName": "permintaan-material",
     "pluralName": "permintaan-materials",
-    "displayName": " Permintaan Material"
+    "displayName": " Permintaan Material",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -34,6 +35,36 @@
     },
     "item_material": {
       "type": "json"
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "permintaan_materials"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "permintaan_materials"
+    },
+    "pemohon": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "permintaan_materials"
+    },
+    "penyetuju": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "permintaan_materials"
+    },
+    "purchasings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchasing.purchasing",
+      "mappedBy": "permintaan_material"
     }
   }
 }

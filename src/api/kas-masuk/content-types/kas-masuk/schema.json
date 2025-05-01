@@ -4,7 +4,8 @@
   "info": {
     "singularName": "kas-masuk",
     "pluralName": "kas-masuks",
-    "displayName": "Kas Masuk"
+    "displayName": "Kas Masuk",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -41,14 +42,33 @@
       "type": "string"
     },
     "bukti_pembayaran": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
+    },
+    "konsuman": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "kas_masuks"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "kas_masuks"
+    },
+    "penerima": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "kas_masuks"
     }
   }
 }

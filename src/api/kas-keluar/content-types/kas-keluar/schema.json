@@ -4,7 +4,8 @@
   "info": {
     "singularName": "kas-keluar",
     "pluralName": "kas-keluars",
-    "displayName": "Kas Keluar"
+    "displayName": "Kas Keluar",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -41,17 +42,36 @@
       "type": "string"
     },
     "bukti_pembayaran": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "penerima": {
       "type": "string"
+    },
+    "vendor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vendor.vendor",
+      "inversedBy": "kas_keluars"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "kas_keluars"
+    },
+    "purchasing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::purchasing.purchasing",
+      "inversedBy": "kas_keluars"
     }
   }
 }

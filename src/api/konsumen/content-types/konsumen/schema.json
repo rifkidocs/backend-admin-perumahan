@@ -4,7 +4,8 @@
   "info": {
     "singularName": "konsumen",
     "pluralName": "konsumens",
-    "displayName": "Konsumen"
+    "displayName": "Konsumen",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -55,6 +56,48 @@
       "type": "component",
       "repeatable": true,
       "component": "komponen.transaksi"
+    },
+    "unit_rumahs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-rumah.unit-rumah",
+      "mappedBy": "konsumen"
+    },
+    "bank_kpr": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::bank.bank",
+      "inversedBy": "konsumen"
+    },
+    "unit_dibeli": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-rumah.unit-rumah",
+      "mappedBy": "konsuman"
+    },
+    "marketing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "konsumen"
+    },
+    "kas_masuks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-masuk.kas-masuk",
+      "mappedBy": "konsuman"
+    },
+    "bookings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::booking.booking",
+      "mappedBy": "konsumen"
+    },
+    "serah_terima_units": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::serah-terima-unit.serah-terima-unit",
+      "mappedBy": "konsumen"
     }
   }
 }

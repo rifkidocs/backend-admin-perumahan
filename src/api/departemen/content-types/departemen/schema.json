@@ -4,7 +4,8 @@
   "info": {
     "singularName": "departemen",
     "pluralName": "departemens",
-    "displayName": "Departemen"
+    "displayName": "Departemen",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -20,6 +21,24 @@
     },
     "deskripsi": {
       "type": "text"
+    },
+    "karyawan": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::karyawan.karyawan",
+      "mappedBy": "departemens"
+    },
+    "jabatan": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jabatan.jabatan",
+      "mappedBy": "departemen"
+    },
+    "kepala_departemen": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "departemen"
     }
   }
 }

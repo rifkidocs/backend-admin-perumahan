@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "target_marketings",
+  "info": {
+    "singularName": "target-marketing",
+    "pluralName": "target-marketings",
+    "displayName": "Target Marketing",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "periode": {
+      "type": "date"
+    },
+    "target_unit": {
+      "type": "integer"
+    },
+    "target_nominal": {
+      "type": "decimal"
+    },
+    "pencapaian_unit": {
+      "type": "integer"
+    },
+    "pencapaian_nominal": {
+      "type": "decimal"
+    },
+    "komisi_per_unit": {
+      "type": "decimal"
+    },
+    "total_komisi": {
+      "type": "decimal"
+    },
+    "status_pembayaran_komisi": {
+      "type": "enumeration",
+      "enum": [
+        "Belum Dibayar",
+        "Sebagian",
+        "Lunas"
+      ]
+    },
+    "marketing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "target_marketings"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "target_marketings"
+    }
+  }
+}

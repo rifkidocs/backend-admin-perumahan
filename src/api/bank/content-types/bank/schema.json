@@ -45,6 +45,12 @@
       ],
       "type": "media",
       "multiple": true
+    },
+    "konsumen": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::konsumen.konsumen",
+      "mappedBy": "bank_kpr"
     }
   }
 }

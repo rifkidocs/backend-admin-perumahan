@@ -4,7 +4,8 @@
   "info": {
     "singularName": "purchasing",
     "pluralName": "purchasings",
-    "displayName": "Purchasing"
+    "displayName": "Purchasing",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -47,17 +48,42 @@
       "type": "string"
     },
     "dokumen_po": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "item_po": {
       "type": "json"
+    },
+    "supplier": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vendor.vendor",
+      "inversedBy": "purchasings"
+    },
+    "permintaan_material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::permintaan-material.permintaan-material",
+      "inversedBy": "purchasings"
+    },
+    "penerimaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penerimaan-material.penerimaan-material",
+      "mappedBy": "purchasing"
+    },
+    "kas_keluars": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "purchasing"
     }
   }
 }

@@ -386,6 +386,7 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
     foto_absensi: Schema.Attribute.Media<'images', true>;
     jam_keluar: Schema.Attribute.Time;
     jam_masuk: Schema.Attribute.Time;
+    karyawan: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     keterangan: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -425,6 +426,7 @@ export interface ApiBankBank extends Struct.CollectionTypeSchema {
       true
     >;
     jenis_kpr: Schema.Attribute.String;
+    konsumen: Schema.Attribute.Relation<'oneToMany', 'api::konsumen.konsumen'>;
     kontak_person: Schema.Attribute.Component<'komponen.kontak', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::bank.bank'> &
@@ -440,9 +442,52 @@ export interface ApiBankBank extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
+  collectionName: 'bookings';
+  info: {
+    description: '';
+    displayName: 'Booking';
+    pluralName: 'bookings';
+    singularName: 'booking';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dokumen_booking: Schema.Attribute.Component<'komponen.dokumen', true>;
+    konsumen: Schema.Attribute.Relation<'manyToOne', 'api::konsumen.konsumen'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::booking.booking'
+    > &
+      Schema.Attribute.Private;
+    marketing: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    nominal_booking: Schema.Attribute.Decimal;
+    nomor_booking: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    status_booking: Schema.Attribute.Enumeration<
+      ['Aktif', 'Lanjut DP', 'Batal']
+    >;
+    tanggal_booking: Schema.Attribute.Date;
+    tanggal_kadaluarsa: Schema.Attribute.Date;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCutiCuti extends Struct.CollectionTypeSchema {
   collectionName: 'cutis';
   info: {
+    description: '';
     displayName: 'Cuti';
     pluralName: 'cutis';
     singularName: 'cuti';
@@ -462,9 +507,11 @@ export interface ApiCutiCuti extends Struct.CollectionTypeSchema {
     jenis_cuti: Schema.Attribute.Enumeration<
       ['Tahunan', 'Sakit', 'Bersalin', 'Penting', 'Lainnya']
     >;
+    karyawan: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::cuti.cuti'> &
       Schema.Attribute.Private;
+    penyetuju: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     publishedAt: Schema.Attribute.DateTime;
     status_persetujuan: Schema.Attribute.Enumeration<
       ['Diajukan', 'Disetujui', 'Ditolak']
@@ -480,6 +527,7 @@ export interface ApiCutiCuti extends Struct.CollectionTypeSchema {
 export interface ApiDepartemenDepartemen extends Struct.CollectionTypeSchema {
   collectionName: 'departemens';
   info: {
+    description: '';
     displayName: 'Departemen';
     pluralName: 'departemens';
     singularName: 'departemen';
@@ -492,6 +540,12 @@ export interface ApiDepartemenDepartemen extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     deskripsi: Schema.Attribute.Text;
+    jabatan: Schema.Attribute.Relation<'oneToMany', 'api::jabatan.jabatan'>;
+    karyawan: Schema.Attribute.Relation<'oneToMany', 'api::karyawan.karyawan'>;
+    kepala_departemen: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
     kode_departemen: Schema.Attribute.String & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -507,9 +561,51 @@ export interface ApiDepartemenDepartemen extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiDeveloperDeveloper extends Struct.CollectionTypeSchema {
+  collectionName: 'developers';
+  info: {
+    displayName: 'Developer';
+    pluralName: 'developers';
+    singularName: 'developer';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    alamat: Schema.Attribute.Component<'komponen.alamat', false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deskripsi: Schema.Attribute.Text;
+    direktur_utama: Schema.Attribute.String;
+    dokumen_legal: Schema.Attribute.Component<'komponen.dokumen', true>;
+    kontak: Schema.Attribute.Component<'komponen.kontak', false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::developer.developer'
+    > &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    nama_perusahaan: Schema.Attribute.String & Schema.Attribute.Required;
+    npwp: Schema.Attribute.String;
+    proyek_perumahans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    tahun_berdiri: Schema.Attribute.Integer;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    website: Schema.Attribute.String;
+  };
+}
+
 export interface ApiJabatanJabatan extends Struct.CollectionTypeSchema {
   collectionName: 'jabatans';
   info: {
+    description: '';
     displayName: 'Jabatan';
     pluralName: 'jabatans';
     singularName: 'jabatan';
@@ -521,9 +617,14 @@ export interface ApiJabatanJabatan extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    departemen: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::departemen.departemen'
+    >;
     deskripsi_jabatan: Schema.Attribute.Text;
     gaji_maksimum: Schema.Attribute.Decimal;
     gaji_minimum: Schema.Attribute.Decimal;
+    karyawans: Schema.Attribute.Relation<'oneToMany', 'api::karyawan.karyawan'>;
     kode_jabatan: Schema.Attribute.String;
     level_jabatan: Schema.Attribute.Enumeration<
       ['Staff', 'Supervisor', 'Manager', 'Direktur']
@@ -545,6 +646,7 @@ export interface ApiJabatanJabatan extends Struct.CollectionTypeSchema {
 export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
   collectionName: 'karyawans';
   info: {
+    description: '';
     displayName: 'Karyawan';
     pluralName: 'karyawans';
     singularName: 'karyawan';
@@ -553,13 +655,34 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    absensi: Schema.Attribute.Relation<'oneToMany', 'api::absensi.absensi'>;
+    bookings: Schema.Attribute.Relation<'oneToMany', 'api::booking.booking'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    cuti: Schema.Attribute.Relation<'oneToMany', 'api::cuti.cuti'>;
+    departemen: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::departemen.departemen'
+    >;
+    departemens: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::departemen.departemen'
+    >;
     dokumen_karyawan: Schema.Attribute.Component<'komponen.dokumen', true>;
     foto_karyawan: Schema.Attribute.Media<'images'>;
+    jabatan: Schema.Attribute.Relation<'manyToOne', 'api::jabatan.jabatan'>;
     jenis_kelamin: Schema.Attribute.Enumeration<['Laki-laki', 'Perempuan']>;
+    kas_masuks: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-masuk.kas-masuk'
+    >;
+    konsumen: Schema.Attribute.Relation<'oneToMany', 'api::konsumen.konsumen'>;
     kontak: Schema.Attribute.Component<'komponen.kontak', false>;
+    lead_marketings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-marketing.lead-marketing'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -570,9 +693,42 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     nama_lengkap: Schema.Attribute.String & Schema.Attribute.Required;
     nik_karyawan: Schema.Attribute.String & Schema.Attribute.Required;
     npwp: Schema.Attribute.String;
+    penerimaan_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::penerimaan-material.penerimaan-material'
+    >;
+    pengeluaran_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pengeluaran-material.pengeluaran-material'
+    >;
     penggajian: Schema.Attribute.Component<'komponen.penggajian', false>;
+    penjualan: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::unit-rumah.unit-rumah'
+    >;
+    permintaan_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::permintaan-material.permintaan-material'
+    >;
+    progres_harians: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::progres-harian.progres-harian'
+    >;
+    proyek_ditangani: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
+    proyek_perumahans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    rabs: Schema.Attribute.Relation<'oneToMany', 'api::rab.rab'>;
     rekening_bank: Schema.Attribute.String;
+    serah_terima_units: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::serah-terima-unit.serah-terima-unit'
+    >;
     status_kepegawaian: Schema.Attribute.Enumeration<
       ['Tetap', 'Kontrak', 'Freelance']
     >;
@@ -582,6 +738,10 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     tanggal_akhir_kontrak: Schema.Attribute.Date;
     tanggal_lahir: Schema.Attribute.Date;
     tanggal_masuk: Schema.Attribute.Date;
+    target_marketings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::target-marketing.target-marketing'
+    >;
     tempat_lahir: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -592,6 +752,7 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
 export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
   collectionName: 'kas_keluars';
   info: {
+    description: '';
     displayName: 'Kas Keluar';
     pluralName: 'kas-keluars';
     singularName: 'kas-keluar';
@@ -623,17 +784,27 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     nominal: Schema.Attribute.Decimal;
     nomor_transaksi: Schema.Attribute.String;
     penerima: Schema.Attribute.String;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    purchasing: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::purchasing.purchasing'
+    >;
     tanggal_transaksi: Schema.Attribute.Date;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    vendor: Schema.Attribute.Relation<'manyToOne', 'api::vendor.vendor'>;
   };
 }
 
 export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
   collectionName: 'kas_masuks';
   info: {
+    description: '';
     displayName: 'Kas Masuk';
     pluralName: 'kas-masuks';
     singularName: 'kas-masuk';
@@ -653,6 +824,7 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
       ['Booking', 'DP', 'Pelunasan', 'Pencairan KPR', 'Lainnya']
     >;
     keterangan: Schema.Attribute.String;
+    konsuman: Schema.Attribute.Relation<'manyToOne', 'api::konsumen.konsumen'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -664,8 +836,13 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
     >;
     nominal: Schema.Attribute.Decimal;
     nomor_transaksi: Schema.Attribute.String;
+    penerima: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     publishedAt: Schema.Attribute.DateTime;
     tanggal_transaksi: Schema.Attribute.Date;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -675,6 +852,7 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
 export interface ApiKonsumenKonsumen extends Struct.CollectionTypeSchema {
   collectionName: 'konsumens';
   info: {
+    description: '';
     displayName: 'Konsumen';
     pluralName: 'konsumens';
     singularName: 'konsumen';
@@ -683,10 +861,16 @@ export interface ApiKonsumenKonsumen extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    bank_kpr: Schema.Attribute.Relation<'manyToOne', 'api::bank.bank'>;
+    bookings: Schema.Attribute.Relation<'oneToMany', 'api::booking.booking'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     dokumen_konsumen: Schema.Attribute.Component<'komponen.dokumen', true>;
+    kas_masuks: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-masuk.kas-masuk'
+    >;
     kontak: Schema.Attribute.Component<'komponen.kontak', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -694,6 +878,7 @@ export interface ApiKonsumenKonsumen extends Struct.CollectionTypeSchema {
       'api::konsumen.konsumen'
     > &
       Schema.Attribute.Private;
+    marketing: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     metode_pembayaran: Schema.Attribute.Enumeration<
       ['KPR', 'Tunai Keras', 'Tunai Bertahap']
     >;
@@ -703,8 +888,20 @@ export interface ApiKonsumenKonsumen extends Struct.CollectionTypeSchema {
     penghasilan_per_bulan: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     riwayat_pembayaran: Schema.Attribute.Component<'komponen.transaksi', true>;
+    serah_terima_units: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::serah-terima-unit.serah-terima-unit'
+    >;
     status_kpr: Schema.Attribute.Enumeration<
       ['Belum Mengajukan', 'Dalam Proses', 'Disetujui', 'Ditolak']
+    >;
+    unit_dibeli: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::unit-rumah.unit-rumah'
+    >;
+    unit_rumahs: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::unit-rumah.unit-rumah'
     >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -716,6 +913,7 @@ export interface ApiLeadMarketingLeadMarketing
   extends Struct.CollectionTypeSchema {
   collectionName: 'lead_marketings';
   info: {
+    description: '';
     displayName: 'Lead Marketing';
     pluralName: 'lead-marketings';
     singularName: 'lead-marketing';
@@ -740,6 +938,7 @@ export interface ApiLeadMarketingLeadMarketing
       'api::lead-marketing.lead-marketing'
     > &
       Schema.Attribute.Private;
+    marketing: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     minat_tipe_rumah: Schema.Attribute.String;
     nama_lengkap: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
@@ -759,6 +958,7 @@ export interface ApiLeadMarketingLeadMarketing
 export interface ApiMaterialMaterial extends Struct.CollectionTypeSchema {
   collectionName: 'materials';
   info: {
+    description: '';
     displayName: 'Material';
     pluralName: 'materials';
     singularName: 'material';
@@ -791,41 +991,7 @@ export interface ApiMaterialMaterial extends Struct.CollectionTypeSchema {
     satuan: Schema.Attribute.String;
     spesifikasi: Schema.Attribute.Text;
     stok_tersedia: Schema.Attribute.Integer;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiNomorBookingNomorBooking
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'nomor_bookings';
-  info: {
-    displayName: 'nomor_booking';
-    pluralName: 'nomor-bookings';
-    singularName: 'nomor-booking';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    dokumen_booking: Schema.Attribute.Component<'komponen.dokumen', true>;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::nomor-booking.nomor-booking'
-    > &
-      Schema.Attribute.Private;
-    nominal_booking: Schema.Attribute.Decimal;
-    publishedAt: Schema.Attribute.DateTime;
-    status_booking: Schema.Attribute.Enumeration<
-      ['Aktif', 'Lanjut DP', 'Batal']
-    >;
-    tanggal_booking: Schema.Attribute.Date;
-    tanggal_kadaluarsa: Schema.Attribute.Date;
+    supplier: Schema.Attribute.Relation<'manyToMany', 'api::vendor.vendor'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -836,6 +1002,7 @@ export interface ApiPenerimaanMaterialPenerimaanMaterial
   extends Struct.CollectionTypeSchema {
   collectionName: 'penerimaan_materials';
   info: {
+    description: '';
     displayName: 'Penerimaan Material';
     pluralName: 'penerimaan-materials';
     singularName: 'penerimaan-material';
@@ -860,7 +1027,12 @@ export interface ApiPenerimaanMaterialPenerimaanMaterial
     > &
       Schema.Attribute.Private;
     nomor_penerimaan: Schema.Attribute.String & Schema.Attribute.Required;
+    penerima: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     publishedAt: Schema.Attribute.DateTime;
+    purchasing: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::purchasing.purchasing'
+    >;
     status_penerimaan_material: Schema.Attribute.Enumeration<
       ['Lengkap', 'Kurang', 'Return']
     >;
@@ -875,6 +1047,7 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
   extends Struct.CollectionTypeSchema {
   collectionName: 'pengeluaran_materials';
   info: {
+    description: '';
     displayName: 'Pengeluaran Material';
     pluralName: 'pengeluaran-materials';
     singularName: 'pengeluaran-material';
@@ -895,11 +1068,21 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
     > &
       Schema.Attribute.Private;
     nomor_pengeluaran: Schema.Attribute.String;
+    pemohon: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    penyetuju: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     status_pengeluaran_material: Schema.Attribute.Enumeration<
       ['Draft', 'Disetujui', 'Selesai']
     >;
     tanggal_pengeluaran: Schema.Attribute.Date;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -910,6 +1093,7 @@ export interface ApiPermintaanMaterialPermintaanMaterial
   extends Struct.CollectionTypeSchema {
   collectionName: 'permintaan_materials';
   info: {
+    description: '';
     displayName: ' Permintaan Material';
     pluralName: 'permintaan-materials';
     singularName: 'permintaan-material';
@@ -930,12 +1114,26 @@ export interface ApiPermintaanMaterialPermintaanMaterial
     > &
       Schema.Attribute.Private;
     nomor_permintaan: Schema.Attribute.String & Schema.Attribute.Required;
+    pemohon: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    penyetuju: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    proyek: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    purchasings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::purchasing.purchasing'
+    >;
     status_permintaan: Schema.Attribute.Enumeration<
       ['Diajukan', 'Disetujui', 'Ditolak', 'Selesai']
     >;
     tanggal_kebutuhan: Schema.Attribute.Date;
     tanggal_permintaan: Schema.Attribute.Date;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -946,6 +1144,7 @@ export interface ApiProgresHarianProgresHarian
   extends Struct.CollectionTypeSchema {
   collectionName: 'progres_harians';
   info: {
+    description: '';
     displayName: 'Progres Harian';
     pluralName: 'progres-harians';
     singularName: 'progres-harian';
@@ -975,9 +1174,18 @@ export interface ApiProgresHarianProgresHarian
       Schema.Attribute.Private;
     material_masuk: Schema.Attribute.JSON;
     material_terpakai: Schema.Attribute.JSON;
+    pelapor: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     persentase_progres: Schema.Attribute.Decimal;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     tanggal: Schema.Attribute.Date;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -987,6 +1195,7 @@ export interface ApiProgresHarianProgresHarian
 export interface ApiPromoPromo extends Struct.CollectionTypeSchema {
   collectionName: 'promos';
   info: {
+    description: '';
     displayName: 'Promo';
     pluralName: 'promos';
     singularName: 'promo';
@@ -1012,6 +1221,10 @@ export interface ApiPromoPromo extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     nama_promo: Schema.Attribute.String;
     nilai_promo: Schema.Attribute.Decimal;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     status_promo: Schema.Attribute.Enumeration<['Aktif', 'Tidak Aktif']>;
     syarat_ketentuan: Schema.Attribute.Text;
@@ -1028,6 +1241,7 @@ export interface ApiProyekPerumahanProyekPerumahan
   extends Struct.CollectionTypeSchema {
   collectionName: 'proyek_perumahans';
   info: {
+    description: '';
     displayName: 'Proyek Perumahan';
     pluralName: 'proyek-perumahans';
     singularName: 'proyek-perumahan';
@@ -1041,11 +1255,20 @@ export interface ApiProyekPerumahanProyekPerumahan
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     deskripsi: Schema.Attribute.Text;
+    developer: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::developer.developer'
+    >;
     dokumen_legal: Schema.Attribute.Component<'komponen.dokumen', true>;
     foto_utama: Schema.Attribute.Media<'images'>;
     galeri_foto: Schema.Attribute.Media<'images', true>;
     jenis_proyek: Schema.Attribute.Enumeration<
       ['Subsidi', 'Komersial', 'Mixed-Use']
+    >;
+    karyawans: Schema.Attribute.Relation<'oneToMany', 'api::karyawan.karyawan'>;
+    kas_keluars: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-keluar.kas-keluar'
     >;
     koordinat_gps: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1055,23 +1278,51 @@ export interface ApiProyekPerumahanProyekPerumahan
     > &
       Schema.Attribute.Private;
     luas_lahan: Schema.Attribute.Decimal;
+    manager_proyek: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
     nama_proyek: Schema.Attribute.String & Schema.Attribute.Required;
+    pengeluaran_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pengeluaran-material.pengeluaran-material'
+    >;
+    permintaan_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::permintaan-material.permintaan-material'
+    >;
+    progres_harians: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::progres-harian.progres-harian'
+    >;
+    promos: Schema.Attribute.Relation<'manyToMany', 'api::promo.promo'>;
     publishedAt: Schema.Attribute.DateTime;
+    rabs: Schema.Attribute.Relation<'oneToMany', 'api::rab.rab'>;
     site_plan: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     status_proyek: Schema.Attribute.Component<'komponen.status-proyek', false>;
     tahap_pengembangan: Schema.Attribute.String;
     tanggal_mulai: Schema.Attribute.Date;
     tanggal_selesai_aktual: Schema.Attribute.Date;
     tanggal_selesai_estimasi: Schema.Attribute.Date;
+    target_marketings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::target-marketing.target-marketing'
+    >;
+    unit_rumahs: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    vendors: Schema.Attribute.Relation<'manyToMany', 'api::vendor.vendor'>;
   };
 }
 
 export interface ApiPurchasingPurchasing extends Struct.CollectionTypeSchema {
   collectionName: 'purchasings';
   info: {
+    description: '';
     displayName: 'Purchasing';
     pluralName: 'purchasings';
     singularName: 'purchasing';
@@ -1091,6 +1342,10 @@ export interface ApiPurchasingPurchasing extends Struct.CollectionTypeSchema {
       true
     >;
     item_po: Schema.Attribute.JSON;
+    kas_keluars: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-keluar.kas-keluar'
+    >;
     keterangan: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1099,10 +1354,19 @@ export interface ApiPurchasingPurchasing extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     nomor_po: Schema.Attribute.String;
+    penerimaan_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::penerimaan-material.penerimaan-material'
+    >;
+    permintaan_material: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::permintaan-material.permintaan-material'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     status_purchasing: Schema.Attribute.Enumeration<
       ['Draft', 'Terkirim', 'Diterima Sebagian', 'Selesai', 'Dibatalkan']
     >;
+    supplier: Schema.Attribute.Relation<'manyToOne', 'api::vendor.vendor'>;
     tanggal_pembayaran: Schema.Attribute.Date;
     tanggal_pengiriman: Schema.Attribute.Date;
     tanggal_po: Schema.Attribute.Date;
@@ -1116,6 +1380,7 @@ export interface ApiPurchasingPurchasing extends Struct.CollectionTypeSchema {
 export interface ApiRabRab extends Struct.CollectionTypeSchema {
   collectionName: 'rabs';
   info: {
+    description: '';
     displayName: 'RAB';
     pluralName: 'rabs';
     singularName: 'rab';
@@ -1136,10 +1401,23 @@ export interface ApiRabRab extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::rab.rab'> &
       Schema.Attribute.Private;
+    pembuat: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    realisasi_anggarans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::realisasi-anggaran.realisasi-anggaran'
+    >;
     status_rab: Schema.Attribute.Enumeration<['Draft', 'Disetujui', 'Revisi']>;
     tanggal_dibuat: Schema.Attribute.Date;
     total_anggaran: Schema.Attribute.Decimal;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1150,6 +1428,7 @@ export interface ApiRealisasiAnggaranRealisasiAnggaran
   extends Struct.CollectionTypeSchema {
   collectionName: 'realisasi_anggarans';
   info: {
+    description: '';
     displayName: 'Realisasi Anggaran';
     pluralName: 'realisasi-anggarans';
     singularName: 'realisasi-anggaran';
@@ -1175,6 +1454,7 @@ export interface ApiRealisasiAnggaranRealisasiAnggaran
     periode: Schema.Attribute.Date;
     persentase_terhadap_rab: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
+    rab: Schema.Attribute.Relation<'manyToOne', 'api::rab.rab'>;
     status_realisasi_anggaran: Schema.Attribute.Enumeration<
       ['Proses', 'Selesai']
     >;
@@ -1189,6 +1469,7 @@ export interface ApiSerahTerimaUnitSerahTerimaUnit
   extends Struct.CollectionTypeSchema {
   collectionName: 'serah_terima_units';
   info: {
+    description: '';
     displayName: 'Serah Terima Unit';
     pluralName: 'serah-terima-units';
     singularName: 'serah-terima-unit';
@@ -1206,6 +1487,7 @@ export interface ApiSerahTerimaUnitSerahTerimaUnit
       'images' | 'files' | 'videos' | 'audios',
       true
     >;
+    konsumen: Schema.Attribute.Relation<'manyToOne', 'api::konsumen.konsumen'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1213,12 +1495,64 @@ export interface ApiSerahTerimaUnitSerahTerimaUnit
     > &
       Schema.Attribute.Private;
     nomor_serah_terima: Schema.Attribute.String;
+    pihak_developer: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     status_serah_terima_unit: Schema.Attribute.Enumeration<
       ['Proses', 'Selesai', 'Batal']
     >;
     tanggal_serah_terima: Schema.Attribute.Date;
     tindak_lanjut: Schema.Attribute.String;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTargetMarketingTargetMarketing
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'target_marketings';
+  info: {
+    description: '';
+    displayName: 'Target Marketing';
+    pluralName: 'target-marketings';
+    singularName: 'target-marketing';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    komisi_per_unit: Schema.Attribute.Decimal;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::target-marketing.target-marketing'
+    > &
+      Schema.Attribute.Private;
+    marketing: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    pencapaian_nominal: Schema.Attribute.Decimal;
+    pencapaian_unit: Schema.Attribute.Integer;
+    periode: Schema.Attribute.Date;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    status_pembayaran_komisi: Schema.Attribute.Enumeration<
+      ['Belum Dibayar', 'Sebagian', 'Lunas']
+    >;
+    target_nominal: Schema.Attribute.Decimal;
+    target_unit: Schema.Attribute.Integer;
+    total_komisi: Schema.Attribute.Decimal;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1228,6 +1562,7 @@ export interface ApiSerahTerimaUnitSerahTerimaUnit
 export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
   collectionName: 'unit_rumahs';
   info: {
+    description: '';
     displayName: 'Unit Rumah';
     pluralName: 'unit-rumahs';
     singularName: 'unit-rumah';
@@ -1237,6 +1572,7 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
   };
   attributes: {
     blok: Schema.Attribute.String;
+    bookings: Schema.Attribute.Relation<'oneToMany', 'api::booking.booking'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1252,7 +1588,14 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
       true
     >;
     harga: Schema.Attribute.Component<'komponen.harga', false>;
+    karyawan: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    kas_masuks: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-masuk.kas-masuk'
+    >;
     kavling: Schema.Attribute.String;
+    konsuman: Schema.Attribute.Relation<'manyToOne', 'api::konsumen.konsumen'>;
+    konsumen: Schema.Attribute.Relation<'manyToOne', 'api::konsumen.konsumen'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1262,7 +1605,28 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
     luas_bangunan: Schema.Attribute.Decimal;
     luas_tanah: Schema.Attribute.Decimal;
     nomor_unit: Schema.Attribute.String & Schema.Attribute.Required;
+    pengeluaran_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pengeluaran-material.pengeluaran-material'
+    >;
+    permintaan_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::permintaan-material.permintaan-material'
+    >;
+    progres_harians: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::progres-harian.progres-harian'
+    >;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    rabs: Schema.Attribute.Relation<'oneToMany', 'api::rab.rab'>;
+    serah_terima_units: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::serah-terima-unit.serah-terima-unit'
+    >;
     status_pembangunan: Schema.Attribute.Component<
       'komponen.progres-proyek',
       true
@@ -1280,6 +1644,7 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
 export interface ApiVendorVendor extends Struct.CollectionTypeSchema {
   collectionName: 'vendors';
   info: {
+    description: '';
     displayName: 'Vendor';
     pluralName: 'vendors';
     singularName: 'vendor';
@@ -1303,6 +1668,10 @@ export interface ApiVendorVendor extends Struct.CollectionTypeSchema {
         'Lainnya',
       ]
     >;
+    kas_keluars: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-keluar.kas-keluar'
+    >;
     kontak: Schema.Attribute.Component<'komponen.kontak', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1310,6 +1679,7 @@ export interface ApiVendorVendor extends Struct.CollectionTypeSchema {
       'api::vendor.vendor'
     > &
       Schema.Attribute.Private;
+    material: Schema.Attribute.Relation<'manyToMany', 'api::material.material'>;
     nama_perusahaan: Schema.Attribute.String & Schema.Attribute.Required;
     nomor_rekening: Schema.Attribute.String;
     npwp: Schema.Attribute.String;
@@ -1317,7 +1687,15 @@ export interface ApiVendorVendor extends Struct.CollectionTypeSchema {
       'images' | 'files' | 'videos' | 'audios',
       true
     >;
+    proyek_terlibat: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    purchasings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::purchasing.purchasing'
+    >;
     status_kontrak: Schema.Attribute.Enumeration<
       ['Aktif', 'Tidak Aktif', 'Blacklist']
     >;
@@ -1838,8 +2216,10 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::absensi.absensi': ApiAbsensiAbsensi;
       'api::bank.bank': ApiBankBank;
+      'api::booking.booking': ApiBookingBooking;
       'api::cuti.cuti': ApiCutiCuti;
       'api::departemen.departemen': ApiDepartemenDepartemen;
+      'api::developer.developer': ApiDeveloperDeveloper;
       'api::jabatan.jabatan': ApiJabatanJabatan;
       'api::karyawan.karyawan': ApiKaryawanKaryawan;
       'api::kas-keluar.kas-keluar': ApiKasKeluarKasKeluar;
@@ -1847,7 +2227,6 @@ declare module '@strapi/strapi' {
       'api::konsumen.konsumen': ApiKonsumenKonsumen;
       'api::lead-marketing.lead-marketing': ApiLeadMarketingLeadMarketing;
       'api::material.material': ApiMaterialMaterial;
-      'api::nomor-booking.nomor-booking': ApiNomorBookingNomorBooking;
       'api::penerimaan-material.penerimaan-material': ApiPenerimaanMaterialPenerimaanMaterial;
       'api::pengeluaran-material.pengeluaran-material': ApiPengeluaranMaterialPengeluaranMaterial;
       'api::permintaan-material.permintaan-material': ApiPermintaanMaterialPermintaanMaterial;
@@ -1858,6 +2237,7 @@ declare module '@strapi/strapi' {
       'api::rab.rab': ApiRabRab;
       'api::realisasi-anggaran.realisasi-anggaran': ApiRealisasiAnggaranRealisasiAnggaran;
       'api::serah-terima-unit.serah-terima-unit': ApiSerahTerimaUnitSerahTerimaUnit;
+      'api::target-marketing.target-marketing': ApiTargetMarketingTargetMarketing;
       'api::unit-rumah.unit-rumah': ApiUnitRumahUnitRumah;
       'api::vendor.vendor': ApiVendorVendor;
       'plugin::content-releases.release': PluginContentReleasesRelease;

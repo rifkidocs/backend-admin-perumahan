@@ -4,7 +4,8 @@
   "info": {
     "singularName": "realisasi-anggaran",
     "pluralName": "realisasi-anggarans",
-    "displayName": "Realisasi Anggaran"
+    "displayName": "Realisasi Anggaran",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -30,14 +31,21 @@
       "type": "json"
     },
     "dokumen_pendukung": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
+    },
+    "rab": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::rab.rab",
+      "inversedBy": "realisasi_anggarans"
     }
   }
 }

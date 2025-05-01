@@ -4,7 +4,8 @@
   "info": {
     "singularName": "vendor",
     "pluralName": "vendors",
-    "displayName": "Vendor"
+    "displayName": "Vendor",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -40,14 +41,15 @@
       "type": "string"
     },
     "portofolio": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "status_kontrak": {
       "type": "enumeration",
@@ -61,6 +63,30 @@
       "type": "component",
       "repeatable": true,
       "component": "komponen.dokumen"
+    },
+    "proyek_terlibat": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "vendors"
+    },
+    "material": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::material.material",
+      "mappedBy": "supplier"
+    },
+    "purchasings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchasing.purchasing",
+      "mappedBy": "supplier"
+    },
+    "kas_keluars": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "vendor"
     }
   }
 }

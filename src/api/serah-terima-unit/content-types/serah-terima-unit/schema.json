@@ -4,7 +4,8 @@
   "info": {
     "singularName": "serah-terima-unit",
     "pluralName": "serah-terima-units",
-    "displayName": "Serah Terima Unit"
+    "displayName": "Serah Terima Unit",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -31,19 +32,38 @@
       "type": "string"
     },
     "foto_serah_terima": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "dokumen_serah_terima": {
       "type": "component",
       "repeatable": true,
       "component": "komponen.dokumen"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "serah_terima_units"
+    },
+    "konsumen": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "serah_terima_units"
+    },
+    "pihak_developer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "serah_terima_units"
     }
   }
 }

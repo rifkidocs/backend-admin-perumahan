@@ -41,6 +41,12 @@
     },
     "lokasi_gps": {
       "type": "string"
+    },
+    "karyawan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "absensi"
     }
   }
 }

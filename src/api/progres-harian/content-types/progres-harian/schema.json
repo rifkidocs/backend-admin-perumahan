@@ -4,7 +4,8 @@
   "info": {
     "singularName": "progres-harian",
     "pluralName": "progres-harians",
-    "displayName": "Progres Harian"
+    "displayName": "Progres Harian",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -32,14 +33,15 @@
       "type": "string"
     },
     "foto_progres": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "material_masuk": {
       "type": "json"
@@ -49,6 +51,24 @@
     },
     "persentase_progres": {
       "type": "decimal"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "progres_harians"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "progres_harians"
+    },
+    "pelapor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "progres_harians"
     }
   }
 }

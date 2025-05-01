@@ -4,7 +4,8 @@
   "info": {
     "singularName": "unit-rumah",
     "pluralName": "unit-rumahs",
-    "displayName": "Unit Rumah"
+    "displayName": "Unit Rumah",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -48,31 +49,34 @@
       "type": "decimal"
     },
     "gambar_3d": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "gambar_denah": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "foto_progress": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "status_pembangunan": {
       "type": "component",
@@ -83,6 +87,72 @@
       "type": "component",
       "repeatable": true,
       "component": "komponen.dokumen"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "unit_rumahs"
+    },
+    "konsumen": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "unit_rumahs"
+    },
+    "konsuman": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "unit_dibeli"
+    },
+    "karyawan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "penjualan"
+    },
+    "permintaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::permintaan-material.permintaan-material",
+      "mappedBy": "unit_rumah"
+    },
+    "pengeluaran_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pengeluaran-material.pengeluaran-material",
+      "mappedBy": "unit_rumah"
+    },
+    "kas_masuks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-masuk.kas-masuk",
+      "mappedBy": "unit_rumah"
+    },
+    "bookings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::booking.booking",
+      "mappedBy": "unit_rumah"
+    },
+    "rabs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rab.rab",
+      "mappedBy": "unit_rumah"
+    },
+    "progres_harians": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::progres-harian.progres-harian",
+      "mappedBy": "unit_rumah"
+    },
+    "serah_terima_units": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::serah-terima-unit.serah-terima-unit",
+      "mappedBy": "unit_rumah"
     }
   }
 }

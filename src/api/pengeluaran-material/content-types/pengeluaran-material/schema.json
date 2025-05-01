@@ -4,7 +4,8 @@
   "info": {
     "singularName": "pengeluaran-material",
     "pluralName": "pengeluaran-materials",
-    "displayName": "Pengeluaran Material"
+    "displayName": "Pengeluaran Material",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -29,6 +30,30 @@
     },
     "item_pengeluaran": {
       "type": "json"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "pengeluaran_materials"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "pengeluaran_materials"
+    },
+    "pemohon": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "pengeluaran_materials"
+    },
+    "penyetuju": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "pengeluaran_materials"
     }
   }
 }

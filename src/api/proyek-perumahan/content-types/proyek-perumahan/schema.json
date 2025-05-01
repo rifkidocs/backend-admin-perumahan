@@ -4,7 +4,8 @@
   "info": {
     "singularName": "proyek-perumahan",
     "pluralName": "proyek-perumahans",
-    "displayName": "Proyek Perumahan"
+    "displayName": "Proyek Perumahan",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -54,33 +55,108 @@
       "type": "text"
     },
     "foto_utama": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "galeri_foto": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "site_plan": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "dokumen_legal": {
       "type": "component",
       "repeatable": true,
       "component": "komponen.dokumen"
+    },
+    "developer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::developer.developer",
+      "inversedBy": "proyek_perumahans"
+    },
+    "unit_rumahs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-rumah.unit-rumah",
+      "mappedBy": "proyek_perumahan"
+    },
+    "manager_proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "proyek_perumahans"
+    },
+    "karyawans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::karyawan.karyawan",
+      "mappedBy": "proyek_ditangani"
+    },
+    "vendors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::vendor.vendor",
+      "mappedBy": "proyek_terlibat"
+    },
+    "permintaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::permintaan-material.permintaan-material",
+      "mappedBy": "proyek"
+    },
+    "pengeluaran_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pengeluaran-material.pengeluaran-material",
+      "mappedBy": "proyek_perumahan"
+    },
+    "kas_keluars": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "proyek_perumahan"
+    },
+    "target_marketings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::target-marketing.target-marketing",
+      "mappedBy": "proyek_perumahan"
+    },
+    "rabs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rab.rab",
+      "mappedBy": "proyek_perumahan"
+    },
+    "progres_harians": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::progres-harian.progres-harian",
+      "mappedBy": "proyek_perumahan"
+    },
+    "promos": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::promo.promo",
+      "mappedBy": "proyek_perumahan"
     }
   }
 }

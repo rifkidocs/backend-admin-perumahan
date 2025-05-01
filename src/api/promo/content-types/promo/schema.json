@@ -4,7 +4,8 @@
   "info": {
     "singularName": "promo",
     "pluralName": "promos",
-    "displayName": "Promo"
+    "displayName": "Promo",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -51,14 +52,21 @@
       ]
     },
     "gambar_promo": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "promos"
     }
   }
 }

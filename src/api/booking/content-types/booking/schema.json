@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bookings",
+  "info": {
+    "singularName": "booking",
+    "pluralName": "bookings",
+    "displayName": "Booking",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_booking": {
+      "type": "string"
+    },
+    "tanggal_booking": {
+      "type": "date"
+    },
+    "nominal_booking": {
+      "type": "decimal"
+    },
+    "status_booking": {
+      "type": "enumeration",
+      "enum": [
+        "Aktif",
+        "Lanjut DP",
+        "Batal"
+      ]
+    },
+    "tanggal_kadaluarsa": {
+      "type": "date"
+    },
+    "dokumen_booking": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    },
+    "konsumen": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "bookings"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "bookings"
+    },
+    "marketing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "bookings"
+    }
+  }
+}

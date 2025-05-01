@@ -4,7 +4,8 @@
   "info": {
     "singularName": "penerimaan-material",
     "pluralName": "penerimaan-materials",
-    "displayName": "Penerimaan Material"
+    "displayName": "Penerimaan Material",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -29,17 +30,30 @@
       "type": "string"
     },
     "bukti_penerimaan": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "item_penerimaan": {
       "type": "json"
+    },
+    "purchasing": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::purchasing.purchasing",
+      "inversedBy": "penerimaan_materials"
+    },
+    "penerima": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "penerimaan_materials"
     }
   }
 }
