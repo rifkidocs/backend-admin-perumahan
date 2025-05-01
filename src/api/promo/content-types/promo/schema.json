@@ -1,0 +1,64 @@
+{
+  "kind": "collectionType",
+  "collectionName": "promos",
+  "info": {
+    "singularName": "promo",
+    "pluralName": "promos",
+    "displayName": "Promo"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_promo": {
+      "type": "string"
+    },
+    "kode_promo": {
+      "type": "string"
+    },
+    "deskripsi": {
+      "type": "text"
+    },
+    "tanggal_mulai": {
+      "type": "date"
+    },
+    "tanggal_selesai": {
+      "type": "date"
+    },
+    "jenis_promo": {
+      "type": "enumeration",
+      "enum": [
+        "Diskon",
+        "Cashback",
+        "Hadiah Langsung",
+        "Free Item"
+      ]
+    },
+    "nilai_promo": {
+      "type": "decimal"
+    },
+    "syarat_ketentuan": {
+      "type": "text"
+    },
+    "tipe_unit": {
+      "type": "string"
+    },
+    "status_promo": {
+      "type": "enumeration",
+      "enum": [
+        "Aktif",
+        "Tidak Aktif"
+      ]
+    },
+    "gambar_promo": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "rabs",
+  "info": {
+    "singularName": "rab",
+    "pluralName": "rabs",
+    "displayName": "RAB"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "kode_rab": {
+      "type": "string"
+    },
+    "tanggal_dibuat": {
+      "type": "date"
+    },
+    "status_rab": {
+      "type": "enumeration",
+      "enum": [
+        "Draft",
+        "Disetujui",
+        "Revisi"
+      ]
+    },
+    "total_anggaran": {
+      "type": "decimal"
+    },
+    "item_rab": {
+      "type": "json"
+    },
+    "dokumen_rab": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}

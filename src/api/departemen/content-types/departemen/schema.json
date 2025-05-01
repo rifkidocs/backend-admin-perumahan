@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "departemens",
+  "info": {
+    "singularName": "departemen",
+    "pluralName": "departemens",
+    "displayName": "Departemen"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_departemen": {
+      "type": "string",
+      "required": true
+    },
+    "kode_departemen": {
+      "type": "string",
+      "required": true
+    },
+    "deskripsi": {
+      "type": "text"
+    }
+  }
+}

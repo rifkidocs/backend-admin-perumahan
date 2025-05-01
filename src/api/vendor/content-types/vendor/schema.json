@@ -1,0 +1,66 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vendors",
+  "info": {
+    "singularName": "vendor",
+    "pluralName": "vendors",
+    "displayName": "Vendor"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_perusahaan": {
+      "type": "string",
+      "required": true
+    },
+    "jenis_layanan": {
+      "type": "enumeration",
+      "enum": [
+        "Sipil",
+        "Arsitektur",
+        "Instalasi Listrik",
+        "Instalasi Air",
+        "Material",
+        "Lainnya"
+      ]
+    },
+    "kontak": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.kontak"
+    },
+    "npwp": {
+      "type": "string"
+    },
+    "nomor_rekening": {
+      "type": "string"
+    },
+    "bank": {
+      "type": "string"
+    },
+    "portofolio": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "status_kontrak": {
+      "type": "enumeration",
+      "enum": [
+        "Aktif",
+        "Tidak Aktif",
+        "Blacklist"
+      ]
+    },
+    "dokumen_vendor": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    }
+  }
+}

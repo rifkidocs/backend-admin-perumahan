@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lead_marketings",
+  "info": {
+    "singularName": "lead-marketing",
+    "pluralName": "lead-marketings",
+    "displayName": "Lead Marketing"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_lengkap": {
+      "type": "string"
+    },
+    "kontak": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.kontak"
+    },
+    "sumber_lead": {
+      "type": "enumeration",
+      "enum": [
+        "Pameran",
+        "Website",
+        "Referensi",
+        "Iklan",
+        "Sosial Media",
+        "Lainnya"
+      ]
+    },
+    "kategori_lead": {
+      "type": "enumeration",
+      "enum": [
+        "Belum Berminat",
+        "Berminat",
+        "Prioritas"
+      ]
+    },
+    "minat_tipe_rumah": {
+      "type": "string"
+    },
+    "budget": {
+      "type": "decimal"
+    },
+    "riwayat_komunikasi": {
+      "type": "json"
+    },
+    "jadwal_kunjungan": {
+      "type": "date"
+    },
+    "status_lead": {
+      "type": "enumeration",
+      "enum": [
+        "Baru",
+        "Dalam Proses",
+        "Closed",
+        "Gagal"
+      ]
+    },
+    "catatan": {
+      "type": "string"
+    }
+  }
+}

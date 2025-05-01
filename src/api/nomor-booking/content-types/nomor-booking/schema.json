@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nomor_bookings",
+  "info": {
+    "singularName": "nomor-booking",
+    "pluralName": "nomor-bookings",
+    "displayName": "nomor_booking"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "tanggal_booking": {
+      "type": "date"
+    },
+    "nominal_booking": {
+      "type": "decimal"
+    },
+    "status_booking": {
+      "type": "enumeration",
+      "enum": [
+        "Aktif",
+        "Lanjut DP",
+        "Batal"
+      ]
+    },
+    "tanggal_kadaluarsa": {
+      "type": "date"
+    },
+    "dokumen_booking": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    }
+  }
+}

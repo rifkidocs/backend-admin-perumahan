@@ -1,0 +1,57 @@
+{
+  "kind": "collectionType",
+  "collectionName": "kas_keluars",
+  "info": {
+    "singularName": "kas-keluar",
+    "pluralName": "kas-keluars",
+    "displayName": "Kas Keluar"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_transaksi": {
+      "type": "string"
+    },
+    "tanggal_transaksi": {
+      "type": "date"
+    },
+    "jenis_transaksi": {
+      "type": "enumeration",
+      "enum": [
+        "Pembayaran Supplier",
+        "Gaji",
+        "Operasional",
+        "Biaya Legal",
+        "Lainnya"
+      ]
+    },
+    "nominal": {
+      "type": "decimal"
+    },
+    "metode_pembayaran": {
+      "type": "enumeration",
+      "enum": [
+        "Transfer",
+        "Tunai",
+        "Cek"
+      ]
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "bukti_pembayaran": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "penerima": {
+      "type": "string"
+    }
+  }
+}

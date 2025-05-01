@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchasings",
+  "info": {
+    "singularName": "purchasing",
+    "pluralName": "purchasings",
+    "displayName": "Purchasing"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_po": {
+      "type": "string"
+    },
+    "tanggal_po": {
+      "type": "date"
+    },
+    "status_purchasing": {
+      "type": "enumeration",
+      "enum": [
+        "Draft",
+        "Terkirim",
+        "Diterima Sebagian",
+        "Selesai",
+        "Dibatalkan"
+      ]
+    },
+    "total_harga": {
+      "type": "decimal"
+    },
+    "cara_pembayaran": {
+      "type": "enumeration",
+      "enum": [
+        "Cash",
+        "Transfer",
+        "Tempo"
+      ]
+    },
+    "tanggal_pembayaran": {
+      "type": "date"
+    },
+    "tanggal_pengiriman": {
+      "type": "date"
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "dokumen_po": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "item_po": {
+      "type": "json"
+    }
+  }
+}

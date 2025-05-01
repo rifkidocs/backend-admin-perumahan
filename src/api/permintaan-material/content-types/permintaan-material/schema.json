@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "permintaan_materials",
+  "info": {
+    "singularName": "permintaan-material",
+    "pluralName": "permintaan-materials",
+    "displayName": " Permintaan Material"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_permintaan": {
+      "type": "string",
+      "required": true
+    },
+    "tanggal_permintaan": {
+      "type": "date"
+    },
+    "status_permintaan": {
+      "type": "enumeration",
+      "enum": [
+        "Diajukan",
+        "Disetujui",
+        "Ditolak",
+        "Selesai"
+      ]
+    },
+    "tanggal_kebutuhan": {
+      "type": "date"
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "item_material": {
+      "type": "json"
+    }
+  }
+}

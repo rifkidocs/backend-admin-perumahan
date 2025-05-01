@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "penerimaan_materials",
+  "info": {
+    "singularName": "penerimaan-material",
+    "pluralName": "penerimaan-materials",
+    "displayName": "Penerimaan Material"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_penerimaan": {
+      "type": "string",
+      "required": true
+    },
+    "tanggal_penerimaan": {
+      "type": "date"
+    },
+    "status_penerimaan_material": {
+      "type": "enumeration",
+      "enum": [
+        "Lengkap",
+        "Kurang",
+        "Return"
+      ]
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "bukti_penerimaan": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "item_penerimaan": {
+      "type": "json"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "realisasi_anggarans",
+  "info": {
+    "singularName": "realisasi-anggaran",
+    "pluralName": "realisasi-anggarans",
+    "displayName": "Realisasi Anggaran"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "periode": {
+      "type": "date"
+    },
+    "status_realisasi_anggaran": {
+      "type": "enumeration",
+      "enum": [
+        "Proses",
+        "Selesai"
+      ]
+    },
+    "total_realisasi": {
+      "type": "decimal"
+    },
+    "persentase_terhadap_rab": {
+      "type": "decimal"
+    },
+    "item_realisasi": {
+      "type": "json"
+    },
+    "dokumen_pendukung": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pengeluaran_materials",
+  "info": {
+    "singularName": "pengeluaran-material",
+    "pluralName": "pengeluaran-materials",
+    "displayName": "Pengeluaran Material"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_pengeluaran": {
+      "type": "string"
+    },
+    "tanggal_pengeluaran": {
+      "type": "date"
+    },
+    "status_pengeluaran_material": {
+      "type": "enumeration",
+      "enum": [
+        "Draft",
+        "Disetujui",
+        "Selesai"
+      ]
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "item_pengeluaran": {
+      "type": "json"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "serah_terima_units",
+  "info": {
+    "singularName": "serah-terima-unit",
+    "pluralName": "serah-terima-units",
+    "displayName": "Serah Terima Unit"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_serah_terima": {
+      "type": "string"
+    },
+    "tanggal_serah_terima": {
+      "type": "date"
+    },
+    "status_serah_terima_unit": {
+      "type": "enumeration",
+      "enum": [
+        "Proses",
+        "Selesai",
+        "Batal"
+      ]
+    },
+    "catatan_temuan": {
+      "type": "string"
+    },
+    "tindak_lanjut": {
+      "type": "string"
+    },
+    "foto_serah_terima": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "dokumen_serah_terima": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.dokumen"
+    }
+  }
+}

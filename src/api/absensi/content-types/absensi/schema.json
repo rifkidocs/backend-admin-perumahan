@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "absensis",
+  "info": {
+    "singularName": "absensi",
+    "pluralName": "absensis",
+    "displayName": "Absensi"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "tanggal": {
+      "type": "date"
+    },
+    "jam_masuk": {
+      "type": "time"
+    },
+    "jam_keluar": {
+      "type": "time"
+    },
+    "status_absensi": {
+      "type": "enumeration",
+      "enum": [
+        "Hadir",
+        "Izin",
+        "Sakit",
+        "Cuti",
+        "Alpa"
+      ]
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "foto_absensi": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "lokasi_gps": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "materials",
+  "info": {
+    "singularName": "material",
+    "pluralName": "materials",
+    "displayName": "Material"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_material": {
+      "type": "string",
+      "required": true
+    },
+    "kode_material": {
+      "type": "string"
+    },
+    "spesifikasi": {
+      "type": "text"
+    },
+    "satuan": {
+      "type": "string"
+    },
+    "harga_satuan": {
+      "type": "decimal"
+    },
+    "stok_tersedia": {
+      "type": "integer"
+    },
+    "lokasi_gudang": {
+      "type": "string"
+    },
+    "kategori_material": {
+      "type": "enumeration",
+      "enum": [
+        "Struktur",
+        "Finishing",
+        "MEP",
+        "Alat Bantu"
+      ]
+    },
+    "foto_material": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}

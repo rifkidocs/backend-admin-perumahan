@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "progres_harians",
+  "info": {
+    "singularName": "progres-harian",
+    "pluralName": "progres-harians",
+    "displayName": "Progres Harian"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "tanggal": {
+      "type": "date"
+    },
+    "cuaca": {
+      "type": "enumeration",
+      "enum": [
+        "Cerah",
+        "Hujan Ringan",
+        "Hujan Deras",
+        "Berawan"
+      ]
+    },
+    "jumlah_pekerja": {
+      "type": "integer"
+    },
+    "aktivitas": {
+      "type": "text"
+    },
+    "kendala": {
+      "type": "string"
+    },
+    "foto_progres": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "material_masuk": {
+      "type": "json"
+    },
+    "material_terpakai": {
+      "type": "json"
+    },
+    "persentase_progres": {
+      "type": "decimal"
+    }
+  }
+}

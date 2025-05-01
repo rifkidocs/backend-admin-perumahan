@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "kas_masuks",
+  "info": {
+    "singularName": "kas-masuk",
+    "pluralName": "kas-masuks",
+    "displayName": "Kas Masuk"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nomor_transaksi": {
+      "type": "string"
+    },
+    "tanggal_transaksi": {
+      "type": "date"
+    },
+    "jenis_transaksi": {
+      "type": "enumeration",
+      "enum": [
+        "Booking",
+        "DP",
+        "Pelunasan",
+        "Pencairan KPR",
+        "Lainnya"
+      ]
+    },
+    "nominal": {
+      "type": "decimal"
+    },
+    "metode_pembayaran": {
+      "type": "enumeration",
+      "enum": [
+        "Transfer",
+        "Tunai",
+        "Cek"
+      ]
+    },
+    "keterangan": {
+      "type": "string"
+    },
+    "bukti_pembayaran": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}

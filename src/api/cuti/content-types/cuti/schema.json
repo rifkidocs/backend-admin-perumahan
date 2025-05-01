@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cutis",
+  "info": {
+    "singularName": "cuti",
+    "pluralName": "cutis",
+    "displayName": "Cuti"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "jenis_cuti": {
+      "type": "enumeration",
+      "enum": [
+        "Tahunan",
+        "Sakit",
+        "Bersalin",
+        "Penting",
+        "Lainnya"
+      ]
+    },
+    "tanggal_mulai": {
+      "type": "date"
+    },
+    "tanggal_selesai": {
+      "type": "date"
+    },
+    "alasan": {
+      "type": "text"
+    },
+    "status_persetujuan": {
+      "type": "enumeration",
+      "enum": [
+        "Diajukan",
+        "Disetujui",
+        "Ditolak"
+      ]
+    },
+    "bukti_pendukung": {
+      "allowedTypes": [
+        "images",
+        "videos",
+        "audios",
+        "files"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}

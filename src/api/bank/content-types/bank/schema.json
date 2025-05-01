@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "banks",
+  "info": {
+    "singularName": "bank",
+    "pluralName": "banks",
+    "displayName": "bank"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nama_bank": {
+      "type": "string",
+      "required": true
+    },
+    "alamat": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.alamat"
+    },
+    "jenis_kpr": {
+      "type": "string"
+    },
+    "suku_bunga": {
+      "type": "decimal"
+    },
+    "tenor_minimum": {
+      "type": "integer"
+    },
+    "tenor_maksimum": {
+      "type": "integer"
+    },
+    "kontak_person": {
+      "type": "component",
+      "repeatable": false,
+      "component": "komponen.kontak"
+    },
+    "dokumen_persyaratan": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}
