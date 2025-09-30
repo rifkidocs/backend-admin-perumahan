@@ -6,28 +6,46 @@
   "options": {},
   "attributes": {
     "gaji_pokok": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true,
+      "min": 0
     },
     "tunjangan_jabatan": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0
     },
     "tunjangan_transport": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0
+    },
+    "tunjangan_makan": {
+      "type": "decimal",
+      "min": 0
     },
     "bonus": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0
+    },
+    "komisi": {
+      "type": "decimal",
+      "min": 0
     },
     "potongan_bpjs": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0
     },
     "potongan_pph21": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0
     },
     "kasbon": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0
     },
     "total_gaji": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true,
+      "min": 0
     }
   }
 }

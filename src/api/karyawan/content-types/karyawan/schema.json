@@ -8,35 +8,51 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "nik_karyawan": {
       "type": "string",
-      "required": true
+      "required": true,
+      "unique": true
     },
     "nama_lengkap": {
       "type": "string",
-      "required": true
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
     },
     "jenis_kelamin": {
       "type": "enumeration",
-      "enum": ["Laki-laki", "Perempuan"]
+      "enum": ["Laki-laki", "Perempuan"],
+      "required": true
     },
     "tempat_lahir": {
-      "type": "string"
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 50
     },
     "tanggal_lahir": {
-      "type": "date"
+      "type": "date",
+      "required": true
+    },
+    "alamat": {
+      "type": "text",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 500
     },
     "kontak": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.kontak"
+      "component": "komponen.kontak",
+      "repeatable": false
     },
     "status_pernikahan": {
       "type": "enumeration",
-      "enum": ["Belum Menikah", "Menikah", "Cerai"]
+      "enum": ["Belum Menikah", "Menikah", "Cerai"],
+      "required": true
     },
     "foto_karyawan": {
       "type": "media",
@@ -45,22 +61,29 @@
       "allowedTypes": ["images"]
     },
     "npwp": {
-      "type": "string"
+      "type": "string",
+      "regex": "^[0-9]{15}$"
+    },
+    "kontak_darurat": {
+      "type": "text",
+      "maxLength": 200
     },
     "status_kepegawaian": {
       "type": "enumeration",
-      "enum": ["Tetap", "Kontrak", "Freelance"]
+      "enum": ["Tetap", "Kontrak", "Freelance"],
+      "required": true
     },
     "tanggal_masuk": {
-      "type": "date"
+      "type": "date",
+      "required": true
     },
     "tanggal_akhir_kontrak": {
       "type": "date"
     },
     "penggajian": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.penggajian"
+      "component": "komponen.penggajian",
+      "repeatable": false
     },
     "rekening_bank": {
       "type": "string"
@@ -70,8 +93,8 @@
     },
     "dokumen_karyawan": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.dokumen"
+      "component": "komponen.dokumen",
+      "repeatable": true
     },
     "proyek_perumahans": {
       "type": "relation",
@@ -186,6 +209,24 @@
       "relation": "oneToMany",
       "target": "api::serah-terima-unit.serah-terima-unit",
       "mappedBy": "pihak_developer"
+    },
+    "contracts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::contract.contract",
+      "mappedBy": "employee"
+    },
+    "performance_reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::performance-review.performance-review",
+      "mappedBy": "employee"
+    },
+    "placements": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::placement.placement",
+      "mappedBy": "employee"
     }
   }
 }

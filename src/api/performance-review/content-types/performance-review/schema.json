@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "performance_reviews",
+  "info": {
+    "singularName": "performance-review",
+    "pluralName": "performance-reviews",
+    "displayName": "Performance Review",
+    "description": "Data penilaian kinerja karyawan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "review_period": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "review_date": {
+      "type": "date",
+      "required": true
+    },
+    "overall_score": {
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "goals_achieved": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "goals_total": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "strengths": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "improvements": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "recommendations": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "reviewer": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "completed",
+        "approved"
+      ],
+      "required": true
+    },
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "performance_reviews"
+    }
+  }
+}

@@ -7,8 +7,9 @@
     "displayName": "Developer"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "nama_perusahaan": {
       "type": "string",
@@ -16,26 +17,26 @@
     },
     "kontak": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.kontak"
+      "component": "komponen.kontak",
+      "repeatable": false
     },
     "alamat": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.alamat"
+      "component": "komponen.alamat",
+      "repeatable": false
     },
     "npwp": {
       "type": "string"
     },
     "logo": {
+      "type": "media",
+      "multiple": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "website": {
       "type": "string"
@@ -51,8 +52,8 @@
     },
     "dokumen_legal": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.dokumen"
+      "component": "komponen.dokumen",
+      "repeatable": true
     },
     "proyek_perumahans": {
       "type": "relation",

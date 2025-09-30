@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contracts",
+  "info": {
+    "singularName": "contract",
+    "pluralName": "contracts",
+    "displayName": "Contract",
+    "description": "Data kontrak karyawan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "contract_number": {
+      "type": "string",
+      "maxLength": 50,
+      "required": true,
+      "unique": true
+    },
+    "contract_type": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "pkwt",
+        "pkwtt",
+        "magang",
+        "lainnya"
+      ]
+    },
+    "start_date": {
+      "type": "date",
+      "required": true
+    },
+    "end_date": {
+      "type": "date"
+    },
+    "position": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 50,
+      "required": true
+    },
+    "salary": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "status": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "aktif",
+        "berakhir",
+        "dibatalkan"
+      ]
+    },
+    "document_url": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "contracts"
+    }
+  }
+}

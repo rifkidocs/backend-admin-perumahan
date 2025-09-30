@@ -5,17 +5,14 @@
   },
   "options": {},
   "attributes": {
-    "nama": {
-      "type": "string"
+    "telepon": {
+      "type": "string",
+      "required": true,
+      "regex": "^08[0-9]{8,11}$"
     },
     "email": {
-      "type": "email"
-    },
-    "telepon": {
-      "type": "string"
-    },
-    "alamat": {
-      "type": "text"
+      "type": "email",
+      "required": true
     }
   }
 }

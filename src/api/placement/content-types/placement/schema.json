@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "placements",
+  "info": {
+    "singularName": "placement",
+    "pluralName": "placements",
+    "displayName": "Placement",
+    "description": "Data penempatan karyawan di proyek"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "project_name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "location": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "start_date": {
+      "type": "date",
+      "required": true
+    },
+    "end_date": {
+      "type": "date"
+    },
+    "role": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 50
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "aktif",
+        "selesai",
+        "dipindahkan"
+      ],
+      "required": true
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "placements"
+    }
+  }
+}

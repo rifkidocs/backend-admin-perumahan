@@ -7,8 +7,9 @@
     "displayName": "Absensi"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "tanggal": {
       "type": "date"
@@ -22,22 +23,25 @@
     "status_absensi": {
       "type": "enumeration",
       "enum": [
-        "Hadir",
-        "Izin",
-        "Sakit",
-        "Cuti",
-        "Alpa"
+        "hadir",
+        "terlambat",
+        "absen",
+        "izin"
       ]
+    },
+    "overtime_hours": {
+      "type": "decimal",
+      "min": 0
     },
     "keterangan": {
       "type": "string"
     },
     "foto_absensi": {
+      "type": "media",
+      "multiple": true,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "lokasi_gps": {
       "type": "string"

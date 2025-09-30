@@ -438,7 +438,7 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
     singularName: 'absensi';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -456,9 +456,16 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     lokasi_gps: Schema.Attribute.String;
+    overtime_hours: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     publishedAt: Schema.Attribute.DateTime;
     status_absensi: Schema.Attribute.Enumeration<
-      ['Hadir', 'Izin', 'Sakit', 'Cuti', 'Alpa']
+      ['hadir', 'terlambat', 'absen', 'izin']
     >;
     tanggal: Schema.Attribute.Date;
     updatedAt: Schema.Attribute.DateTime;
@@ -512,7 +519,7 @@ export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
     singularName: 'booking';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -589,6 +596,68 @@ export interface ApiCommunicationCommunication
   };
 }
 
+export interface ApiContractContract extends Struct.CollectionTypeSchema {
+  collectionName: 'contracts';
+  info: {
+    description: 'Data kontrak karyawan';
+    displayName: 'Contract';
+    pluralName: 'contracts';
+    singularName: 'contract';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    contract_number: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    contract_type: Schema.Attribute.Enumeration<
+      ['pkwt', 'pkwtt', 'magang', 'lainnya']
+    > &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    document_url: Schema.Attribute.String;
+    employee: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    end_date: Schema.Attribute.Date;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contract.contract'
+    > &
+      Schema.Attribute.Private;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    position: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+        minLength: 2;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    salary: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    start_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    status: Schema.Attribute.Enumeration<['aktif', 'berakhir', 'dibatalkan']> &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCutiCuti extends Struct.CollectionTypeSchema {
   collectionName: 'cutis';
   info: {
@@ -598,10 +667,15 @@ export interface ApiCutiCuti extends Struct.CollectionTypeSchema {
     singularName: 'cuti';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     alasan: Schema.Attribute.Text;
+    approved_by: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    approved_date: Schema.Attribute.Date;
     bukti_pendukung: Schema.Attribute.Media<
       'images' | 'videos' | 'audios' | 'files',
       true
@@ -610,7 +684,7 @@ export interface ApiCutiCuti extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     jenis_cuti: Schema.Attribute.Enumeration<
-      ['Tahunan', 'Sakit', 'Bersalin', 'Penting', 'Lainnya']
+      ['tahunan', 'sakit', 'melahirkan', 'darurat', 'lainnya']
     >;
     karyawan: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -619,10 +693,11 @@ export interface ApiCutiCuti extends Struct.CollectionTypeSchema {
     penyetuju: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     publishedAt: Schema.Attribute.DateTime;
     status_persetujuan: Schema.Attribute.Enumeration<
-      ['Diajukan', 'Disetujui', 'Ditolak']
+      ['pending', 'approved', 'rejected']
     >;
     tanggal_mulai: Schema.Attribute.Date;
     tanggal_selesai: Schema.Attribute.Date;
+    total_days: Schema.Attribute.Integer;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -638,7 +713,7 @@ export interface ApiDepartemenDepartemen extends Struct.CollectionTypeSchema {
     singularName: 'departemen';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -674,7 +749,7 @@ export interface ApiDeveloperDeveloper extends Struct.CollectionTypeSchema {
     singularName: 'developer';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     alamat: Schema.Attribute.Component<'komponen.alamat', false>;
@@ -716,7 +791,7 @@ export interface ApiJabatanJabatan extends Struct.CollectionTypeSchema {
     singularName: 'jabatan';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -757,11 +832,18 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     singularName: 'karyawan';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     absensi: Schema.Attribute.Relation<'oneToMany', 'api::absensi.absensi'>;
+    alamat: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+        minLength: 10;
+      }>;
     bookings: Schema.Attribute.Relation<'oneToMany', 'api::booking.booking'>;
+    contracts: Schema.Attribute.Relation<'oneToMany', 'api::contract.contract'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -777,13 +859,18 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     dokumen_karyawan: Schema.Attribute.Component<'komponen.dokumen', true>;
     foto_karyawan: Schema.Attribute.Media<'images'>;
     jabatan: Schema.Attribute.Relation<'manyToOne', 'api::jabatan.jabatan'>;
-    jenis_kelamin: Schema.Attribute.Enumeration<['Laki-laki', 'Perempuan']>;
+    jenis_kelamin: Schema.Attribute.Enumeration<['Laki-laki', 'Perempuan']> &
+      Schema.Attribute.Required;
     kas_masuks: Schema.Attribute.Relation<
       'oneToMany',
       'api::kas-masuk.kas-masuk'
     >;
     konsumen: Schema.Attribute.Relation<'oneToMany', 'api::konsumen.konsumen'>;
     kontak: Schema.Attribute.Component<'komponen.kontak', false>;
+    kontak_darurat: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
     lead_marketings: Schema.Attribute.Relation<
       'oneToMany',
       'api::lead-marketing.lead-marketing'
@@ -795,8 +882,15 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     nama_bank: Schema.Attribute.String;
-    nama_lengkap: Schema.Attribute.String & Schema.Attribute.Required;
-    nik_karyawan: Schema.Attribute.String & Schema.Attribute.Required;
+    nama_lengkap: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 2;
+      }>;
+    nik_karyawan: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     npwp: Schema.Attribute.String;
     penerimaan_materials: Schema.Attribute.Relation<
       'oneToMany',
@@ -811,9 +905,17 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::unit-rumah.unit-rumah'
     >;
+    performance_reviews: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::performance-review.performance-review'
+    >;
     permintaan_materials: Schema.Attribute.Relation<
       'oneToMany',
       'api::permintaan-material.permintaan-material'
+    >;
+    placements: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::placement.placement'
     >;
     progres_harians: Schema.Attribute.Relation<
       'oneToMany',
@@ -836,18 +938,25 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     >;
     status_kepegawaian: Schema.Attribute.Enumeration<
       ['Tetap', 'Kontrak', 'Freelance']
-    >;
+    > &
+      Schema.Attribute.Required;
     status_pernikahan: Schema.Attribute.Enumeration<
       ['Belum Menikah', 'Menikah', 'Cerai']
-    >;
+    > &
+      Schema.Attribute.Required;
     tanggal_akhir_kontrak: Schema.Attribute.Date;
-    tanggal_lahir: Schema.Attribute.Date;
-    tanggal_masuk: Schema.Attribute.Date;
+    tanggal_lahir: Schema.Attribute.Date & Schema.Attribute.Required;
+    tanggal_masuk: Schema.Attribute.Date & Schema.Attribute.Required;
     target_marketings: Schema.Attribute.Relation<
       'oneToMany',
       'api::target-marketing.target-marketing'
     >;
-    tempat_lahir: Schema.Attribute.String;
+    tempat_lahir: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+        minLength: 2;
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -863,7 +972,7 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     singularName: 'kas-keluar';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     bukti_pembayaran: Schema.Attribute.Media<
@@ -915,7 +1024,7 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
     singularName: 'kas-masuk';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     bukti_pembayaran: Schema.Attribute.Media<
@@ -1217,6 +1326,86 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
   };
 }
 
+export interface ApiPerformanceReviewPerformanceReview
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'performance_reviews';
+  info: {
+    description: 'Data penilaian kinerja karyawan';
+    displayName: 'Performance Review';
+    pluralName: 'performance-reviews';
+    singularName: 'performance-review';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    employee: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    goals_achieved: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    goals_total: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    improvements: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::performance-review.performance-review'
+    > &
+      Schema.Attribute.Private;
+    overall_score: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      >;
+    publishedAt: Schema.Attribute.DateTime;
+    recommendations: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    review_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    review_period: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    reviewer: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    status: Schema.Attribute.Enumeration<['draft', 'completed', 'approved']> &
+      Schema.Attribute.Required;
+    strengths: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPermintaanMaterialPermintaanMaterial
   extends Struct.CollectionTypeSchema {
   collectionName: 'permintaan_materials';
@@ -1227,7 +1416,7 @@ export interface ApiPermintaanMaterialPermintaanMaterial
     singularName: 'permintaan-material';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -1262,6 +1451,61 @@ export interface ApiPermintaanMaterialPermintaanMaterial
       'manyToOne',
       'api::unit-rumah.unit-rumah'
     >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPlacementPlacement extends Struct.CollectionTypeSchema {
+  collectionName: 'placements';
+  info: {
+    description: 'Data penempatan karyawan di proyek';
+    displayName: 'Placement';
+    pluralName: 'placements';
+    singularName: 'placement';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    employee: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    end_date: Schema.Attribute.Date;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::placement.placement'
+    > &
+      Schema.Attribute.Private;
+    location: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 2;
+      }>;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    project_name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 2;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    role: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+        minLength: 2;
+      }>;
+    start_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    status: Schema.Attribute.Enumeration<['aktif', 'selesai', 'dipindahkan']> &
+      Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1637,6 +1881,92 @@ export interface ApiReminderReminder extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
+  collectionName: 'salaries';
+  info: {
+    description: 'Data gaji karyawan';
+    displayName: 'Salary';
+    pluralName: 'salaries';
+    singularName: 'salary';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    basic_salary: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    bonus: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String & Schema.Attribute.DefaultTo<'IDR'>;
+    deductions: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    effective_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    employee: Schema.Attribute.Relation<'oneToOne', 'api::karyawan.karyawan'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::salary.salary'
+    > &
+      Schema.Attribute.Private;
+    meal_allowance: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    net_salary: Schema.Attribute.Decimal;
+    overtime_rate: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    payment_method: Schema.Attribute.Enumeration<
+      ['transfer', 'cash', 'check']
+    > &
+      Schema.Attribute.Required;
+    position_allowance: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    publishedAt: Schema.Attribute.DateTime;
+    transport_allowance: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiSerahTerimaUnitSerahTerimaUnit
   extends Struct.CollectionTypeSchema {
   collectionName: 'serah_terima_units';
@@ -1697,7 +2027,7 @@ export interface ApiTargetMarketingTargetMarketing
     singularName: 'target-marketing';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -2391,6 +2721,7 @@ declare module '@strapi/strapi' {
       'api::bank.bank': ApiBankBank;
       'api::booking.booking': ApiBookingBooking;
       'api::communication.communication': ApiCommunicationCommunication;
+      'api::contract.contract': ApiContractContract;
       'api::cuti.cuti': ApiCutiCuti;
       'api::departemen.departemen': ApiDepartemenDepartemen;
       'api::developer.developer': ApiDeveloperDeveloper;
@@ -2403,7 +2734,9 @@ declare module '@strapi/strapi' {
       'api::material.material': ApiMaterialMaterial;
       'api::penerimaan-material.penerimaan-material': ApiPenerimaanMaterialPenerimaanMaterial;
       'api::pengeluaran-material.pengeluaran-material': ApiPengeluaranMaterialPengeluaranMaterial;
+      'api::performance-review.performance-review': ApiPerformanceReviewPerformanceReview;
       'api::permintaan-material.permintaan-material': ApiPermintaanMaterialPermintaanMaterial;
+      'api::placement.placement': ApiPlacementPlacement;
       'api::progres-harian.progres-harian': ApiProgresHarianProgresHarian;
       'api::promo.promo': ApiPromoPromo;
       'api::proyek-perumahan.proyek-perumahan': ApiProyekPerumahanProyekPerumahan;
@@ -2411,6 +2744,7 @@ declare module '@strapi/strapi' {
       'api::rab.rab': ApiRabRab;
       'api::realisasi-anggaran.realisasi-anggaran': ApiRealisasiAnggaranRealisasiAnggaran;
       'api::reminder.reminder': ApiReminderReminder;
+      'api::salary.salary': ApiSalarySalary;
       'api::serah-terima-unit.serah-terima-unit': ApiSerahTerimaUnitSerahTerimaUnit;
       'api::target-marketing.target-marketing': ApiTargetMarketingTargetMarketing;
       'api::unit-rumah.unit-rumah': ApiUnitRumahUnitRumah;

@@ -8,18 +8,22 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "jenis_cuti": {
       "type": "enumeration",
       "enum": [
-        "Tahunan",
-        "Sakit",
-        "Bersalin",
-        "Penting",
-        "Lainnya"
+        "tahunan",
+        "sakit",
+        "melahirkan",
+        "darurat",
+        "lainnya"
       ]
+    },
+    "total_days": {
+      "type": "integer"
     },
     "tanggal_mulai": {
       "type": "date"
@@ -33,10 +37,17 @@
     "status_persetujuan": {
       "type": "enumeration",
       "enum": [
-        "Diajukan",
-        "Disetujui",
-        "Ditolak"
+        "pending",
+        "approved",
+        "rejected"
       ]
+    },
+    "approved_by": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "approved_date": {
+      "type": "date"
     },
     "bukti_pendukung": {
       "type": "media",

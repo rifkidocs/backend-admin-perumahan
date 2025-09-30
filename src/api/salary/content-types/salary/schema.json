@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "salaries",
+  "info": {
+    "singularName": "salary",
+    "pluralName": "salaries",
+    "displayName": "Salary",
+    "description": "Data gaji karyawan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "basic_salary": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "position_allowance": {
+      "type": "decimal",
+      "min": 0
+    },
+    "transport_allowance": {
+      "type": "decimal",
+      "min": 0
+    },
+    "meal_allowance": {
+      "type": "decimal",
+      "min": 0
+    },
+    "overtime_rate": {
+      "type": "decimal",
+      "min": 0
+    },
+    "bonus": {
+      "type": "decimal",
+      "min": 0
+    },
+    "deductions": {
+      "type": "decimal",
+      "min": 0
+    },
+    "net_salary": {
+      "type": "decimal"
+    },
+    "effective_date": {
+      "type": "date",
+      "required": true
+    },
+    "currency": {
+      "type": "string",
+      "default": "IDR"
+    },
+    "payment_method": {
+      "type": "enumeration",
+      "enum": [
+        "transfer",
+        "cash",
+        "check"
+      ],
+      "required": true
+    },
+    "employee": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::karyawan.karyawan",
+      "mappedBy": "salary"
+    }
+  }
+}

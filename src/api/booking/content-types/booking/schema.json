@@ -8,8 +8,9 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "nomor_booking": {
       "type": "string"
@@ -33,8 +34,8 @@
     },
     "dokumen_booking": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.dokumen"
+      "component": "komponen.dokumen",
+      "repeatable": true
     },
     "konsumen": {
       "type": "relation",

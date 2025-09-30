@@ -50,10 +50,8 @@ export interface KomponenKontak extends Struct.ComponentSchema {
     displayName: 'Kontak';
   };
   attributes: {
-    alamat: Schema.Attribute.Text;
-    email: Schema.Attribute.Email;
-    nama: Schema.Attribute.String;
-    telepon: Schema.Attribute.String;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    telepon: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -63,14 +61,78 @@ export interface KomponenPenggajian extends Struct.ComponentSchema {
     displayName: 'Penggajian';
   };
   attributes: {
-    bonus: Schema.Attribute.Decimal;
-    gaji_pokok: Schema.Attribute.Decimal;
-    kasbon: Schema.Attribute.Decimal;
-    potongan_bpjs: Schema.Attribute.Decimal;
-    potongan_pph21: Schema.Attribute.Decimal;
-    total_gaji: Schema.Attribute.Decimal;
-    tunjangan_jabatan: Schema.Attribute.Decimal;
-    tunjangan_transport: Schema.Attribute.Decimal;
+    bonus: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    gaji_pokok: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    kasbon: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    komisi: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    potongan_bpjs: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    potongan_pph21: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    total_gaji: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    tunjangan_jabatan: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    tunjangan_makan: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    tunjangan_transport: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
   };
 }
 

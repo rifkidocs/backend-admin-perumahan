@@ -32,7 +32,14 @@
     },
     "source": {
       "type": "enumeration",
-      "enum": ["website", "pameran", "referensi", "iklan", "sosmed", "lainnya"],
+      "enum": [
+        "website",
+        "pameran",
+        "referensi",
+        "iklan",
+        "sosmed",
+        "lainnya"
+      ],
       "required": true
     },
     "interest": {
@@ -45,7 +52,11 @@
     },
     "status_lead": {
       "type": "enumeration",
-      "enum": ["baru", "berminat", "prioritas"],
+      "enum": [
+        "baru",
+        "berminat",
+        "prioritas"
+      ],
       "required": true,
       "default": "baru"
     },
