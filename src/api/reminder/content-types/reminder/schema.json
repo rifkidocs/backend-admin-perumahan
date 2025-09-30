@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reminders",
+  "info": {
+    "singularName": "reminder",
+    "pluralName": "reminders",
+    "displayName": "Reminder",
+    "description": "Follow-up reminders for leads"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "activity": {
+      "type": "string",
+      "required": true,
+      "minLength": 5,
+      "maxLength": 200
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "completed", "cancelled"],
+      "required": true,
+      "default": "pending"
+    },
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead-marketing.lead-marketing",
+      "inversedBy": "reminders"
+    }
+  }
+}

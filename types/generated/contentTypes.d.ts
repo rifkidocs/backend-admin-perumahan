@@ -34,6 +34,10 @@ export interface AdminApiToken extends Struct.CollectionTypeSchema {
         minLength: 1;
       }> &
       Schema.Attribute.DefaultTo<''>;
+    encryptedKey: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        minLength: 1;
+      }>;
     expiresAt: Schema.Attribute.DateTime;
     lastUsedAt: Schema.Attribute.DateTime;
     lifespan: Schema.Attribute.BigInteger;
@@ -196,6 +200,63 @@ export interface AdminRole extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     users: Schema.Attribute.Relation<'manyToMany', 'admin::user'>;
+  };
+}
+
+export interface AdminSession extends Struct.CollectionTypeSchema {
+  collectionName: 'strapi_sessions';
+  info: {
+    description: 'Session Manager storage';
+    displayName: 'Session';
+    name: 'Session';
+    pluralName: 'sessions';
+    singularName: 'session';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+    i18n: {
+      localized: false;
+    };
+  };
+  attributes: {
+    absoluteExpiresAt: Schema.Attribute.DateTime & Schema.Attribute.Private;
+    childId: Schema.Attribute.String & Schema.Attribute.Private;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deviceId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    expiresAt: Schema.Attribute.DateTime &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'admin::session'> &
+      Schema.Attribute.Private;
+    origin: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sessionId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private &
+      Schema.Attribute.Unique;
+    status: Schema.Attribute.String & Schema.Attribute.Private;
+    type: Schema.Attribute.String & Schema.Attribute.Private;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    userId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private;
   };
 }
 
@@ -478,6 +539,50 @@ export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
       'manyToOne',
       'api::unit-rumah.unit-rumah'
     >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCommunicationCommunication
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'communications';
+  info: {
+    description: 'Communication history with leads';
+    displayName: 'Communication';
+    pluralName: 'communications';
+    singularName: 'communication';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    date: Schema.Attribute.Date & Schema.Attribute.Required;
+    lead: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::lead-marketing.lead-marketing'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::communication.communication'
+    > &
+      Schema.Attribute.Private;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 1000;
+        minLength: 10;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.Enumeration<
+      ['telepon', 'whatsapp', 'email', 'kunjungan', 'lainnya']
+    > &
+      Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -913,25 +1018,36 @@ export interface ApiLeadMarketingLeadMarketing
   extends Struct.CollectionTypeSchema {
   collectionName: 'lead_marketings';
   info: {
-    description: '';
+    description: 'Marketing leads management system';
     displayName: 'Lead Marketing';
     pluralName: 'lead-marketings';
     singularName: 'lead-marketing';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
-    budget: Schema.Attribute.Decimal;
-    catatan: Schema.Attribute.String;
+    address: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    budget: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    communications: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::communication.communication'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    jadwal_kunjungan: Schema.Attribute.Date;
-    kategori_lead: Schema.Attribute.Enumeration<
-      ['Belum Berminat', 'Berminat', 'Prioritas']
-    >;
-    kontak: Schema.Attribute.Component<'komponen.kontak', false>;
+    date: Schema.Attribute.Date & Schema.Attribute.Required;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    interest: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -939,16 +1055,28 @@ export interface ApiLeadMarketingLeadMarketing
     > &
       Schema.Attribute.Private;
     marketing: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
-    minat_tipe_rumah: Schema.Attribute.String;
-    nama_lengkap: Schema.Attribute.String;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 2;
+      }>;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 1000;
+      }>;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    riwayat_komunikasi: Schema.Attribute.JSON;
+    reminders: Schema.Attribute.Relation<'oneToMany', 'api::reminder.reminder'>;
+    source: Schema.Attribute.Enumeration<
+      ['website', 'pameran', 'referensi', 'iklan', 'sosmed', 'lainnya']
+    > &
+      Schema.Attribute.Required;
     status_lead: Schema.Attribute.Enumeration<
-      ['Baru', 'Dalam Proses', 'Closed', 'Gagal']
-    >;
-    sumber_lead: Schema.Attribute.Enumeration<
-      ['Pameran', 'Website', 'Referensi', 'Iklan', 'Sosial Media', 'Lainnya']
-    >;
+      ['baru', 'berminat', 'prioritas']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'baru'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1459,6 +1587,50 @@ export interface ApiRealisasiAnggaranRealisasiAnggaran
       ['Proses', 'Selesai']
     >;
     total_realisasi: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiReminderReminder extends Struct.CollectionTypeSchema {
+  collectionName: 'reminders';
+  info: {
+    description: 'Follow-up reminders for leads';
+    displayName: 'Reminder';
+    pluralName: 'reminders';
+    singularName: 'reminder';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    activity: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+        minLength: 5;
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    date: Schema.Attribute.Date & Schema.Attribute.Required;
+    lead: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::lead-marketing.lead-marketing'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::reminder.reminder'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<
+      ['pending', 'completed', 'cancelled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -2211,12 +2383,14 @@ declare module '@strapi/strapi' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::permission': AdminPermission;
       'admin::role': AdminRole;
+      'admin::session': AdminSession;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::absensi.absensi': ApiAbsensiAbsensi;
       'api::bank.bank': ApiBankBank;
       'api::booking.booking': ApiBookingBooking;
+      'api::communication.communication': ApiCommunicationCommunication;
       'api::cuti.cuti': ApiCutiCuti;
       'api::departemen.departemen': ApiDepartemenDepartemen;
       'api::developer.developer': ApiDeveloperDeveloper;
@@ -2236,6 +2410,7 @@ declare module '@strapi/strapi' {
       'api::purchasing.purchasing': ApiPurchasingPurchasing;
       'api::rab.rab': ApiRabRab;
       'api::realisasi-anggaran.realisasi-anggaran': ApiRealisasiAnggaranRealisasiAnggaran;
+      'api::reminder.reminder': ApiReminderReminder;
       'api::serah-terima-unit.serah-terima-unit': ApiSerahTerimaUnitSerahTerimaUnit;
       'api::target-marketing.target-marketing': ApiTargetMarketingTargetMarketing;
       'api::unit-rumah.unit-rumah': ApiUnitRumahUnitRumah;

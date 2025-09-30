@@ -5,68 +5,75 @@
     "singularName": "lead-marketing",
     "pluralName": "lead-marketings",
     "displayName": "Lead Marketing",
-    "description": ""
+    "description": "Marketing leads management system"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
-    "nama_lengkap": {
-      "type": "string"
+    "name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
     },
-    "kontak": {
-      "type": "component",
-      "repeatable": false,
-      "component": "komponen.kontak"
+    "phone": {
+      "type": "string",
+      "required": true,
+      "regex": "^08[0-9]{8,11}$"
     },
-    "sumber_lead": {
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "address": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "source": {
       "type": "enumeration",
-      "enum": [
-        "Pameran",
-        "Website",
-        "Referensi",
-        "Iklan",
-        "Sosial Media",
-        "Lainnya"
-      ]
+      "enum": ["website", "pameran", "referensi", "iklan", "sosmed", "lainnya"],
+      "required": true
     },
-    "kategori_lead": {
-      "type": "enumeration",
-      "enum": [
-        "Belum Berminat",
-        "Berminat",
-        "Prioritas"
-      ]
-    },
-    "minat_tipe_rumah": {
-      "type": "string"
+    "interest": {
+      "type": "string",
+      "maxLength": 50
     },
     "budget": {
-      "type": "decimal"
-    },
-    "riwayat_komunikasi": {
-      "type": "json"
-    },
-    "jadwal_kunjungan": {
-      "type": "date"
+      "type": "string",
+      "maxLength": 50
     },
     "status_lead": {
       "type": "enumeration",
-      "enum": [
-        "Baru",
-        "Dalam Proses",
-        "Closed",
-        "Gagal"
-      ]
+      "enum": ["baru", "berminat", "prioritas"],
+      "required": true,
+      "default": "baru"
     },
-    "catatan": {
-      "type": "string"
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
     },
     "marketing": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
       "inversedBy": "lead_marketings"
+    },
+    "communications": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::communication.communication",
+      "mappedBy": "lead"
+    },
+    "reminders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::reminder.reminder",
+      "mappedBy": "lead"
     }
   }
 }

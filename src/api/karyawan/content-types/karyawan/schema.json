@@ -21,10 +21,7 @@
     },
     "jenis_kelamin": {
       "type": "enumeration",
-      "enum": [
-        "Laki-laki",
-        "Perempuan"
-      ]
+      "enum": ["Laki-laki", "Perempuan"]
     },
     "tempat_lahir": {
       "type": "string"
@@ -39,30 +36,20 @@
     },
     "status_pernikahan": {
       "type": "enumeration",
-      "enum": [
-        "Belum Menikah",
-        "Menikah",
-        "Cerai"
-      ]
+      "enum": ["Belum Menikah", "Menikah", "Cerai"]
     },
     "foto_karyawan": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "npwp": {
       "type": "string"
     },
     "status_kepegawaian": {
       "type": "enumeration",
-      "enum": [
-        "Tetap",
-        "Kontrak",
-        "Freelance"
-      ]
+      "enum": ["Tetap", "Kontrak", "Freelance"]
     },
     "tanggal_masuk": {
       "type": "date"

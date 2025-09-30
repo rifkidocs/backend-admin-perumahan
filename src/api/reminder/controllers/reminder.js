@@ -1,12 +1,12 @@
 'use strict';
 
 /**
- * lead-marketing controller
+ * reminder controller
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::lead-marketing.lead-marketing', ({ strapi }) => ({
+module.exports = createCoreController('api::reminder.reminder', ({ strapi }) => ({
     // Custom controller methods can be added here
     async find(ctx) {
         const { data, meta } = await super.find(ctx);

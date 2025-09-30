@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "communications",
+  "info": {
+    "singularName": "communication",
+    "pluralName": "communications",
+    "displayName": "Communication",
+    "description": "Communication history with leads"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["telepon", "whatsapp", "email", "kunjungan", "lainnya"],
+      "required": true
+    },
+    "notes": {
+      "type": "text",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 1000
+    },
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead-marketing.lead-marketing",
+      "inversedBy": "communications"
+    }
+  }
+}
