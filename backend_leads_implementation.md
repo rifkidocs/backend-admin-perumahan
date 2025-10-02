@@ -2,7 +2,28 @@
 
 ## Overview
 
-This document describes the implementation of the marketing leads system backend using Strapi CMS. The system has been built based on the existing codebase structure and modified to match the documentation requirements.
+This document describes the **actual implementation** of the marketing leads system backend using Strapi CMS. The system has been built based on the existing codebase structure with minimal breaking changes to maintain backward compatibility.
+
+**⚠️ Important Note**: This documentation reflects the **current implementation**, which differs from the original specification to maintain system stability and backward compatibility.
+
+## Implementation Status
+
+### ✅ **Fully Implemented & Working**
+
+1. **Lead Marketing CRUD** - Complete with all endpoints
+2. **Communication CRUD** - Complete with custom service methods
+3. **Reminder CRUD** - Complete with custom service methods
+4. **Database Relations** - All relations properly configured
+5. **Data Validation** - Schema-level validation implemented
+6. **Custom Services** - Advanced query methods available
+7. **Lifecycle Hooks** - Auto-date generation implemented
+
+### 📋 **API Endpoints Available**
+
+- **Lead Marketing**: `/api/lead-marketings` (full CRUD)
+- **Communication**: `/api/communications` (full CRUD)
+- **Reminder**: `/api/reminders` (full CRUD)
+- **Marketing Staff**: `/api/karyawans` (existing, integrated)
 
 ## Implementation Summary
 
@@ -11,7 +32,7 @@ This document describes the implementation of the marketing leads system backend
 1. **Lead (Modified existing `lead-marketing`)**
 
    - Updated schema to match documentation requirements
-   - Changed collection name from `lead_marketings` to `leads`
+   - Collection name remains `lead_marketings` (not changed to `leads`)
    - Updated field names and validations
    - Added relations to `communication` and `reminder`
 
@@ -27,7 +48,7 @@ This document describes the implementation of the marketing leads system backend
 
 4. **Marketing Staff (Using existing `karyawan`)**
    - Leveraged existing `karyawan` content type
-   - Updated relation name from `lead_marketings` to `leads`
+   - Relation name remains `lead_marketings` (not changed to `leads`)
 
 ## File Structure
 
@@ -77,11 +98,11 @@ src/api/
 ```json
 {
   "kind": "collectionType",
-  "collectionName": "leads",
+  "collectionName": "lead_marketings",
   "info": {
-    "singularName": "lead",
-    "pluralName": "leads",
-    "displayName": "Lead",
+    "singularName": "lead-marketing",
+    "pluralName": "lead-marketings",
+    "displayName": "Lead Marketing",
     "description": "Marketing leads management system"
   },
   "options": {
@@ -120,7 +141,7 @@ src/api/
       "type": "string",
       "maxLength": 50
     },
-    "status": {
+    "status_lead": {
       "type": "enumeration",
       "enum": ["baru", "berminat", "prioritas"],
       "required": true,
@@ -138,7 +159,7 @@ src/api/
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
-      "inversedBy": "leads"
+      "inversedBy": "lead_marketings"
     },
     "communications": {
       "type": "relation",
@@ -223,7 +244,7 @@ src/api/
       "minLength": 5,
       "maxLength": 200
     },
-    "status": {
+    "status_reminder": {
       "type": "enumeration",
       "enum": ["pending", "completed", "cancelled"],
       "required": true,
@@ -277,6 +298,13 @@ src/api/
 
 ### Lead Service Methods
 
+**Currently Implemented:**
+
+- Standard Strapi CRUD operations (find, findOne, create, update, delete)
+- Lifecycle hooks: `beforeCreate` (auto-generate date), `beforeUpdate`
+
+**Available for Extension:**
+
 - `findWithRelations(params)` - Find leads with all related data
 - `findByStatus(status, params)` - Find leads by status
 - `findByMarketingStaff(marketingId, params)` - Find leads by marketing staff
@@ -284,15 +312,19 @@ src/api/
 
 ### Communication Service Methods
 
-- `findWithLeadInfo(params)` - Find communications with lead information
-- `findByLeadId(leadId, params)` - Find communications by lead ID
+**Currently Implemented:**
+
+- `findWithLeadInfo(params)` - Find communications with lead information and marketing staff
+- `findByLeadId(leadId, params)` - Find communications by lead ID, sorted by date desc
 
 ### Reminder Service Methods
 
-- `findWithLeadInfo(params)` - Find reminders with lead information
-- `findByLeadId(leadId, params)` - Find reminders by lead ID
-- `findPendingReminders(params)` - Find pending reminders that are due
-- `updateStatus(id, status)` - Update reminder status
+**Currently Implemented:**
+
+- `findWithLeadInfo(params)` - Find reminders with lead information and marketing staff
+- `findByLeadId(leadId, params)` - Find reminders by lead ID, sorted by date asc
+- `findPendingReminders(params)` - Find pending reminders that are due or overdue
+- `updateStatus(id, status_reminder)` - Update reminder status directly
 
 ## Lifecycle Hooks
 
@@ -332,7 +364,7 @@ src/api/
 - `source`: Required, enumeration
 - `interest`: Optional, max 50 characters
 - `budget`: Optional, max 50 characters
-- `status`: Required, enumeration with default "baru"
+- `status_lead`: Required, enumeration with default "baru"
 - `date`: Required, auto-generated if not provided
 - `notes`: Optional, max 1000 characters
 
@@ -347,7 +379,7 @@ src/api/
 
 - `date`: Required
 - `activity`: Required, 5-200 characters
-- `status`: Required, enumeration with default "pending"
+- `status_reminder`: Required, enumeration with default "pending"
 - `lead`: Required, relation to lead
 
 ## Usage Examples
@@ -365,7 +397,7 @@ src/api/
     "source": "website",
     "interest": "Tipe 36/72",
     "budget": "300-400 Juta",
-    "status": "baru",
+    "status_lead": "baru",
     "notes": "Catatan tambahan",
     "marketing": 1
   }
@@ -394,7 +426,7 @@ src/api/
   "data": {
     "date": "2023-09-20",
     "activity": "Follow-up keputusan pembelian",
-    "status": "pending",
+    "status_reminder": "pending",
     "lead": 1
   }
 }
@@ -404,25 +436,57 @@ src/api/
 
 ```javascript
 // GET /api/lead-marketings?populate=marketing,communications,reminders
-// GET /api/lead-marketings?filters[status][$eq]=prioritas
+// GET /api/lead-marketings?filters[status_lead][$eq]=prioritas
 // GET /api/lead-marketings?filters[marketing][id][$eq]=1
 // GET /api/lead-marketings?filters[name][$containsi]=john
+
+// Query reminders by status
+// GET /api/reminders?filters[status_reminder][$eq]=pending
+// GET /api/reminders?filters[lead][id][$eq]=1&populate=lead
 ```
+
+## Implementation vs Documentation Differences
+
+### Key Differences from Original Documentation
+
+1. **Collection Name**:
+
+   - Documentation: `leads`
+   - Implementation: `lead_marketings` (unchanged)
+
+2. **Field Names**:
+
+   - Lead Documentation: `status` → Implementation: `status_lead`
+   - Reminder Documentation: `status` → Implementation: `status_reminder`
+
+3. **Relation Names**:
+
+   - Documentation: `inversedBy: "leads"`
+   - Implementation: `inversedBy: "lead_marketings"`
+
+4. **API Endpoints**:
+   - All endpoints use `/api/lead-marketings` (not `/api/leads`)
+
+### Reasons for Differences
+
+- **Backward Compatibility**: Maintaining existing API endpoints and database structure
+- **Minimal Breaking Changes**: Avoiding disruption to existing integrations
+- **Gradual Migration**: Allowing for phased updates without system downtime
 
 ## Migration Notes
 
 ### Changes Made to Existing Code
 
-1. **Lead Marketing Schema**: Updated to match documentation requirements
-2. **Karyawan Schema**: Changed relation name from `lead_marketings` to `leads`
-3. **Collection Name**: Changed from `lead_marketings` to `leads`
-4. **Field Names**: Updated to match documentation (e.g., `nama_lengkap` → `name`)
+1. **Lead Marketing Schema**: Added new relations to communication and reminder
+2. **Karyawan Schema**: Relation name remains `lead_marketings` (unchanged)
+3. **Collection Name**: Remains `lead_marketings` (unchanged)
+4. **Field Names**: Updated field names (e.g., `status` → `status_lead`)
 
 ### Backward Compatibility
 
-- Existing data will need to be migrated
+- Existing data structure maintained
 - API endpoints remain `/api/lead-marketings` (no change)
-- Field names in API requests/responses updated to match documentation
+- Field names updated in schema (e.g., `status` → `status_lead`)
 
 ## Next Steps
 

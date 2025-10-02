@@ -21,7 +21,7 @@
       "minLength": 5,
       "maxLength": 200
     },
-    "status": {
+    "status_reminder": {
       "type": "enumeration",
       "enum": ["pending", "completed", "cancelled"],
       "required": true,

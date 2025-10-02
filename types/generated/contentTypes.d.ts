@@ -1870,7 +1870,7 @@ export interface ApiReminderReminder extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    status: Schema.Attribute.Enumeration<
+    status_reminder: Schema.Attribute.Enumeration<
       ['pending', 'completed', 'cancelled']
     > &
       Schema.Attribute.Required &

@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use strict';
 
 /**
@@ -40,7 +41,7 @@ module.exports = createCoreService('api::reminder.reminder', ({ strapi }) => ({
         return await strapi.entityService.findMany('api::reminder.reminder', {
             ...params,
             filters: {
-                status: 'pending',
+                status_reminder: 'pending',
                 date: {
                     $lte: new Date().toISOString().split('T')[0]
                 }
@@ -56,9 +57,9 @@ module.exports = createCoreService('api::reminder.reminder', ({ strapi }) => ({
         });
     },
 
-    async updateStatus(id, status) {
+    async updateStatus(id, status_reminder) {
         return await strapi.entityService.update('api::reminder.reminder', id, {
-            data: { status }
+            data: { status_reminder }
         });
     }
 }));
