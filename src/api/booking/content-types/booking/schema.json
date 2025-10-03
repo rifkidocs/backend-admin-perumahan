@@ -5,54 +5,98 @@
     "singularName": "booking",
     "pluralName": "bookings",
     "displayName": "Booking",
-    "description": ""
+    "description": "Marketing bookings management system"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "nomor_booking": {
-      "type": "string"
+    "booking_id": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^BK-[0-9]{4}-[0-9]{3}$"
     },
-    "tanggal_booking": {
-      "type": "date"
+    "booking_date": {
+      "type": "date",
+      "required": true
     },
-    "nominal_booking": {
-      "type": "decimal"
+    "booking_fee": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
     },
-    "status_booking": {
+    "payment_status": {
       "type": "enumeration",
+      "required": true,
+      "default": "pending",
       "enum": [
-        "Aktif",
-        "Lanjut DP",
-        "Batal"
+        "pending",
+        "lunas",
+        "overdue"
       ]
     },
-    "tanggal_kadaluarsa": {
-      "type": "date"
+    "booking_status": {
+      "type": "enumeration",
+      "required": true,
+      "default": "menunggu-pembayaran",
+      "enum": [
+        "aktif",
+        "menunggu-pembayaran",
+        "dibatalkan",
+        "selesai"
+      ]
     },
-    "dokumen_booking": {
-      "type": "component",
-      "component": "komponen.dokumen",
-      "repeatable": true
+    "payment_date": {
+      "type": "date",
+      "required": false
     },
-    "konsumen": {
+    "payment_method": {
+      "type": "enumeration",
+      "required": false,
+      "enum": [
+        "transfer",
+        "cash",
+        "check",
+        "kredit"
+      ]
+    },
+    "payment_proof": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "customer": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::konsumen.konsumen",
+      "inversedBy": "bookings"
+    },
+    "documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::booking-document.booking-document",
+      "mappedBy": "booking"
+    },
+    "marketing_staff": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
       "inversedBy": "bookings"
     },
     "unit_rumah": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::unit-rumah.unit-rumah",
-      "inversedBy": "bookings"
-    },
-    "marketing": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::karyawan.karyawan",
       "inversedBy": "bookings"
     }
   }

@@ -9,6 +9,7 @@
   "options": {
     "draftAndPublish": true
   },
+  "pluginOptions": {},
   "attributes": {
     "nama_bank": {
       "type": "string",
@@ -16,8 +17,8 @@
     },
     "alamat": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.alamat"
+      "component": "komponen.alamat",
+      "repeatable": false
     },
     "jenis_kpr": {
       "type": "string"
@@ -33,24 +34,18 @@
     },
     "kontak_person": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.kontak"
+      "component": "komponen.kontak",
+      "repeatable": false
     },
     "dokumen_persyaratan": {
+      "type": "media",
+      "multiple": true,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": true
-    },
-    "konsumen": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::konsumen.konsumen",
-      "mappedBy": "bank_kpr"
+      ]
     }
   }
 }

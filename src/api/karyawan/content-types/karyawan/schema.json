@@ -12,6 +12,12 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "staff_id": {
+      "type": "string",
+      "maxLength": 20,
+      "required": true,
+      "unique": true
+    },
     "nik_karyawan": {
       "type": "string",
       "required": true,
@@ -19,20 +25,28 @@
     },
     "nama_lengkap": {
       "type": "string",
-      "required": true,
       "minLength": 2,
-      "maxLength": 100
+      "maxLength": 100,
+      "required": true
+    },
+    "code": {
+      "type": "string",
+      "maxLength": 20,
+      "unique": true
     },
     "jenis_kelamin": {
       "type": "enumeration",
-      "enum": ["Laki-laki", "Perempuan"],
-      "required": true
+      "required": true,
+      "enum": [
+        "Laki-laki",
+        "Perempuan"
+      ]
     },
     "tempat_lahir": {
       "type": "string",
-      "required": true,
       "minLength": 2,
-      "maxLength": 50
+      "maxLength": 50,
+      "required": true
     },
     "tanggal_lahir": {
       "type": "date",
@@ -40,9 +54,9 @@
     },
     "alamat": {
       "type": "text",
-      "required": true,
       "minLength": 10,
-      "maxLength": 500
+      "maxLength": 500,
+      "required": true
     },
     "kontak": {
       "type": "component",
@@ -51,14 +65,20 @@
     },
     "status_pernikahan": {
       "type": "enumeration",
-      "enum": ["Belum Menikah", "Menikah", "Cerai"],
-      "required": true
+      "required": true,
+      "enum": [
+        "Belum Menikah",
+        "Menikah",
+        "Cerai"
+      ]
     },
     "foto_karyawan": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "npwp": {
       "type": "string",
@@ -70,8 +90,12 @@
     },
     "status_kepegawaian": {
       "type": "enumeration",
-      "enum": ["Tetap", "Kontrak", "Freelance"],
-      "required": true
+      "required": true,
+      "enum": [
+        "Tetap",
+        "Kontrak",
+        "Freelance"
+      ]
     },
     "tanggal_masuk": {
       "type": "date",
@@ -102,11 +126,11 @@
       "target": "api::proyek-perumahan.proyek-perumahan",
       "mappedBy": "manager_proyek"
     },
-    "konsumen": {
+    "unit_sales": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::konsumen.konsumen",
-      "mappedBy": "marketing"
+      "target": "api::unit-rumah.unit-rumah",
+      "mappedBy": "marketing_staff"
     },
     "jabatan": {
       "type": "relation",
@@ -124,12 +148,6 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::absensi.absensi",
-      "mappedBy": "karyawan"
-    },
-    "penjualan": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::unit-rumah.unit-rumah",
       "mappedBy": "karyawan"
     },
     "departemen": {
@@ -184,7 +202,7 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::booking.booking",
-      "mappedBy": "marketing"
+      "mappedBy": "marketing_staff"
     },
     "target_marketings": {
       "type": "relation",

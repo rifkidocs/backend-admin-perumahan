@@ -53,12 +53,6 @@
         "audios"
       ]
     },
-    "konsuman": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::konsumen.konsumen",
-      "inversedBy": "kas_masuks"
-    },
     "unit_rumah": {
       "type": "relation",
       "relation": "manyToOne",

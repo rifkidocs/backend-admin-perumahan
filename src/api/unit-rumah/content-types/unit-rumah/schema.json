@@ -8,42 +8,91 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
-    "nomor_unit": {
+    "unit_id": {
       "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^UNIT-[0-9]{3}$"
+    },
+    "unit_type": {
+      "type": "string",
+      "maxLength": 50,
       "required": true
     },
-    "tipe_unit": {
+    "block": {
       "type": "string",
+      "maxLength": 10,
       "required": true
     },
-    "luas_bangunan": {
-      "type": "decimal"
+    "number": {
+      "type": "string",
+      "maxLength": 10,
+      "required": true
     },
-    "luas_tanah": {
-      "type": "decimal"
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
     },
-    "blok": {
-      "type": "string"
+    "land_area": {
+      "type": "integer",
+      "required": true,
+      "min": 1
     },
-    "kavling": {
-      "type": "string"
+    "building_area": {
+      "type": "integer",
+      "required": true,
+      "min": 1
     },
-    "status_unit": {
+    "bedrooms": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "bathrooms": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "garage": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "location": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "status": {
       "type": "enumeration",
+      "required": true,
+      "default": "tersedia",
       "enum": [
-        "Tersedia",
-        "Dipesan",
-        "Terjual",
-        "Dalam Pembangunan"
+        "tersedia",
+        "dipesan",
+        "terjual",
+        "maintenance"
+      ]
+    },
+    "specifications": {
+      "type": "json"
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images"
       ]
     },
     "harga": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.harga"
+      "component": "komponen.harga",
+      "repeatable": false
     },
     "estimasi_biaya_pembangunan": {
       "type": "decimal"
@@ -80,13 +129,13 @@
     },
     "status_pembangunan": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.progres-proyek"
+      "component": "komponen.progres-proyek",
+      "repeatable": true
     },
     "dokumen_unit": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.dokumen"
+      "component": "komponen.dokumen",
+      "repeatable": true
     },
     "proyek_perumahan": {
       "type": "relation",
@@ -94,23 +143,11 @@
       "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "unit_rumahs"
     },
-    "konsumen": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::konsumen.konsumen",
-      "inversedBy": "unit_rumahs"
-    },
-    "konsuman": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::konsumen.konsumen",
-      "inversedBy": "unit_dibeli"
-    },
-    "karyawan": {
+    "marketing_staff": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
-      "inversedBy": "penjualan"
+      "inversedBy": "unit_sales"
     },
     "permintaan_materials": {
       "type": "relation",

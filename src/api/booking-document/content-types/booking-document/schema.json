@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "booking_documents",
+  "info": {
+    "singularName": "booking-document",
+    "pluralName": "booking-documents",
+    "displayName": "Booking Document",
+    "description": "Documents related to booking process"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "document_type": {
+      "type": "enumeration",
+      "enum": [
+        "ktp",
+        "npwp",
+        "slip-gaji",
+        "kk",
+        "lainnya"
+      ],
+      "required": true
+    },
+    "document_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "upload_date": {
+      "type": "date",
+      "required": true
+    },
+    "verified": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "verified_by": {
+      "type": "string",
+      "required": false,
+      "maxLength": 100
+    },
+    "verified_date": {
+      "type": "date",
+      "required": false
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "booking": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::booking.booking",
+      "inversedBy": "documents"
+    }
+  }
+}

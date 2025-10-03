@@ -5,12 +5,60 @@
     "singularName": "konsumen",
     "pluralName": "konsumens",
     "displayName": "Konsumen",
-    "description": ""
+    "description": "Customer management for housing booking system"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "phone": {
+      "type": "string",
+      "required": true,
+      "regex": "^08[0-9]{8,11}$"
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "address": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "ktp_number": {
+      "type": "string",
+      "required": true,
+      "regex": "^[0-9]{16}$"
+    },
+    "npwp_number": {
+      "type": "string",
+      "regex": "^[0-9]{15}$"
+    },
+    "birth_date": {
+      "type": "date"
+    },
+    "birth_place": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "occupation": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "monthly_income": {
+      "type": "decimal",
+      "min": 0
+    },
+    "emergency_contact": {
+      "type": "text",
+      "maxLength": 200
+    },
     "nama_lengkap": {
       "type": "string",
       "required": true
@@ -32,20 +80,11 @@
     },
     "status_kpr": {
       "type": "enumeration",
-      "enum": [
-        "Belum Mengajukan",
-        "Dalam Proses",
-        "Disetujui",
-        "Ditolak"
-      ]
+      "enum": ["Belum Mengajukan", "Dalam Proses", "Disetujui", "Ditolak"]
     },
     "metode_pembayaran": {
       "type": "enumeration",
-      "enum": [
-        "KPR",
-        "Tunai Keras",
-        "Tunai Bertahap"
-      ]
+      "enum": ["KPR", "Tunai Keras", "Tunai Bertahap"]
     },
     "dokumen_konsumen": {
       "type": "component",
@@ -57,47 +96,21 @@
       "repeatable": true,
       "component": "komponen.transaksi"
     },
-    "unit_rumahs": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::unit-rumah.unit-rumah",
-      "mappedBy": "konsumen"
-    },
     "bank_kpr": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::bank.bank",
-      "inversedBy": "konsumen"
-    },
-    "unit_dibeli": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::unit-rumah.unit-rumah",
-      "mappedBy": "konsuman"
+      "target": "api::bank.bank"
     },
     "marketing": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::karyawan.karyawan",
-      "inversedBy": "konsumen"
-    },
-    "kas_masuks": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::kas-masuk.kas-masuk",
-      "mappedBy": "konsuman"
+      "target": "api::karyawan.karyawan"
     },
     "bookings": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::booking.booking",
-      "mappedBy": "konsumen"
-    },
-    "serah_terima_units": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::serah-terima-unit.serah-terima-unit",
-      "mappedBy": "konsumen"
+      "mappedBy": "customer"
     }
   }
 }

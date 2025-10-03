@@ -10,6 +10,7 @@
   "options": {
     "draftAndPublish": true
   },
+  "pluginOptions": {},
   "attributes": {
     "nomor_serah_terima": {
       "type": "string"
@@ -44,19 +45,13 @@
     },
     "dokumen_serah_terima": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.dokumen"
+      "component": "komponen.dokumen",
+      "repeatable": true
     },
     "unit_rumah": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::unit-rumah.unit-rumah",
-      "inversedBy": "serah_terima_units"
-    },
-    "konsumen": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::konsumen.konsumen",
       "inversedBy": "serah_terima_units"
     },
     "pihak_developer": {
