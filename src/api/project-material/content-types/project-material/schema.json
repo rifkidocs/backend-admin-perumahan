@@ -1,0 +1,122 @@
+{
+  "kind": "collectionType",
+  "collectionName": "project_materials",
+  "info": {
+    "singularName": "project-material",
+    "pluralName": "project-materials",
+    "displayName": "Project Material",
+    "description": "Manage project materials and inventory"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "material_code": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50,
+      "unique": true
+    },
+    "material_name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "structural",
+        "finishing",
+        "mep",
+        "electrical",
+        "plumbing",
+        "landscaping",
+        "other"
+      ],
+      "required": true
+    },
+    "unit_type": {
+      "type": "string",
+      "required": true,
+      "maxLength": 20
+    },
+    "quantity_planned": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "quantity_received": {
+      "type": "decimal",
+      "min": 0,
+      "default": 0
+    },
+    "quantity_used": {
+      "type": "decimal",
+      "min": 0,
+      "default": 0
+    },
+    "quantity_remaining": {
+      "type": "decimal",
+      "min": 0,
+      "default": 0
+    },
+    "unit_price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "total_cost": {
+      "type": "decimal",
+      "min": 0,
+      "default": 0
+    },
+    "supplier": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "specification": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "quality_status": {
+      "type": "enumeration",
+      "enum": ["good", "damaged", "rejected", "tested", "pending"],
+      "default": "pending"
+    },
+    "delivery_date": {
+      "type": "date"
+    },
+    "expiry_date": {
+      "type": "date"
+    },
+    "storage_location": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "batch_number": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "serial_number": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "materials"
+    },
+    "vendor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vendor.vendor",
+      "inversedBy": "supplied_materials"
+    }
+  }
+}

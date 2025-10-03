@@ -1,0 +1,75 @@
+{
+  "kind": "collectionType",
+  "collectionName": "project_phases",
+  "info": {
+    "singularName": "project-phase",
+    "pluralName": "project-phases",
+    "displayName": "Project Phase",
+    "description": "Manage project phases and milestones"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "phase_name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 50
+    },
+    "phase_number": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "unique": false
+    },
+    "start_target": {
+      "type": "date",
+      "required": true
+    },
+    "end_target": {
+      "type": "date",
+      "required": true
+    },
+    "start_actual": {
+      "type": "date"
+    },
+    "end_actual": {
+      "type": "date"
+    },
+    "budget_allocation": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "actual_expense": {
+      "type": "decimal",
+      "min": 0
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["planning", "ongoing", "completed", "delayed"],
+      "required": true,
+      "default": "planning"
+    },
+    "progress_percent": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "milestones": {
+      "type": "json"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "phases"
+    }
+  }
+}

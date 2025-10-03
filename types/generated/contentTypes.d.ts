@@ -1626,8 +1626,8 @@ export interface ApiProgresHarianProgresHarian
   extends Struct.CollectionTypeSchema {
   collectionName: 'progres_harians';
   info: {
-    description: '';
-    displayName: 'Progres Harian';
+    description: 'Progress tracking for construction units';
+    displayName: 'Progress Update';
     pluralName: 'progres-harians';
     singularName: 'progres-harian';
   };
@@ -1635,19 +1635,27 @@ export interface ApiProgresHarianProgresHarian
     draftAndPublish: true;
   };
   attributes: {
-    aktivitas: Schema.Attribute.Text;
+    completed_work: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+        minLength: 10;
+      }>;
+    created_by: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    cuaca: Schema.Attribute.Enumeration<
-      ['Cerah', 'Hujan Ringan', 'Hujan Deras', 'Berawan']
-    >;
-    foto_progres: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
-    jumlah_pekerja: Schema.Attribute.Integer;
-    kendala: Schema.Attribute.String;
+    labor_hours: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1656,21 +1664,57 @@ export interface ApiProgresHarianProgresHarian
       Schema.Attribute.Private;
     material_masuk: Schema.Attribute.JSON;
     material_terpakai: Schema.Attribute.JSON;
+    materials_used: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
     pelapor: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     persentase_progres: Schema.Attribute.Decimal;
+    photos_after: Schema.Attribute.Media<'images', true>;
+    photos_before: Schema.Attribute.Media<'images', true>;
+    progress_after: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      >;
+    progress_before: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      >;
     proyek_perumahan: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
     >;
     publishedAt: Schema.Attribute.DateTime;
-    tanggal: Schema.Attribute.Date;
     unit_rumah: Schema.Attribute.Relation<
       'manyToOne',
       'api::unit-rumah.unit-rumah'
     >;
+    update_date: Schema.Attribute.Date & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    verified_by: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    verified_date: Schema.Attribute.Date;
+    weather_condition: Schema.Attribute.Enumeration<
+      ['Cerah', 'Hujan Ringan', 'Hujan Deras', 'Berawan']
+    >;
   };
 }
 
@@ -1723,7 +1767,7 @@ export interface ApiProyekPerumahanProyekPerumahan
   extends Struct.CollectionTypeSchema {
   collectionName: 'proyek_perumahans';
   info: {
-    description: '';
+    description: 'Project management system for housing development';
     displayName: 'Proyek Perumahan';
     pluralName: 'proyek-perumahans';
     singularName: 'proyek-perumahan';
@@ -1732,18 +1776,49 @@ export interface ApiProyekPerumahanProyekPerumahan
     draftAndPublish: true;
   };
   attributes: {
-    alamat: Schema.Attribute.Component<'komponen.alamat', false>;
+    actual_completion: Schema.Attribute.Date;
+    budget: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    completed_units: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    contact_info: Schema.Attribute.JSON;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    current_expense: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     deskripsi: Schema.Attribute.Text;
     developer: Schema.Attribute.Relation<
       'manyToOne',
       'api::developer.developer'
     >;
     dokumen_legal: Schema.Attribute.Component<'komponen.dokumen', true>;
+    estimated_completion: Schema.Attribute.Date & Schema.Attribute.Required;
     foto_utama: Schema.Attribute.Media<'images'>;
     galeri_foto: Schema.Attribute.Media<'images', true>;
+    investment_value: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     jenis_proyek: Schema.Attribute.Enumeration<
       ['Subsidi', 'Komersial', 'Mixed-Use']
     >;
@@ -1759,12 +1834,17 @@ export interface ApiProyekPerumahanProyekPerumahan
       'api::proyek-perumahan.proyek-perumahan'
     > &
       Schema.Attribute.Private;
+    location: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+        minLength: 5;
+      }>;
     luas_lahan: Schema.Attribute.Decimal;
     manager_proyek: Schema.Attribute.Relation<
       'manyToOne',
       'api::karyawan.karyawan'
     >;
-    nama_proyek: Schema.Attribute.String & Schema.Attribute.Required;
     pengeluaran_materials: Schema.Attribute.Relation<
       'oneToMany',
       'api::pengeluaran-material.pengeluaran-material'
@@ -1777,19 +1857,53 @@ export interface ApiProyekPerumahanProyekPerumahan
       'oneToMany',
       'api::progres-harian.progres-harian'
     >;
+    progress_percentage: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      >;
+    project_id: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    project_manager: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    project_name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 2;
+      }>;
+    project_type: Schema.Attribute.Enumeration<
+      ['perumahan', 'pembangunan', 'renovasi']
+    > &
+      Schema.Attribute.Required;
     promos: Schema.Attribute.Relation<'manyToMany', 'api::promo.promo'>;
     publishedAt: Schema.Attribute.DateTime;
     rabs: Schema.Attribute.Relation<'oneToMany', 'api::rab.rab'>;
     site_plan: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    start_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    status: Schema.Attribute.Enumeration<
+      ['planning', 'ongoing', 'completed', 'hold']
+    > &
+      Schema.Attribute.Required;
     status_proyek: Schema.Attribute.Component<'komponen.status-proyek', false>;
     tahap_pengembangan: Schema.Attribute.String;
-    tanggal_mulai: Schema.Attribute.Date;
-    tanggal_selesai_aktual: Schema.Attribute.Date;
-    tanggal_selesai_estimasi: Schema.Attribute.Date;
     target_marketings: Schema.Attribute.Relation<
       'oneToMany',
       'api::target-marketing.target-marketing'
     >;
+    total_units: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     unit_rumahs: Schema.Attribute.Relation<
       'oneToMany',
       'api::unit-rumah.unit-rumah'
@@ -2173,7 +2287,7 @@ export interface ApiTargetMarketingTargetMarketing
 export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
   collectionName: 'unit_rumahs';
   info: {
-    description: '';
+    description: 'Management system for housing units with construction progress tracking';
     displayName: 'Unit Rumah';
     pluralName: 'unit-rumahs';
     singularName: 'unit-rumah';
@@ -2212,34 +2326,49 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    construction_cost: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    construction_end: Schema.Attribute.Date;
+    construction_start: Schema.Attribute.Date;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     dokumen_unit: Schema.Attribute.Component<'komponen.dokumen', true>;
-    estimasi_biaya_pembangunan: Schema.Attribute.Decimal;
-    foto_progress: Schema.Attribute.Media<'images', true>;
-    gambar_3d: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
-    gambar_denah: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
+    estimated_completion: Schema.Attribute.Date & Schema.Attribute.Required;
+    floor_plans: Schema.Attribute.Media<'images' | 'files', true>;
     garage: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
           min: 0;
         },
         number
-      > &
-      Schema.Attribute.DefaultTo<0>;
-    harga: Schema.Attribute.Component<'komponen.harga', false>;
+      >;
+    handover_date: Schema.Attribute.Date;
+    handover_status: Schema.Attribute.Enumeration<
+      ['pending', 'completed', 'rejected']
+    >;
     images: Schema.Attribute.Media<'images', true>;
     kas_masuks: Schema.Attribute.Relation<
       'oneToMany',
       'api::kas-masuk.kas-masuk'
     >;
+    kavling_number: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 10;
+      }>;
+    labor_cost: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     land_area: Schema.Attribute.Integer &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
@@ -2258,14 +2387,21 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100;
       }>;
+    location_map: Schema.Attribute.String;
     marketing_staff: Schema.Attribute.Relation<
       'manyToOne',
       'api::karyawan.karyawan'
     >;
-    number: Schema.Attribute.String &
-      Schema.Attribute.Required &
+    material_cost: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    notes: Schema.Attribute.Text &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 10;
+        maxLength: 1000;
       }>;
     pengeluaran_materials: Schema.Attribute.Relation<
       'oneToMany',
@@ -2287,6 +2423,22 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::progres-harian.progres-harian'
     >;
+    progress: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    project_name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 2;
+      }>;
     proyek_perumahan: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
@@ -2299,10 +2451,10 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
     >;
     specifications: Schema.Attribute.JSON;
     status: Schema.Attribute.Enumeration<
-      ['tersedia', 'dipesan', 'terjual', 'maintenance']
+      ['belum-dibangun', 'progres', 'selesai', 'serah-terima']
     > &
       Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'tersedia'>;
+      Schema.Attribute.DefaultTo<'belum-dibangun'>;
     status_pembangunan: Schema.Attribute.Component<
       'komponen.progres-proyek',
       true

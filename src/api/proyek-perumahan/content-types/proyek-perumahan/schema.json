@@ -5,92 +5,161 @@
     "singularName": "proyek-perumahan",
     "pluralName": "proyek-perumahans",
     "displayName": "Proyek Perumahan",
-    "description": ""
+    "description": "Project management system for housing development"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
-    "nama_proyek": {
+    "project_id": {
       "type": "string",
+      "required": false,
+      "unique": true,
+      "regex": "^PROJ-[0-9]{6}$"
+    },
+    "project_name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100,
       "required": true
     },
-    "alamat": {
-      "type": "component",
-      "repeatable": false,
-      "component": "komponen.alamat"
+    "project_type": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["perumahan", "pembangunan", "renovasi"]
+    },
+    "location": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 200,
+      "required": true
     },
     "koordinat_gps": {
       "type": "string"
     },
-    "luas_lahan": {
-      "type": "decimal"
-    },
     "jenis_proyek": {
       "type": "enumeration",
-      "enum": [
-        "Subsidi",
-        "Komersial",
-        "Mixed-Use"
-      ]
+      "enum": ["Subsidi", "Komersial", "Mixed-Use"]
     },
     "tahap_pengembangan": {
       "type": "string"
     },
+    "start_date": {
+      "type": "date",
+      "required": true
+    },
+    "estimated_completion": {
+      "type": "date",
+      "required": true
+    },
+    "actual_completion": {
+      "type": "date"
+    },
+    "budget": {
+      "type": "text",
+      "required": true
+    },
+    "current_expense": {
+      "type": "text"
+    },
     "status_proyek": {
-      "type": "component",
-      "repeatable": false,
-      "component": "komponen.status-proyek"
+      "type": "enumeration",
+      "required": true,
+      "enum": ["perencanaan", "pembangunan", "terjual habis"]
     },
-    "tanggal_mulai": {
-      "type": "date"
+    "total_units": {
+      "type": "integer",
+      "min": 0
     },
-    "tanggal_selesai_estimasi": {
-      "type": "date"
+    "completed_units": {
+      "type": "integer",
+      "min": 0
     },
-    "tanggal_selesai_aktual": {
-      "type": "date"
+    "progress_percentage": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "investment_value": {
+      "type": "text"
+    },
+    "contact_info": {
+      "type": "json"
     },
     "deskripsi": {
       "type": "text"
+    },
+    "project_description": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "address": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "coordinate_lat": {
+      "type": "decimal",
+      "min": -90,
+      "max": 90
+    },
+    "coordinate_lng": {
+      "type": "decimal",
+      "min": -180,
+      "max": 180
+    },
+    "building_license": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "environment_permits": {
+      "type": "json"
+    },
+    "zoning_type": {
+      "type": "enumeration",
+      "enum": ["residensial", "komersial", "campuran"]
+    },
+    "land_area": {
+      "type": "text"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
     },
     "foto_utama": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "galeri_foto": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "site_plan": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "dokumen_legal": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.dokumen"
+      "component": "komponen.dokumen",
+      "repeatable": true
     },
     "developer": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::developer.developer",
       "inversedBy": "proyek_perumahans"
+    },
+    "units": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-rumah.unit-rumah",
+      "mappedBy": "proyek_perumahan"
     },
     "unit_rumahs": {
       "type": "relation",
@@ -110,11 +179,35 @@
       "target": "api::karyawan.karyawan",
       "mappedBy": "proyek_ditangani"
     },
-    "vendors": {
+    "contractors": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::vendor.vendor",
-      "mappedBy": "proyek_terlibat"
+      "inversedBy": "contractor_projects"
+    },
+    "phases": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-phase.project-phase",
+      "mappedBy": "project"
+    },
+    "documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-document.project-document",
+      "mappedBy": "project"
+    },
+    "workers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-worker.project-worker",
+      "mappedBy": "project"
+    },
+    "materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-material.project-material",
+      "mappedBy": "project"
     },
     "permintaan_materials": {
       "type": "relation",

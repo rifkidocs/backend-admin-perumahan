@@ -245,6 +245,12 @@
       "relation": "oneToMany",
       "target": "api::placement.placement",
       "mappedBy": "employee"
+    },
+    "project_assignments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::project-worker.project-worker",
+      "mappedBy": "karyawan"
     }
   }
 }

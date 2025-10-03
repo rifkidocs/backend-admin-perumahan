@@ -5,7 +5,7 @@
     "singularName": "unit-rumah",
     "pluralName": "unit-rumahs",
     "displayName": "Unit Rumah",
-    "description": ""
+    "description": "Management system for housing units with construction progress tracking"
   },
   "options": {
     "draftAndPublish": false
@@ -18,20 +18,26 @@
       "unique": true,
       "regex": "^UNIT-[0-9]{3}$"
     },
+    "project_name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
     "unit_type": {
       "type": "string",
-      "maxLength": 50,
-      "required": true
+      "required": true,
+      "maxLength": 50
     },
     "block": {
       "type": "string",
-      "maxLength": 10,
-      "required": true
+      "required": true,
+      "maxLength": 10
     },
-    "number": {
+    "kavling_number": {
       "type": "string",
-      "maxLength": 10,
-      "required": true
+      "required": true,
+      "maxLength": 10
     },
     "price": {
       "type": "decimal",
@@ -60,7 +66,6 @@
     },
     "garage": {
       "type": "integer",
-      "default": 0,
       "min": 0
     },
     "location": {
@@ -70,13 +75,56 @@
     "status": {
       "type": "enumeration",
       "required": true,
-      "default": "tersedia",
+      "default": "belum-dibangun",
       "enum": [
-        "tersedia",
-        "dipesan",
-        "terjual",
-        "maintenance"
+        "belum-dibangun",
+        "progres",
+        "selesai",
+        "serah-terima"
       ]
+    },
+    "progress": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "estimated_completion": {
+      "type": "date",
+      "required": true
+    },
+    "construction_start": {
+      "type": "date",
+      "required": false
+    },
+    "construction_end": {
+      "type": "date",
+      "required": false
+    },
+    "handover_date": {
+      "type": "date",
+      "required": false
+    },
+    "handover_status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "completed",
+        "rejected"
+      ]
+    },
+    "construction_cost": {
+      "type": "decimal",
+      "min": 0
+    },
+    "material_cost": {
+      "type": "decimal",
+      "min": 0
+    },
+    "labor_cost": {
+      "type": "decimal",
+      "min": 0
     },
     "specifications": {
       "type": "json"
@@ -89,43 +137,22 @@
         "images"
       ]
     },
-    "harga": {
-      "type": "component",
-      "component": "komponen.harga",
-      "repeatable": false
-    },
-    "estimasi_biaya_pembangunan": {
-      "type": "decimal"
-    },
-    "gambar_3d": {
+    "floor_plans": {
       "type": "media",
       "multiple": true,
       "required": false,
       "allowedTypes": [
         "images",
-        "files",
-        "videos",
-        "audios"
+        "files"
       ]
     },
-    "gambar_denah": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+    "location_map": {
+      "type": "string",
+      "regex": "^-?[0-9]{1,3}\\.[0-9]+,-?[0-9]{1,3}\\.[0-9]+$"
     },
-    "foto_progress": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
     },
     "status_pembangunan": {
       "type": "component",

@@ -1,0 +1,111 @@
+{
+  "kind": "collectionType",
+  "collectionName": "project_documents",
+  "info": {
+    "singularName": "project-document",
+    "pluralName": "project-documents",
+    "displayName": "Project Document",
+    "description": "Manage project documents and files"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "document_type": {
+      "type": "enumeration",
+      "enum": [
+        "imb",
+        "sjp",
+        "kontrak",
+        "laporan",
+        "gambar_arsitektur",
+        "gambar_struktur",
+        "rab",
+        "legal",
+        "lainnya"
+      ],
+      "required": true
+    },
+    "document_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "document_number": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "files"]
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "issue_date": {
+      "type": "date"
+    },
+    "expiry_date": {
+      "type": "date"
+    },
+    "renewal_date": {
+      "type": "date"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["active", "expired", "renewal-needed", "draft", "review"],
+      "default": "draft"
+    },
+    "issued_by": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "issued_to": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "is_legal_requirement": {
+      "type": "boolean",
+      "default": false
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "medium"
+    },
+    "access_level": {
+      "type": "enumeration",
+      "enum": ["public", "internal", "confidential", "restricted"],
+      "default": "internal"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "approval_status": {
+      "type": "enumeration",
+      "enum": ["pending", "approved", "rejected", "needs_revision"],
+      "default": "pending"
+    },
+    "approved_by": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "documents"
+    }
+  }
+}

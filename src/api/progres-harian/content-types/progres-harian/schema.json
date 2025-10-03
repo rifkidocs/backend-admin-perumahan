@@ -4,17 +4,44 @@
   "info": {
     "singularName": "progres-harian",
     "pluralName": "progres-harians",
-    "displayName": "Progres Harian",
-    "description": ""
+    "displayName": "Progress Update",
+    "description": "Progress tracking for construction units"
   },
   "options": {
     "draftAndPublish": true
   },
   "attributes": {
-    "tanggal": {
-      "type": "date"
+    "update_date": {
+      "type": "date",
+      "required": true
     },
-    "cuaca": {
+    "progress_before": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "progress_after": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "completed_work": {
+      "type": "text",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 500
+    },
+    "materials_used": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "labor_hours": {
+      "type": "decimal",
+      "min": 0
+    },
+    "weather_condition": {
       "type": "enumeration",
       "enum": [
         "Cerah",
@@ -23,24 +50,36 @@
         "Berawan"
       ]
     },
-    "jumlah_pekerja": {
-      "type": "integer"
+    "notes": {
+      "type": "text",
+      "maxLength": 200
     },
-    "aktivitas": {
-      "type": "text"
+    "created_by": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
     },
-    "kendala": {
-      "type": "string"
+    "verified_by": {
+      "type": "string",
+      "maxLength": 100
     },
-    "foto_progres": {
+    "verified_date": {
+      "type": "date"
+    },
+    "photos_before": {
       "type": "media",
       "multiple": true,
       "required": false,
       "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
+        "images"
+      ]
+    },
+    "photos_after": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images"
       ]
     },
     "material_masuk": {
