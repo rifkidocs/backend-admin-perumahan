@@ -29,21 +29,9 @@
       "required": true,
       "enum": ["perumahan", "pembangunan", "renovasi"]
     },
-    "location": {
-      "type": "string",
-      "minLength": 5,
-      "maxLength": 200,
-      "required": true
-    },
-    "koordinat_gps": {
-      "type": "string"
-    },
     "jenis_proyek": {
       "type": "enumeration",
       "enum": ["Subsidi", "Komersial", "Mixed-Use"]
-    },
-    "tahap_pengembangan": {
-      "type": "string"
     },
     "start_date": {
       "type": "date",
@@ -86,9 +74,6 @@
     },
     "contact_info": {
       "type": "json"
-    },
-    "deskripsi": {
-      "type": "text"
     },
     "project_description": {
       "type": "text",
@@ -161,12 +146,6 @@
       "target": "api::unit-rumah.unit-rumah",
       "mappedBy": "proyek_perumahan"
     },
-    "unit_rumahs": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::unit-rumah.unit-rumah",
-      "mappedBy": "proyek_perumahan"
-    },
     "manager_proyek": {
       "type": "relation",
       "relation": "manyToOne",
@@ -189,31 +168,31 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-phase.project-phase",
-      "mappedBy": "project"
+      "mappedBy": "proyek_perumahan"
     },
     "documents": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-document.project-document",
-      "mappedBy": "project"
+      "mappedBy": "proyek_perumahan"
     },
     "workers": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-worker.project-worker",
-      "mappedBy": "project"
+      "mappedBy": "proyek_perumahan"
     },
     "materials": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::project-material.project-material",
-      "mappedBy": "project"
+      "mappedBy": "proyek_perumahan"
     },
     "permintaan_materials": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::permintaan-material.permintaan-material",
-      "mappedBy": "proyek"
+      "mappedBy": "proyek_perumahan"
     },
     "pengeluaran_materials": {
       "type": "relation",

@@ -14,9 +14,7 @@
   "attributes": {
     "unit_id": {
       "type": "string",
-      "required": true,
-      "unique": true,
-      "regex": "^UNIT-[0-9]{3}$"
+      "unique": true
     },
     "project_name": {
       "type": "string",
@@ -47,22 +45,22 @@
     "land_area": {
       "type": "integer",
       "required": true,
-      "min": 1
+      "min": 0
     },
     "building_area": {
       "type": "integer",
       "required": true,
-      "min": 1
+      "min": 0
     },
     "bedrooms": {
       "type": "integer",
       "required": true,
-      "min": 1
+      "min": 0
     },
     "bathrooms": {
       "type": "integer",
       "required": true,
-      "min": 1
+      "min": 0
     },
     "garage": {
       "type": "integer",
@@ -72,16 +70,11 @@
       "type": "string",
       "maxLength": 100
     },
-    "status": {
+    "status_unit": {
       "type": "enumeration",
       "required": true,
       "default": "belum-dibangun",
-      "enum": [
-        "belum-dibangun",
-        "progres",
-        "selesai",
-        "serah-terima"
-      ]
+      "enum": ["belum-dibangun", "progres", "selesai", "serah-terima"]
     },
     "progress": {
       "type": "integer",
@@ -108,11 +101,7 @@
     },
     "handover_status": {
       "type": "enumeration",
-      "enum": [
-        "pending",
-        "completed",
-        "rejected"
-      ]
+      "enum": ["pending", "completed", "rejected"]
     },
     "construction_cost": {
       "type": "decimal",
@@ -133,18 +122,13 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "floor_plans": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     },
     "location_map": {
       "type": "string",
@@ -168,7 +152,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "unit_rumahs"
+      "inversedBy": "units"
     },
     "marketing_staff": {
       "type": "relation",
