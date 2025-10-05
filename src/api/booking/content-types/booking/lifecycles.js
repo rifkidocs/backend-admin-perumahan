@@ -41,59 +41,10 @@ module.exports = {
             data.booking_date = new Date().toISOString().split("T")[0];
         }
 
-        // Update unit status to 'dipesan' when booking is created
-        if (data.unit_rumah) {
-            await strapi.entityService.update("api::unit-rumah.unit-rumah", data.unit_rumah, {
-                data: { status: "dipesan" },
-            });
-        }
+        // All unit updates temporarily disabled to isolate database issue
     },
 
-    async afterUpdate(event) {
-        const { data, where } = event.params;
-        const { result } = event;
-
-        // Update unit status based on booking status
-        if (data.booking_status && result.unit_rumah) {
-            let unitStatus = "tersedia";
-
-            switch (data.booking_status) {
-                case "aktif":
-                    unitStatus = "dipesan";
-                    break;
-                case "selesai":
-                    unitStatus = "terjual";
-                    break;
-                case "dibatalkan":
-                    unitStatus = "tersedia";
-                    break;
-                default:
-                    unitStatus = "dipesan";
-            }
-
-            await strapi.entityService.update("api::unit-rumah.unit-rumah", result.unit_rumah.id, {
-                data: { status: unitStatus },
-            });
-        }
-    },
-
-    async beforeDelete(event) {
-        const { where } = event.params;
-
-        // Get the booking to find associated unit
-        const booking = await strapi.entityService.findOne(
-            "api::booking.booking",
-            where.id,
-            {
-                populate: ["unit_rumah"],
-            }
-        );
-
-        // Update unit status back to available when booking is deleted
-        if (booking && booking.unit_rumah) {
-            await strapi.entityService.update("api::unit-rumah.unit-rumah", booking.unit_rumah.id, {
-                data: { status: "tersedia" },
-            });
-        }
-    },
+    // All lifecycle methods temporarily disabled to isolate database issue
+    // async afterUpdate(event) { ... },
+    // async beforeDelete(event) { ... },
 };

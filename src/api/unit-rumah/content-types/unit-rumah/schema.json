@@ -38,9 +38,8 @@
       "maxLength": 10
     },
     "price": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
+      "type": "text",
+      "required": true
     },
     "land_area": {
       "type": "integer",
@@ -104,16 +103,13 @@
       "enum": ["pending", "completed", "rejected"]
     },
     "construction_cost": {
-      "type": "decimal",
-      "min": 0
+      "type": "text"
     },
     "material_cost": {
-      "type": "decimal",
-      "min": 0
+      "type": "text"
     },
     "labor_cost": {
-      "type": "decimal",
-      "min": 0
+      "type": "text"
     },
     "specifications": {
       "type": "json"
@@ -182,7 +178,7 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::booking.booking",
-      "mappedBy": "unit_rumah"
+      "mappedBy": "unit"
     },
     "rabs": {
       "type": "relation",
