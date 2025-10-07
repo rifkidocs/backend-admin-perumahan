@@ -1,0 +1,61 @@
+{
+  "kind": "collectionType",
+  "collectionName": "achievement_updates",
+  "info": {
+    "singularName": "achievement-update",
+    "pluralName": "achievement-updates",
+    "displayName": "Achievement Update",
+    "description": "Track individual achievement updates for marketing targets"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "update_date": {
+      "type": "date",
+      "required": true
+    },
+    "unit_achieved": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "nominal_achieved": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "unit_breakdown": {
+      "type": "json",
+      "required": true
+    },
+    "commission_earned": {
+      "type": "decimal",
+      "min": 0
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "verified_by": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "verified_date": {
+      "type": "date"
+    },
+    "marketing_target": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::target-marketing.target-marketing",
+      "inversedBy": "achievement_updates"
+    },
+    "marketing_staff": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "achievement_updates"
+    }
+  }
+}

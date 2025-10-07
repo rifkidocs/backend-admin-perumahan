@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "commission_payments",
+  "info": {
+    "singularName": "commission-payment",
+    "pluralName": "commission-payments",
+    "displayName": "Commission Payment",
+    "description": "Track commission payments to marketing staff"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "payment_date": {
+      "type": "date",
+      "required": true
+    },
+    "amount_paid": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "payment_method": {
+      "type": "enumeration",
+      "enum": ["transfer", "cash", "check"],
+      "required": true
+    },
+    "payment_status": {
+      "type": "enumeration",
+      "enum": ["pending", "completed", "failed"],
+      "required": true,
+      "default": "pending"
+    },
+    "reference_number": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "bank_account": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "processed_by": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "marketing_target": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::target-marketing.target-marketing",
+      "inversedBy": "commission_payments"
+    }
+  }
+}

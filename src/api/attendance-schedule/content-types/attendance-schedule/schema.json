@@ -1,0 +1,77 @@
+{
+  "kind": "collectionType",
+  "collectionName": "attendance_schedules",
+  "info": {
+    "singularName": "attendance-schedule",
+    "pluralName": "attendance-schedules",
+    "displayName": "Jadwal Absensi",
+    "description": "Jadwal absensi untuk karyawan dengan pengaturan lokasi dan waktu"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "attendance_schedules",
+      "required": true
+    },
+    "schedule_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "work_start_time": {
+      "type": "time",
+      "required": true
+    },
+    "work_end_time": {
+      "type": "time",
+      "required": true
+    },
+    "attendance_location": {
+      "type": "json",
+      "required": true
+    },
+    "radius_meters": {
+      "type": "integer",
+      "required": true,
+      "min": 10,
+      "max": 5000
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "effective_date": {
+      "type": "date",
+      "required": true
+    },
+    "expiry_date": {
+      "type": "date"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "updated_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "attendance_records": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::absensi.absensi",
+      "mappedBy": "attendance_schedule"
+    }
+  }
+}

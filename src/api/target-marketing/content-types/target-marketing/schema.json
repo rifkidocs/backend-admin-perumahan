@@ -4,42 +4,77 @@
   "info": {
     "singularName": "target-marketing",
     "pluralName": "target-marketings",
-    "displayName": "Target Marketing",
-    "description": ""
+    "displayName": "Marketing Target",
+    "description": "Marketing targets and commission management system"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
+    "target_id": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^TGT-[0-9]{4}-[0-9]{3}$"
+    },
     "periode": {
-      "type": "date"
+      "type": "string",
+      "required": true,
+      "regex": "^[0-9]{4}-[0-9]{2}$"
     },
     "target_unit": {
-      "type": "integer"
+      "type": "integer",
+      "required": true,
+      "min": 1
     },
     "target_nominal": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true,
+      "min": 0
     },
     "pencapaian_unit": {
-      "type": "integer"
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "default": 0
     },
     "pencapaian_nominal": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "default": 0
     },
     "komisi_per_unit": {
-      "type": "decimal"
+      "type": "json",
+      "required": true
     },
     "total_komisi": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0
     },
     "status_pembayaran_komisi": {
       "type": "enumeration",
-      "enum": [
-        "Belum Dibayar",
-        "Sebagian",
-        "Lunas"
-      ]
+      "enum": ["belum-dibayar", "sebagian", "lunas"],
+      "required": true,
+      "default": "belum-dibayar"
+    },
+    "tanggal_pembayaran": {
+      "type": "date"
+    },
+    "metode_pembayaran": {
+      "type": "enumeration",
+      "enum": ["transfer", "cash", "check"]
+    },
+    "bukti_pembayaran": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images", "files"]
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
     },
     "marketing": {
       "type": "relation",
@@ -52,6 +87,18 @@
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "target_marketings"
+    },
+    "achievement_updates": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::achievement-update.achievement-update",
+      "mappedBy": "marketing_target"
+    },
+    "commission_payments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::commission-payment.commission-payment",
+      "mappedBy": "marketing_target"
     }
   }
 }

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "absensi",
     "pluralName": "absensis",
-    "displayName": "Absensi"
+    "displayName": "Absensi",
+    "description": "Record absensi karyawan dengan verifikasi lokasi"
   },
   "options": {
     "draftAndPublish": false
@@ -12,39 +13,84 @@
   "pluginOptions": {},
   "attributes": {
     "tanggal": {
-      "type": "date"
+      "type": "date",
+      "required": true
     },
     "jam_masuk": {
-      "type": "time"
+      "type": "datetime",
+      "required": true
     },
     "jam_keluar": {
-      "type": "time"
+      "type": "datetime"
     },
     "status_absensi": {
       "type": "enumeration",
-      "enum": [
-        "hadir",
-        "terlambat",
-        "absen",
-        "izin"
-      ]
+      "enum": ["hadir", "terlambat", "absen", "izin", "sakit", "lembur"],
+      "required": true,
+      "default": "hadir"
     },
     "overtime_hours": {
       "type": "decimal",
-      "min": 0
+      "min": 0,
+      "default": 0
     },
     "keterangan": {
-      "type": "string"
+      "type": "text",
+      "maxLength": 500
     },
     "foto_absensi": {
       "type": "media",
-      "multiple": true,
-      "allowedTypes": [
-        "images"
-      ]
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true
     },
-    "lokasi_gps": {
-      "type": "string"
+    "lokasi_absensi": {
+      "type": "json",
+      "required": true,
+      "schema": {
+        "check_in_location": {
+          "lat": "number",
+          "lng": "number",
+          "address": "string",
+          "accuracy": "number"
+        },
+        "check_out_location": {
+          "lat": "number",
+          "lng": "number",
+          "address": "string",
+          "accuracy": "number"
+        }
+      }
+    },
+    "is_within_radius": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "distance_from_target": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "attendance_schedule": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::attendance-schedule.attendance-schedule",
+      "inversedBy": "attendance_records"
+    },
+    "approval_status": {
+      "type": "enumeration",
+      "enum": ["pending", "approved", "rejected"],
+      "default": "pending"
+    },
+    "approved_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "rejection_reason": {
+      "type": "text",
+      "maxLength": 200
     },
     "karyawan": {
       "type": "relation",

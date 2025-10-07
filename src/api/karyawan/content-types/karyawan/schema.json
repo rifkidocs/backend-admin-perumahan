@@ -37,10 +37,7 @@
     "jenis_kelamin": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "Laki-laki",
-        "Perempuan"
-      ]
+      "enum": ["Laki-laki", "Perempuan"]
     },
     "tempat_lahir": {
       "type": "string",
@@ -66,19 +63,13 @@
     "status_pernikahan": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "Belum Menikah",
-        "Menikah",
-        "Cerai"
-      ]
+      "enum": ["Belum Menikah", "Menikah", "Cerai"]
     },
     "foto_karyawan": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "npwp": {
       "type": "string",
@@ -91,11 +82,7 @@
     "status_kepegawaian": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "Tetap",
-        "Kontrak",
-        "Freelance"
-      ]
+      "enum": ["Tetap", "Kontrak", "Freelance"]
     },
     "tanggal_masuk": {
       "type": "date",
@@ -149,6 +136,12 @@
       "relation": "oneToMany",
       "target": "api::absensi.absensi",
       "mappedBy": "karyawan"
+    },
+    "attendance_schedules": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::attendance-schedule.attendance-schedule",
+      "mappedBy": "employee"
     },
     "departemen": {
       "type": "relation",
@@ -251,6 +244,12 @@
       "relation": "oneToMany",
       "target": "api::project-worker.project-worker",
       "mappedBy": "karyawan"
+    },
+    "achievement_updates": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::achievement-update.achievement-update",
+      "mappedBy": "marketing_staff"
     }
   }
 }
