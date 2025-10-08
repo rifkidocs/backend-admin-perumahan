@@ -29,13 +29,22 @@
       "type": "enumeration",
       "required": true,
       "default": "pending",
-      "enum": ["pending", "lunas", "overdue"]
+      "enum": [
+        "pending",
+        "lunas",
+        "overdue"
+      ]
     },
     "booking_status": {
       "type": "enumeration",
       "required": true,
       "default": "menunggu-pembayaran",
-      "enum": ["aktif", "menunggu-pembayaran", "dibatalkan", "selesai"]
+      "enum": [
+        "aktif",
+        "menunggu-pembayaran",
+        "dibatalkan",
+        "selesai"
+      ]
     },
     "payment_date": {
       "type": "date",
@@ -44,13 +53,21 @@
     "payment_method": {
       "type": "enumeration",
       "required": false,
-      "enum": ["transfer", "cash", "check", "kredit"]
+      "enum": [
+        "transfer",
+        "cash",
+        "check",
+        "kredit"
+      ]
     },
     "payment_proof": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "notes": {
       "type": "text",

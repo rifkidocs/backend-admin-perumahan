@@ -18,24 +18,19 @@
     },
     "project_name": {
       "type": "string",
-      "required": true,
       "minLength": 2,
-      "maxLength": 100
-    },
-    "unit_type": {
-      "type": "string",
-      "required": true,
-      "maxLength": 50
+      "maxLength": 100,
+      "required": true
     },
     "block": {
       "type": "string",
-      "required": true,
-      "maxLength": 10
+      "maxLength": 10,
+      "required": true
     },
     "kavling_number": {
       "type": "string",
-      "required": true,
-      "maxLength": 10
+      "maxLength": 10,
+      "required": true
     },
     "price": {
       "type": "text",
@@ -73,14 +68,19 @@
       "type": "enumeration",
       "required": true,
       "default": "belum-dibangun",
-      "enum": ["belum-dibangun", "progres", "selesai", "serah-terima"]
+      "enum": [
+        "belum-dibangun",
+        "progres",
+        "selesai",
+        "serah-terima"
+      ]
     },
     "progress": {
       "type": "integer",
       "required": true,
+      "default": 0,
       "min": 0,
-      "max": 100,
-      "default": 0
+      "max": 100
     },
     "estimated_completion": {
       "type": "date",
@@ -100,7 +100,11 @@
     },
     "handover_status": {
       "type": "enumeration",
-      "enum": ["pending", "completed", "rejected"]
+      "enum": [
+        "pending",
+        "completed",
+        "rejected"
+      ]
     },
     "construction_cost": {
       "type": "text"
@@ -118,13 +122,18 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "floor_plans": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "location_map": {
       "type": "string",
@@ -197,6 +206,9 @@
       "relation": "oneToMany",
       "target": "api::serah-terima-unit.serah-terima-unit",
       "mappedBy": "unit_rumah"
+    },
+    "unit_type": {
+      "type": "string"
     }
   }
 }
