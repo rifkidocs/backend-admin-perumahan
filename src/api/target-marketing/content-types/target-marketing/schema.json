@@ -29,7 +29,7 @@
       "min": 1
     },
     "target_nominal": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
       "min": 0
     },
@@ -40,7 +40,7 @@
       "default": 0
     },
     "pencapaian_nominal": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
       "min": 0,
       "default": 0
@@ -50,7 +50,7 @@
       "required": true
     },
     "total_komisi": {
-      "type": "decimal",
+      "type": "biginteger",
       "min": 0
     },
     "status_pembayaran_komisi": {

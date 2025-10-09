@@ -32,14 +32,7 @@
     },
     "source": {
       "type": "enumeration",
-      "enum": [
-        "website",
-        "pameran",
-        "referensi",
-        "iklan",
-        "sosmed",
-        "lainnya"
-      ],
+      "enum": ["website", "pameran", "referensi", "iklan", "sosmed", "lainnya"],
       "required": true
     },
     "interest": {
@@ -47,16 +40,11 @@
       "maxLength": 50
     },
     "budget": {
-      "type": "string",
-      "maxLength": 50
+      "type": "biginteger"
     },
     "status_lead": {
       "type": "enumeration",
-      "enum": [
-        "baru",
-        "berminat",
-        "prioritas"
-      ],
+      "enum": ["baru", "berminat", "prioritas"],
       "required": true,
       "default": "baru"
     },
