@@ -14,7 +14,7 @@
   "attributes": {
     "target_id": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true,
       "regex": "^TGT-[0-9]{4}-[0-9]{3}$"
     },

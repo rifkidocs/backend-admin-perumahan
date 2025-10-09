@@ -27,7 +27,7 @@ This document describes the implementation of the Marketing Targets & Commission
 {
   "target_id": {
     "type": "string",
-    "required": true,
+    "required": false,
     "unique": true,
     "regex": "^TGT-[0-9]{4}-[0-9]{3}$"
   },
@@ -36,9 +36,58 @@ This document describes the implementation of the Marketing Targets & Commission
     "required": true,
     "regex": "^[0-9]{4}-[0-9]{2}$"
   },
+  "target_unit": {
+    "type": "integer",
+    "required": true,
+    "min": 1
+  },
+  "target_nominal": {
+    "type": "decimal",
+    "required": true,
+    "min": 0
+  },
+  "pencapaian_unit": {
+    "type": "integer",
+    "required": true,
+    "min": 0,
+    "default": 0
+  },
+  "pencapaian_nominal": {
+    "type": "decimal",
+    "required": true,
+    "min": 0,
+    "default": 0
+  },
   "komisi_per_unit": {
     "type": "json",
     "required": true
+  },
+  "total_komisi": {
+    "type": "decimal",
+    "min": 0
+  },
+  "status_pembayaran_komisi": {
+    "type": "enumeration",
+    "enum": ["belum-dibayar", "sebagian", "lunas"],
+    "required": true,
+    "default": "belum-dibayar"
+  },
+  "tanggal_pembayaran": {
+    "type": "date"
+  },
+  "metode_pembayaran": {
+    "type": "enumeration",
+    "enum": ["transfer", "cash", "check"]
+  },
+  "bukti_pembayaran": {
+    "type": "media",
+    "multiple": false,
+    "required": false,
+    "allowedTypes": ["images", "files"]
+  },
+  "notes": {
+    "type": "text",
+    "maxLength": 1000
   }
 }
 ```
@@ -182,20 +231,74 @@ GET /api/target-marketings?populate[marketing][populate]=true&populate[proyek_pe
 ### Filter targets by period
 
 ```
-GET /api/target-marketings?filters[periode][$eq]=2023-09
+GET /api/target-marketings?filters[periode][$eq]=2025-11
 ```
 
 ### Filter targets by marketing staff
 
 ```
-GET /api/target-marketings?filters[marketing][id][$eq]=1
+GET /api/target-marketings?filters[marketing][id][$eq]=6
 ```
 
 ### Filter targets by payment status
 
 ```
-GET /api/target-marketings?filters[status_pembayaran_komisi][$eq]=lunas
+GET /api/target-marketings?filters[status_pembayaran_komisi][$eq]=belum-dibayar
 ```
+
+### Get target with specific target_id
+
+```
+GET /api/target-marketings?filters[target_id][$eq]=TGT-2025-001
+```
+
+### Filter by target achievement status
+
+```
+GET /api/target-marketings?filters[pencapaian_unit][$gt]=0
+```
+
+### Get targets with commission structure
+
+```
+GET /api/target-marketings?populate[marketing][populate]=true&populate[proyek_perumahan][populate]=true&filters[total_komisi][$gt]=0
+```
+
+## Field Relationship & Data Architecture
+
+### Target Marketing vs Achievement Update
+
+**Target Marketing Fields** (Aggregate/Summary):
+
+- `pencapaian_unit`: Total units achieved (aggregated from all achievement updates)
+- `pencapaian_nominal`: Total nominal achieved (aggregated from all achievement updates)
+- `total_komisi`: Total commission earned (calculated from all achievements)
+
+**Achievement Update Fields** (Detail/History):
+
+- `unit_achieved`: Units achieved in this specific update
+- `nominal_achieved`: Nominal achieved in this specific update
+- `unit_breakdown`: Detailed breakdown by unit type (JSON)
+- `commission_earned`: Commission earned from this specific update
+
+### Target Marketing vs Commission Payment
+
+**Target Marketing Fields** (Basic Payment Info):
+
+- `tanggal_pembayaran`: Date of payment
+- `metode_pembayaran`: Payment method (transfer/cash/check)
+- `bukti_pembayaran`: Payment proof file
+- `status_pembayaran_komisi`: Overall payment status
+
+**Commission Payment Fields** (Detailed Payment Tracking):
+
+- `payment_date`: Specific payment date
+- `amount_paid`: Amount paid in this transaction
+- `payment_method`: Payment method used
+- `payment_status`: Status of this specific payment
+- `reference_number`: Payment reference number
+- `bank_account`: Bank account details
+- `processed_by`: Who processed the payment
 
 ## Data Flow
 
