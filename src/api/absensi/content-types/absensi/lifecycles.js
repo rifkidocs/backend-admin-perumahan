@@ -15,35 +15,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return R * c * 1000; // Convert to meters
 }
 
-// Fungsi untuk menentukan status absensi berdasarkan waktu
-function determineAttendanceStatus(checkInTime, workStartTime) {
-    const checkInDate = new Date(checkInTime);
-    const workStartDate = new Date(checkInTime.split('T')[0] + 'T' + workStartTime);
 
-    const timeDiff = checkInDate.getTime() - workStartDate.getTime();
-    const minutesDiff = Math.floor(timeDiff / (1000 * 60));
-
-    if (minutesDiff <= 0) {
-        return 'hadir';
-    } else if (minutesDiff <= 30) {
-        return 'terlambat';
-    } else {
-        return 'terlambat';
-    }
-}
-
-// Fungsi untuk menghitung jam lembur
-function calculateOvertimeHours(checkOutTime, workEndTime) {
-    if (!checkOutTime || !workEndTime) return 0;
-
-    const checkOutDate = new Date(checkOutTime);
-    const workEndDate = new Date(checkOutTime.split('T')[0] + 'T' + workEndTime);
-
-    const timeDiff = checkOutDate.getTime() - workEndDate.getTime();
-    const hoursDiff = timeDiff / (1000 * 60 * 60);
-
-    return Math.max(0, hoursDiff);
-}
 
 module.exports = {
     async beforeCreate(event) {
@@ -97,12 +69,9 @@ module.exports = {
             data.distance_from_target = distance;
             data.is_within_radius = distance <= schedule.radius_meters;
 
-            // Tentukan status absensi berdasarkan waktu
-            if (data.jam_masuk) {
-                data.status_absensi = determineAttendanceStatus(
-                    data.jam_masuk,
-                    schedule.work_start_time
-                );
+            // Set status absensi default ke 'hadir' karena hanya perlu verifikasi lokasi
+            if (!data.status_absensi) {
+                data.status_absensi = 'hadir';
             }
 
             // Set approval status berdasarkan lokasi
@@ -123,33 +92,9 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
-        const { data, where } = event.params;
+        const { data } = event.params;
 
         try {
-            // Jika ada update jam keluar, hitung jam lembur
-            if (data.jam_keluar) {
-                const existingRecord = await strapi.entityService.findOne(
-                    'api::absensi.absensi',
-                    where.id,
-                    {
-                        populate: ['attendance_schedule']
-                    }
-                );
-
-                if (existingRecord && existingRecord.attendance_schedule) {
-                    const schedule = existingRecord.attendance_schedule;
-                    data.overtime_hours = calculateOvertimeHours(
-                        data.jam_keluar,
-                        schedule.work_end_time
-                    );
-
-                    // Update status jika lembur
-                    if (data.overtime_hours > 0) {
-                        data.status_absensi = 'lembur';
-                    }
-                }
-            }
-
             // Jika ada update lokasi check-out
             if (data.lokasi_absensi && data.lokasi_absensi.check_out_location) {
                 const { lat, lng } = data.lokasi_absensi.check_out_location;
@@ -180,6 +125,6 @@ module.exports = {
         const { result } = event;
 
         // Log update record absensi
-        strapi.log.info(`Record absensi diupdate - ID: ${result.id}, Status: ${result.status_absensi}, Jam lembur: ${result.overtime_hours || 0} jam`);
+        strapi.log.info(`Record absensi diupdate - ID: ${result.id}, Status: ${result.status_absensi}`);
     }
 };

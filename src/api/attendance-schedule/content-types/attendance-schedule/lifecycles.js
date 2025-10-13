@@ -21,14 +21,6 @@ module.exports = {
             }
         }
 
-        // Validasi waktu kerja
-        if (data.work_start_time && data.work_end_time) {
-            const startTime = data.work_start_time;
-            const endTime = data.work_end_time;
-            if (startTime >= endTime) {
-                throw new Error('Jam masuk harus sebelum jam keluar');
-            }
-        }
 
         // Validasi radius
         if (data.radius_meters && (data.radius_meters < 10 || data.radius_meters > 5000)) {
@@ -56,14 +48,6 @@ module.exports = {
             }
         }
 
-        // Validasi waktu kerja
-        if (data.work_start_time && data.work_end_time) {
-            const startTime = data.work_start_time;
-            const endTime = data.work_end_time;
-            if (startTime >= endTime) {
-                throw new Error('Jam masuk harus sebelum jam keluar');
-            }
-        }
 
         // Validasi radius
         if (data.radius_meters && (data.radius_meters < 10 || data.radius_meters > 5000)) {

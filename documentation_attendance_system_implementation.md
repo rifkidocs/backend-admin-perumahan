@@ -4,10 +4,10 @@
 
 Sistem absensi HRM yang diimplementasikan mendukung:
 
-- **Jadwal Absensi**: Admin dapat membuat jadwal absensi untuk karyawan dengan pengaturan lokasi dan waktu
+- **Jadwal Absensi**: Admin dapat membuat jadwal absensi untuk karyawan dengan pengaturan lokasi dan radius
 - **Verifikasi Lokasi**: Sistem otomatis memverifikasi lokasi absensi berdasarkan radius yang ditentukan
 - **Foto Selfie**: Wajib upload foto selfie untuk verifikasi identitas
-- **Status Otomatis**: Penentuan status absensi (hadir/terlambat) berdasarkan waktu check-in
+- **Status Otomatis**: Status absensi ditentukan berdasarkan keberadaan karyawan dalam radius yang ditentukan
 - **Approval System**: Sistem persetujuan untuk absensi di luar radius
 
 ## Content Types yang Diimplementasikan
@@ -24,8 +24,6 @@ Sistem absensi HRM yang diimplementasikan mendukung:
 | --------------------- | -------- | -------- | --------------------------------- |
 | `employee`            | relation | ✅       | Relasi ke karyawan                |
 | `schedule_name`       | string   | ✅       | Nama jadwal (max 100 char)        |
-| `work_start_time`     | time     | ✅       | Jam masuk kerja                   |
-| `work_end_time`       | time     | ✅       | Jam keluar kerja                  |
 | `attendance_location` | json     | ✅       | Koordinat dan alamat lokasi absen |
 | `radius_meters`       | integer  | ✅       | Radius dalam meter (10-5000)      |
 | `is_active`           | boolean  | -        | Status aktif jadwal               |
@@ -101,7 +99,7 @@ Sistem absensi HRM yang diimplementasikan mendukung:
 
 - Validasi koordinat (lat: -90 to 90, lng: -180 to 180)
 - Validasi tanggal efektif vs tanggal berakhir
-- Validasi waktu kerja (jam masuk < jam keluar)
+- Validasi radius (10-5000 meter)
 - Auto-set `created_by` dan `updated_by`
 - Logging aktivitas
 
@@ -116,15 +114,13 @@ Sistem absensi HRM yang diimplementasikan mendukung:
 - Validasi data lokasi check-in
 - Cari jadwal absensi aktif untuk karyawan
 - Hitung jarak menggunakan Haversine formula
-- Tentukan status absensi berdasarkan waktu
+- Set status absensi default ke "hadir"
 - Set approval status berdasarkan radius
 - Log verifikasi lokasi
 
 #### `beforeUpdate`:
 
-- Hitung jam lembur otomatis saat check-out
 - Validasi koordinat check-out
-- Update status ke "lembur" jika ada overtime
 
 #### `afterCreate` & `afterUpdate`:
 
