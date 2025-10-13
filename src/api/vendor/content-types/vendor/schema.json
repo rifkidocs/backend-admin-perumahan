@@ -8,8 +8,9 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "nama_perusahaan": {
       "type": "string",
@@ -28,8 +29,8 @@
     },
     "kontak": {
       "type": "component",
-      "repeatable": false,
-      "component": "komponen.kontak"
+      "component": "komponen.kontak",
+      "repeatable": false
     },
     "npwp": {
       "type": "string"
@@ -44,16 +45,25 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "status_kontrak": {
       "type": "enumeration",
-      "enum": ["Aktif", "Tidak Aktif", "Blacklist"]
+      "enum": [
+        "Aktif",
+        "Tidak Aktif",
+        "Blacklist"
+      ]
     },
     "dokumen_vendor": {
       "type": "component",
-      "repeatable": true,
-      "component": "komponen.dokumen"
+      "component": "komponen.dokumen",
+      "repeatable": true
     },
     "material": {
       "type": "relation",

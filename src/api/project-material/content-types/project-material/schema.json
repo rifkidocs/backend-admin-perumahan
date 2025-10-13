@@ -81,7 +81,13 @@
     },
     "quality_status": {
       "type": "enumeration",
-      "enum": ["good", "damaged", "rejected", "tested", "pending"],
+      "enum": [
+        "good",
+        "damaged",
+        "rejected",
+        "tested",
+        "pending"
+      ],
       "default": "pending"
     },
     "delivery_date": {
