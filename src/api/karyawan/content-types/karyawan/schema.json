@@ -12,12 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "staff_id": {
-      "type": "string",
-      "maxLength": 20,
-      "required": true,
-      "unique": true
-    },
     "nik_karyawan": {
       "type": "string",
       "required": true,
@@ -37,10 +31,7 @@
     "jenis_kelamin": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "Laki-laki",
-        "Perempuan"
-      ]
+      "enum": ["Laki-laki", "Perempuan"]
     },
     "tempat_lahir": {
       "type": "string",
@@ -66,19 +57,13 @@
     "status_pernikahan": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "Belum Menikah",
-        "Menikah",
-        "Cerai"
-      ]
+      "enum": ["Belum Menikah", "Menikah", "Cerai"]
     },
     "foto_karyawan": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "npwp": {
       "type": "string",
@@ -91,11 +76,7 @@
     "status_kepegawaian": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "Tetap",
-        "Kontrak",
-        "Freelance"
-      ]
+      "enum": ["Tetap", "Kontrak", "Freelance"]
     },
     "tanggal_masuk": {
       "type": "date",
