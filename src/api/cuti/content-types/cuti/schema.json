@@ -4,73 +4,104 @@
   "info": {
     "singularName": "cuti",
     "pluralName": "cutis",
-    "displayName": "Cuti",
-    "description": ""
+    "displayName": "Leave Request",
+    "description": "Pengajuan cuti dan izin karyawan dengan workflow approval"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "jenis_cuti": {
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "leave_requests",
+      "required": true
+    },
+    "request_type": {
       "type": "enumeration",
-      "enum": [
-        "tahunan",
-        "sakit",
-        "melahirkan",
-        "darurat",
-        "lainnya"
-      ]
+      "enum": ["cuti", "izin_pribadi", "izin_dinas", "izin_sakit"],
+      "required": true
     },
-    "total_days": {
-      "type": "integer"
-    },
-    "tanggal_mulai": {
-      "type": "date"
-    },
-    "tanggal_selesai": {
-      "type": "date"
-    },
-    "alasan": {
-      "type": "text"
-    },
-    "status_persetujuan": {
+    "leave_type": {
       "type": "enumeration",
-      "enum": [
-        "pending",
-        "approved",
-        "rejected"
-      ]
+      "enum": ["tahunan", "melahirkan", "sakit"],
+      "required": true
+    },
+    "start_date": {
+      "type": "date",
+      "required": true
+    },
+    "end_date": {
+      "type": "date",
+      "required": true
+    },
+    "duration_days": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "reason": {
+      "type": "text",
+      "required": true,
+      "maxLength": 1000
+    },
+    "request_status": {
+      "type": "enumeration",
+      "enum": ["pending", "approved", "rejected", "cancelled"],
+      "required": true,
+      "default": "pending"
+    },
+    "approval_date": {
+      "type": "datetime"
     },
     "approved_by": {
-      "type": "string",
-      "maxLength": 100
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     },
-    "approved_date": {
-      "type": "date"
+    "rejection_reason": {
+      "type": "text",
+      "maxLength": 500
     },
-    "bukti_pendukung": {
+    "medical_certificate": {
       "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "videos",
-        "audios",
-        "files"
-      ]
+      "multiple": false,
+      "allowedTypes": ["images", "files"]
     },
-    "karyawan": {
+    "is_paid": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "salary_deduction": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "emergency_contact": {
+      "type": "json",
+      "schema": {
+        "name": "string",
+        "phone": "string",
+        "relationship": "string",
+        "address": "string"
+      }
+    },
+    "handover_notes": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "created_by": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::karyawan.karyawan",
-      "inversedBy": "cuti"
+      "target": "plugin::users-permissions.user"
     },
-    "penyetuju": {
+    "updated_by": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::karyawan.karyawan",
-      "inversedBy": "cuti"
+      "target": "plugin::users-permissions.user"
     }
   }
 }

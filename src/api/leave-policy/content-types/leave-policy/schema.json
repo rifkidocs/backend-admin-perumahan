@@ -1,0 +1,94 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leave_policies",
+  "info": {
+    "singularName": "leave-policy",
+    "pluralName": "leave-policies",
+    "displayName": "Leave Policy",
+    "description": "Kebijakan cuti dan izin perusahaan yang dapat dikonfigurasi"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "policy_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "leave_type": {
+      "type": "enumeration",
+      "enum": ["tahunan", "melahirkan", "sakit"],
+      "required": true
+    },
+    "default_quota": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "max_consecutive": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "min_advance_days": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "is_paid": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "salary_deduction": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "requires_medical": {
+      "type": "boolean",
+      "default": false
+    },
+    "gender_restriction": {
+      "type": "enumeration",
+      "enum": ["male", "female", "all"],
+      "default": "all"
+    },
+    "employment_duration": {
+      "type": "integer",
+      "min": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "effective_date": {
+      "type": "date",
+      "required": true
+    },
+    "expiry_date": {
+      "type": "date"
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "updated_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

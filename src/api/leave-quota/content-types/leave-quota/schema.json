@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leave_quotas",
+  "info": {
+    "singularName": "leave-quota",
+    "pluralName": "leave-quotas",
+    "displayName": "Leave Quota",
+    "description": "Pengaturan kuota cuti untuk setiap karyawan berdasarkan jenis cuti"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "leave_quotas",
+      "required": true
+    },
+    "leave_type": {
+      "type": "enumeration",
+      "enum": ["tahunan", "melahirkan", "sakit"],
+      "required": true
+    },
+    "annual_quota": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "used_quota": {
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "default": 0
+    },
+    "remaining_quota": {
+      "type": "decimal",
+      "required": true,
+      "min": 0,
+      "default": 0
+    },
+    "year": {
+      "type": "integer",
+      "required": true,
+      "min": 2020,
+      "max": 2030
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "updated_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

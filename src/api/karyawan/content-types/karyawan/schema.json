@@ -244,6 +244,18 @@
       "relation": "oneToMany",
       "target": "api::achievement-update.achievement-update",
       "mappedBy": "marketing_staff"
+    },
+    "leave_quotas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::leave-quota.leave-quota",
+      "mappedBy": "employee"
+    },
+    "leave_requests": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::cuti.cuti",
+      "mappedBy": "employee"
     }
   }
 }
