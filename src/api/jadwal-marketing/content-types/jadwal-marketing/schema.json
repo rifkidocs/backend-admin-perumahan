@@ -1,0 +1,112 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jadwal_marketings",
+  "info": {
+    "singularName": "jadwal-marketing",
+    "pluralName": "jadwal-marketings",
+    "displayName": "Jadwal Marketing",
+    "description": "Jadwal kegiatan marketing seperti pameran, open house, kunjungan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "activity_type": {
+      "type": "enumeration",
+      "enum": [
+        "exhibition",
+        "open_house",
+        "site_visit",
+        "canvassing",
+        "customer_visit",
+        "phone_call"
+      ],
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "location": {
+      "type": "string",
+      "required": true,
+      "maxLength": 500
+    },
+    "start_date": {
+      "type": "datetime",
+      "required": true
+    },
+    "end_date": {
+      "type": "datetime"
+    },
+    "start_time": {
+      "type": "time"
+    },
+    "end_time": {
+      "type": "time"
+    },
+    "status_jadwal": {
+      "type": "enumeration",
+      "enum": ["upcoming", "ongoing", "completed", "cancelled"],
+      "default": "upcoming"
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": ["low", "medium", "high", "urgent"],
+      "default": "medium"
+    },
+    "assigned_staff": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::karyawan.karyawan"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan"
+    },
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead-marketing.lead-marketing"
+    },
+    "expected_leads": {
+      "type": "integer",
+      "min": 0
+    },
+    "budget": {
+      "type": "decimal",
+      "min": 0
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 2000
+    },
+    "reminder_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "created_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "updated_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "reports": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::laporan-kegiatan.laporan-kegiatan",
+      "mappedBy": "schedule"
+    }
+  }
+}

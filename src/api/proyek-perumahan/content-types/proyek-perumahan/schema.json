@@ -27,19 +27,11 @@
     "project_type": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "perumahan",
-        "pembangunan",
-        "renovasi"
-      ]
+      "enum": ["perumahan", "pembangunan", "renovasi"]
     },
     "jenis_proyek": {
       "type": "enumeration",
-      "enum": [
-        "Subsidi",
-        "Komersial",
-        "Mixed-Use"
-      ]
+      "enum": ["Subsidi", "Komersial", "Mixed-Use"]
     },
     "start_date": {
       "type": "date",
@@ -62,11 +54,7 @@
     "status_proyek": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "perencanaan",
-        "pembangunan",
-        "terjual habis"
-      ]
+      "enum": ["perencanaan", "pembangunan", "terjual habis"]
     },
     "total_units": {
       "type": "integer",
@@ -114,11 +102,7 @@
     },
     "zoning_type": {
       "type": "enumeration",
-      "enum": [
-        "residensial",
-        "komersial",
-        "campuran"
-      ]
+      "enum": ["residensial", "komersial", "campuran"]
     },
     "land_area": {
       "type": "text"
@@ -135,28 +119,19 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "galeri_foto": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "site_plan": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "dokumen_legal": {
       "type": "component",

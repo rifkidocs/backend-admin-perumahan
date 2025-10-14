@@ -1,0 +1,101 @@
+{
+  "kind": "collectionType",
+  "collectionName": "laporan_kegiatans",
+  "info": {
+    "singularName": "laporan-kegiatan",
+    "pluralName": "laporan-kegiatans",
+    "displayName": "Laporan Kegiatan",
+    "description": "Laporan hasil kegiatan marketing"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "report_type": {
+      "type": "enumeration",
+      "enum": [
+        "exhibition_report",
+        "open_house_report",
+        "canvassing_report",
+        "visit_report"
+      ],
+      "required": true
+    },
+    "schedule": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::jadwal-marketing.jadwal-marketing",
+      "inversedBy": "reports"
+    },
+    "activity_date": {
+      "type": "date",
+      "required": true
+    },
+    "location": {
+      "type": "string",
+      "required": true,
+      "maxLength": 500
+    },
+    "leads_generated": {
+      "type": "integer",
+      "min": 0
+    },
+    "bookings_made": {
+      "type": "integer",
+      "min": 0
+    },
+    "booking_fee_collected": {
+      "type": "decimal",
+      "min": 0
+    },
+    "visitors_count": {
+      "type": "integer",
+      "min": 0
+    },
+    "highlights": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "challenges": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "recommendations": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images", "files", "videos"]
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["draft", "submitted", "approved", "rejected"],
+      "default": "draft"
+    },
+    "submitted_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "approved_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "approval_date": {
+      "type": "datetime"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 2000
+    }
+  }
+}

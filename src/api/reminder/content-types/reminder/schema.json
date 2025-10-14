@@ -4,15 +4,29 @@
   "info": {
     "singularName": "reminder",
     "pluralName": "reminders",
-    "displayName": "Reminder",
-    "description": "Follow-up reminders for leads"
+    "displayName": "Reminder Follow-up",
+    "description": "Follow-up reminders for leads and marketing activities"
   },
   "options": {
     "draftAndPublish": false
   },
   "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "reminder_type": {
+      "type": "enumeration",
+      "enum": ["phone_call", "email", "visit", "whatsapp", "sms"],
+      "required": true
+    },
     "date": {
       "type": "date",
+      "required": true
+    },
+    "reminder_date": {
+      "type": "datetime",
       "required": true
     },
     "activity": {
@@ -21,17 +35,38 @@
       "minLength": 5,
       "maxLength": 200
     },
+    "priority": {
+      "type": "enumeration",
+      "enum": ["low", "medium", "high", "urgent"],
+      "default": "medium"
+    },
     "status_reminder": {
       "type": "enumeration",
-      "enum": ["pending", "completed", "cancelled"],
+      "enum": ["pending", "completed", "cancelled", "overdue"],
       "required": true,
       "default": "pending"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "completed_at": {
+      "type": "datetime"
+    },
+    "completion_notes": {
+      "type": "text",
+      "maxLength": 1000
     },
     "lead": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::lead-marketing.lead-marketing",
       "inversedBy": "reminders"
+    },
+    "assigned_to": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
     }
   }
 }
