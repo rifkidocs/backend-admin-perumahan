@@ -72,7 +72,8 @@
         "belum-dibangun",
         "progres",
         "selesai",
-        "serah-terima"
+        "serah-terima",
+        "handed_over"
       ]
     },
     "progress": {
@@ -100,11 +101,7 @@
     },
     "handover_status": {
       "type": "enumeration",
-      "enum": [
-        "pending",
-        "completed",
-        "rejected"
-      ]
+      "enum": ["pending", "completed", "rejected"]
     },
     "construction_cost": {
       "type": "text"
@@ -122,18 +119,13 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "floor_plans": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     },
     "location_map": {
       "type": "string",
@@ -209,6 +201,18 @@
     },
     "unit_type": {
       "type": "string"
+    },
+    "boq_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::boq-document.boq-document",
+      "mappedBy": "unit_rumah"
+    },
+    "handover_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::handover-document.handover-document",
+      "mappedBy": "unit_rumah"
     }
   }
 }

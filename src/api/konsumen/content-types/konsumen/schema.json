@@ -111,6 +111,12 @@
       "relation": "oneToMany",
       "target": "api::booking.booking",
       "mappedBy": "customer"
+    },
+    "handover_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::handover-document.handover-document",
+      "mappedBy": "konsumen"
     }
   }
 }

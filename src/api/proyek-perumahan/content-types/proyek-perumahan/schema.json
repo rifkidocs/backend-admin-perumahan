@@ -233,6 +233,36 @@
       "relation": "manyToMany",
       "target": "api::promo.promo",
       "mappedBy": "proyek_perumahan"
+    },
+    "site_plan_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::site-plan-document.site-plan-document",
+      "mappedBy": "project"
+    },
+    "technical_drawings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::technical-drawing.technical-drawing",
+      "mappedBy": "project"
+    },
+    "permit_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::permit-document.permit-document",
+      "mappedBy": "project"
+    },
+    "boq_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::boq-document.boq-document",
+      "mappedBy": "project"
+    },
+    "handover_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::handover-document.handover-document",
+      "mappedBy": "project"
     }
   }
 }

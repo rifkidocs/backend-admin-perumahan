@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "permit_documents",
+  "info": {
+    "singularName": "permit-document",
+    "pluralName": "permit-documents",
+    "displayName": "Permit Document",
+    "description": "Manage permit and legal documents"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "document_type": {
+      "type": "enumeration",
+      "enum": ["IMB", "PBG", "Izin Lingkungan", "Izin Lainnya"],
+      "required": true
+    },
+    "document_number": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "files"]
+    },
+    "issue_date": {
+      "type": "date"
+    },
+    "expiry_date": {
+      "type": "date"
+    },
+    "status_permit": {
+      "type": "enumeration",
+      "enum": ["active", "expired", "pending", "draft"],
+      "default": "pending"
+    },
+    "issuing_authority": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "renewal_date": {
+      "type": "date"
+    },
+    "renewal_status": {
+      "type": "enumeration",
+      "enum": ["not_required", "pending", "in_progress", "completed"],
+      "default": "not_required"
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "high"
+    },
+    "is_legal_requirement": {
+      "type": "boolean",
+      "default": true
+    },
+    "compliance_status": {
+      "type": "enumeration",
+      "enum": ["compliant", "non_compliant", "pending_review"],
+      "default": "pending_review"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "permit_documents"
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "kind": "collectionType",
+  "collectionName": "handover_documents",
+  "info": {
+    "singularName": "handover-document",
+    "pluralName": "handover-documents",
+    "displayName": "Handover Document",
+    "description": "Manage handover and delivery documents"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "document_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "document_type": {
+      "type": "enumeration",
+      "enum": ["BAST", "Check List", "Dokumen Garansi"],
+      "required": true
+    },
+    "unit": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "buyer_name": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "files"]
+    },
+    "handover_date": {
+      "type": "date"
+    },
+    "status_handover": {
+      "type": "enumeration",
+      "enum": ["draft", "signed", "complete", "active"],
+      "default": "draft"
+    },
+    "signature_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "signature_file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images", "files"]
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "warranty_period": {
+      "type": "integer",
+      "default": 12
+    },
+    "warranty_start_date": {
+      "type": "date"
+    },
+    "warranty_end_date": {
+      "type": "date"
+    },
+    "completion_checklist": {
+      "type": "json"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "handover_documents"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "handover_documents"
+    },
+    "konsumen": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "handover_documents"
+    }
+  }
+}

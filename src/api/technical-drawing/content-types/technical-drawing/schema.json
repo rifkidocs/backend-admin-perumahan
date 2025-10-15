@@ -1,0 +1,82 @@
+{
+  "kind": "collectionType",
+  "collectionName": "technical_drawings",
+  "info": {
+    "singularName": "technical-drawing",
+    "pluralName": "technical-drawings",
+    "displayName": "Technical Drawing",
+    "description": "Manage technical drawings and engineering documents"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "file_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Arsitektur", "Struktur", "MEP"],
+      "required": true
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "files"]
+    },
+    "file_format": {
+      "type": "enumeration",
+      "enum": ["DWG", "PDF", "JPG"],
+      "required": true
+    },
+    "file_size": {
+      "type": "decimal"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "upload_date": {
+      "type": "datetime"
+    },
+    "unit_type": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "status_drawing": {
+      "type": "enumeration",
+      "enum": ["draft", "active", "archived"],
+      "default": "draft"
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "drawing_number": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "revision": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "approval_date": {
+      "type": "date"
+    },
+    "archived_at": {
+      "type": "datetime"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "technical_drawings"
+    }
+  }
+}
