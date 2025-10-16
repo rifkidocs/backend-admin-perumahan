@@ -15,61 +15,61 @@
       "type": "string",
       "required": true,
       "minLength": 2,
-      "maxLength": 50
+      "maxLength": 100
     },
-    "phase_number": {
+    "phase_order": {
       "type": "integer",
       "required": true,
-      "min": 1,
-      "unique": false
+      "min": 1
     },
-    "start_target": {
+    "start_date": {
       "type": "date",
       "required": true
     },
-    "end_target": {
+    "target_end_date": {
       "type": "date",
       "required": true
     },
-    "start_actual": {
+    "actual_end_date": {
       "type": "date"
     },
-    "end_actual": {
-      "type": "date"
-    },
-    "budget_allocation": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
-    },
-    "actual_expense": {
-      "type": "decimal",
-      "min": 0
-    },
-    "description": {
-      "type": "text",
-      "maxLength": 500
-    },
-    "status": {
+    "phase_status": {
       "type": "enumeration",
       "enum": ["planning", "ongoing", "completed", "delayed"],
       "required": true,
       "default": "planning"
     },
-    "progress_percent": {
+    "progress_percentage": {
       "type": "decimal",
       "min": 0,
       "max": 100,
       "default": 0
     },
+    "budget_allocation": {
+      "type": "decimal",
+      "min": 0
+    },
+    "actual_cost": {
+      "type": "decimal",
+      "min": 0
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 1000
+    },
     "milestones": {
       "type": "json"
     },
-    "project": {
+    "proyek_perumahan": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "phases"
+      "target": "api::proyek-perumahan.proyek-perumahan"
+    },
+    "tasks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jadwal-proyek.jadwal-proyek",
+      "mappedBy": "phase_relation"
     }
   }
 }

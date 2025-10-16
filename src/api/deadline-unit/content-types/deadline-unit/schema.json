@@ -1,0 +1,88 @@
+{
+  "kind": "collectionType",
+  "collectionName": "deadline_units",
+  "info": {
+    "singularName": "deadline-unit",
+    "pluralName": "deadline-units",
+    "displayName": "Deadline Unit",
+    "description": "Unit deadline tracking and management"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "unit_id": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 50
+    },
+    "unit_type": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 50
+    },
+    "target_start_date": {
+      "type": "date",
+      "required": true
+    },
+    "deadline_date": {
+      "type": "date",
+      "required": true
+    },
+    "actual_start_date": {
+      "type": "date"
+    },
+    "actual_completion_date": {
+      "type": "date"
+    },
+    "progress_percentage": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "unit_status": {
+      "type": "enumeration",
+      "enum": ["not-started", "in-progress", "completed", "delayed"],
+      "required": true,
+      "default": "not-started"
+    },
+    "delay_days": {
+      "type": "integer"
+    },
+    "delay_reason": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "contractor_name": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "quality_score": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan"
+    },
+    "unit": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah"
+    },
+    "contractor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vendor.vendor"
+    }
+  }
+}

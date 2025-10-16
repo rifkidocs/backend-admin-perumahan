@@ -27,9 +27,6 @@
       "enum": ["PDF", "DWG", "JPG", "PNG"],
       "required": true
     },
-    "file_size": {
-      "type": "decimal"
-    },
     "version": {
       "type": "string",
       "default": "1.0"

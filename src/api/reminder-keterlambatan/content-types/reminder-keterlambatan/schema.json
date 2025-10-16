@@ -1,0 +1,85 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reminder_keterlambatans",
+  "info": {
+    "singularName": "reminder-keterlambatan",
+    "pluralName": "reminder-keterlambatans",
+    "displayName": "Reminder Keterlambatan",
+    "description": "Delay reminders and notifications for project timeline issues"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "project_name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "unit_id": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "issue_description": {
+      "type": "text",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 1000
+    },
+    "deadline_date": {
+      "type": "date",
+      "required": true
+    },
+    "impact_description": {
+      "type": "text",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 500
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": ["low", "medium", "high", "critical"],
+      "required": true,
+      "default": "medium"
+    },
+    "reminder_status": {
+      "type": "enumeration",
+      "enum": ["active", "in-progress", "resolved", "closed"],
+      "required": true,
+      "default": "active"
+    },
+    "assigned_to": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "resolution_notes": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "resolved_date": {
+      "type": "date"
+    },
+    "escalation_level": {
+      "type": "integer",
+      "min": 1,
+      "max": 5,
+      "default": 1
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan"
+    },
+    "unit": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah"
+    },
+    "assigned_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}
