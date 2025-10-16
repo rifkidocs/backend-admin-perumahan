@@ -33,7 +33,7 @@
       "required": true
     },
     "price": {
-      "type": "text",
+      "type": "biginteger",
       "required": true
     },
     "land_area": {
@@ -104,13 +104,13 @@
       "enum": ["pending", "completed", "rejected"]
     },
     "construction_cost": {
-      "type": "text"
+      "type": "biginteger"
     },
     "material_cost": {
-      "type": "text"
+      "type": "biginteger"
     },
     "labor_cost": {
-      "type": "text"
+      "type": "biginteger"
     },
     "specifications": {
       "type": "json"
