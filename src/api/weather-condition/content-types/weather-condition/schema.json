@@ -1,0 +1,72 @@
+{
+  "kind": "collectionType",
+  "collectionName": "weather_conditions",
+  "info": {
+    "singularName": "weather-condition",
+    "pluralName": "weather-conditions",
+    "displayName": "Kondisi Cuaca",
+    "description": "Data kondisi cuaca dan dampaknya terhadap konstruksi"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tanggal": {
+      "type": "date",
+      "required": true
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan"
+    },
+    "kondisi_cuaca": {
+      "type": "enumeration",
+      "enum": [
+        "cerah",
+        "cerah_berawan",
+        "berawan",
+        "hujan_ringan",
+        "hujan_sedang",
+        "hujan_lebat",
+        "angin_kencang"
+      ],
+      "required": true
+    },
+    "suhu_min": {
+      "type": "decimal",
+      "min": -50,
+      "max": 50
+    },
+    "suhu_max": {
+      "type": "decimal",
+      "min": -50,
+      "max": 50
+    },
+    "kelembaban": {
+      "type": "integer",
+      "min": 0,
+      "max": 100
+    },
+    "dampak_konstruksi": {
+      "type": "enumeration",
+      "enum": ["tidak_ada", "minor", "sedang", "signifikan"],
+      "default": "tidak_ada"
+    },
+    "durasi_tunda": {
+      "type": "integer",
+      "min": 0,
+      "description": "Durasi penundaan dalam menit"
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "laporan_progress": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::progres-harian.progres-harian",
+      "inversedBy": "data_cuaca"
+    }
+  }
+}

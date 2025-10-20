@@ -8,7 +8,7 @@
     "description": "Progress tracking for construction units"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "update_date": {
@@ -44,10 +44,13 @@
     "weather_condition": {
       "type": "enumeration",
       "enum": [
-        "Cerah",
-        "Hujan Ringan",
-        "Hujan Deras",
-        "Berawan"
+        "cerah",
+        "cerah_berawan",
+        "berawan",
+        "hujan_ringan",
+        "hujan_sedang",
+        "hujan_lebat",
+        "angin_kencang"
       ]
     },
     "notes": {
@@ -55,13 +58,14 @@
       "maxLength": 200
     },
     "created_by": {
-      "type": "string",
-      "required": true,
-      "maxLength": 100
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     },
     "verified_by": {
-      "type": "string",
-      "maxLength": 100
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     },
     "verified_date": {
       "type": "date"
@@ -70,17 +74,13 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "photos_after": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "material_masuk": {
       "type": "json"
@@ -90,6 +90,51 @@
     },
     "persentase_progres": {
       "type": "decimal"
+    },
+    "blok_unit": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "aktivitas": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "status_harian": {
+      "type": "enumeration",
+      "enum": ["sesuai_jadwal", "terlambat", "maju_jadwal"],
+      "default": "sesuai_jadwal"
+    },
+    "deskripsi": {
+      "type": "text"
+    },
+    "catatan": {
+      "type": "text"
+    },
+    "data_pekerja": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::worker-attendance.worker-attendance",
+      "mappedBy": "laporan_progress"
+    },
+    "data_cuaca": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::weather-condition.weather-condition",
+      "mappedBy": "laporan_progress"
+    },
+    "penggunaan_material": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::material-usage.material-usage",
+      "mappedBy": "laporan_progress"
+    },
+    "dokumentasi_foto": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::progress-photo.progress-photo",
+      "mappedBy": "laporan_progress"
     },
     "proyek_perumahan": {
       "type": "relation",
