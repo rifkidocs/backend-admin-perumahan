@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "unit_material_requirements",
+  "info": {
+    "singularName": "unit-material-requirement",
+    "pluralName": "unit-material-requirements",
+    "displayName": "Unit Material Requirement",
+    "description": "Kebutuhan material per unit rumah"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "tipe_unit": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::material.material",
+      "required": true
+    },
+    "kebutuhan_per_unit": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "total_unit": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "total_kebutuhan": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "status_ketersediaan": {
+      "type": "enumeration",
+      "enum": ["Tersedia", "Segera Habis", "Tidak Tersedia"],
+      "required": true,
+      "default": "Tersedia"
+    }
+  }
+}

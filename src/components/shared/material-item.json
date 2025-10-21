@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_material_items",
+  "info": {
+    "displayName": "Material Item",
+    "description": "Component untuk item material dalam PO atau penggunaan"
+  },
+  "options": {},
+  "attributes": {
+    "material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::material.material"
+    },
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "unit_price": {
+      "type": "decimal",
+      "min": 0
+    },
+    "total_price": {
+      "type": "decimal",
+      "min": 0
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "labor_estimations",
+  "info": {
+    "singularName": "labor-estimation",
+    "pluralName": "labor-estimations",
+    "displayName": "Labor Estimation",
+    "description": "Estimasi tenaga kerja untuk item pekerjaan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "item_pekerjaan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::work-item.work-item",
+      "required": true,
+      "inversedBy": "labor_estimations"
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "required": true
+    },
+    "mandor": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "tukang": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "helper": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "estimasi_jam_kerja": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "estimasi_biaya": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "tarif_mandor": {
+      "type": "decimal",
+      "min": 0
+    },
+    "tarif_tukang": {
+      "type": "decimal",
+      "min": 0
+    },
+    "tarif_helper": {
+      "type": "decimal",
+      "min": 0
+    }
+  }
+}

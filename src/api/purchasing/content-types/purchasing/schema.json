@@ -4,85 +4,76 @@
   "info": {
     "singularName": "purchasing",
     "pluralName": "purchasings",
-    "displayName": "Purchasing",
-    "description": ""
+    "displayName": "Purchase Order",
+    "description": "Manajemen Purchase Order dan delivery material"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "nomor_po": {
-      "type": "string"
-    },
-    "tanggal_po": {
-      "type": "date"
-    },
-    "status_purchasing": {
-      "type": "enumeration",
-      "enum": [
-        "Draft",
-        "Terkirim",
-        "Diterima Sebagian",
-        "Selesai",
-        "Dibatalkan"
-      ]
-    },
-    "total_harga": {
-      "type": "decimal"
-    },
-    "cara_pembayaran": {
-      "type": "enumeration",
-      "enum": [
-        "Cash",
-        "Transfer",
-        "Tempo"
-      ]
-    },
-    "tanggal_pembayaran": {
-      "type": "date"
-    },
-    "tanggal_pengiriman": {
-      "type": "date"
-    },
-    "keterangan": {
-      "type": "string"
-    },
-    "dokumen_po": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
-    "item_po": {
-      "type": "json"
+      "type": "string",
+      "required": true,
+      "unique": true
     },
     "supplier": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::vendor.vendor",
+      "required": true,
       "inversedBy": "purchasings"
     },
-    "permintaan_material": {
+    "materials": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.material-item",
+      "required": true
+    },
+    "tanggal_order": {
+      "type": "date",
+      "required": true
+    },
+    "tanggal_estimasi_delivery": {
+      "type": "date",
+      "required": true
+    },
+    "tanggal_actual_delivery": {
+      "type": "date"
+    },
+    "status_po": {
+      "type": "enumeration",
+      "enum": ["Diproses", "Dikirim", "Diterima", "Terlambat", "Dibatalkan"],
+      "required": true,
+      "default": "Diproses"
+    },
+    "total_harga": {
+      "type": "decimal",
+      "min": 0
+    },
+    "catatan": {
+      "type": "text"
+    },
+    "created_by": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::permintaan-material.permintaan-material",
-      "inversedBy": "purchasings"
+      "target": "plugin::users-permissions.user",
+      "required": true
     },
-    "penerimaan_materials": {
+    "approved_by": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::penerimaan-material.penerimaan-material",
-      "mappedBy": "purchasing"
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     },
     "kas_keluars": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "purchasing"
+    },
+    "penerimaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penerimaan-material.penerimaan-material",
       "mappedBy": "purchasing"
     }
   }

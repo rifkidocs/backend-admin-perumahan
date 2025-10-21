@@ -10,58 +10,41 @@
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {},
   "attributes": {
-    "tanggal": {
+    "tanggal_penggunaan": {
       "type": "date",
       "required": true
     },
     "proyek": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan"
-    },
-    "material": {
-      "type": "string",
-      "required": true,
-      "maxLength": 255
-    },
-    "kuantitas": {
-      "type": "decimal",
-      "min": 0,
+      "target": "api::proyek-perumahan.proyek-perumahan",
       "required": true
     },
-    "satuan": {
-      "type": "string",
-      "required": true,
-      "maxLength": 50
+    "material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::material.material",
+      "required": true
     },
-    "penggunaan": {
+    "jumlah": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "lokasi_unit": {
       "type": "string",
       "required": true,
       "maxLength": 255
     },
-    "status_penggunaan": {
-      "type": "enumeration",
-      "enum": ["digunakan", "sebagian", "tidak_digunakan"],
-      "default": "digunakan"
-    },
-    "harga_satuan": {
-      "type": "decimal",
-      "min": 0
-    },
-    "total_harga": {
-      "type": "decimal",
-      "min": 0
-    },
-    "catatan": {
-      "type": "text"
-    },
-    "laporan_progress": {
+    "dicatat_oleh": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::progres-harian.progres-harian",
-      "inversedBy": "penggunaan_material"
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "keterangan": {
+      "type": "text"
     }
   }
 }

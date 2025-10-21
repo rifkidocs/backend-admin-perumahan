@@ -45,27 +45,18 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "status_kontrak": {
       "type": "enumeration",
-      "enum": [
-        "Aktif",
-        "Tidak Aktif",
-        "Blacklist"
-      ]
+      "enum": ["Aktif", "Tidak Aktif", "Blacklist"]
     },
     "dokumen_vendor": {
       "type": "component",
       "component": "komponen.dokumen",
       "repeatable": true
     },
-    "material": {
+    "materials": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::material.material",

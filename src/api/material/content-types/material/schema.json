@@ -5,59 +5,76 @@
     "singularName": "material",
     "pluralName": "materials",
     "displayName": "Material",
-    "description": ""
+    "description": "Manajemen inventaris material konstruksi"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "nama_material": {
       "type": "string",
-      "required": true
+      "required": true,
+      "maxLength": 255
     },
-    "kode_material": {
-      "type": "string"
-    },
-    "spesifikasi": {
-      "type": "text"
-    },
-    "satuan": {
-      "type": "string"
-    },
-    "harga_satuan": {
-      "type": "decimal"
-    },
-    "stok_tersedia": {
-      "type": "integer"
-    },
-    "lokasi_gudang": {
-      "type": "string"
-    },
-    "kategori_material": {
+    "kategori": {
       "type": "enumeration",
       "enum": [
-        "Struktur",
-        "Finishing",
-        "MEP",
-        "Alat Bantu"
-      ]
+        "Material Struktur",
+        "Material Atap",
+        "Material Finishing",
+        "Peralatan",
+        "Material Kayu"
+      ],
+      "required": true
+    },
+    "satuan": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "stok": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "sisa_proyek": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "max": 100
+    },
+    "status_material": {
+      "type": "enumeration",
+      "enum": ["Tersedia", "Segera Habis", "Habis"],
+      "required": true,
+      "default": "Tersedia"
+    },
+    "minimum_stock": {
+      "type": "integer",
+      "min": 0
+    },
+    "harga_satuan": {
+      "type": "decimal",
+      "min": 0
+    },
+    "supplier": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vendor.vendor",
+      "inversedBy": "materials"
+    },
+    "lokasi_gudang": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "deskripsi": {
+      "type": "text"
     },
     "foto_material": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
-    "supplier": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::vendor.vendor",
-      "inversedBy": "material"
+      "allowedTypes": ["images", "files"]
     }
   }
 }

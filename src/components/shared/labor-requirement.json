@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_labor_requirements",
+  "info": {
+    "displayName": "Labor Requirement",
+    "description": "Component untuk kebutuhan tenaga kerja"
+  },
+  "options": {},
+  "attributes": {
+    "role": {
+      "type": "enumeration",
+      "enum": ["mandor", "tukang", "helper"],
+      "required": true
+    },
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "hourly_rate": {
+      "type": "decimal",
+      "min": 0
+    },
+    "estimated_hours": {
+      "type": "integer",
+      "min": 0
+    }
+  }
+}

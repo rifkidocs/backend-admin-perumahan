@@ -263,6 +263,18 @@
       "relation": "oneToMany",
       "target": "api::handover-document.handover-document",
       "mappedBy": "project"
+    },
+    "work_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::work-item.work-item",
+      "mappedBy": "proyek"
+    },
+    "labor_estimations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::labor-estimation.labor-estimation",
+      "mappedBy": "proyek"
     }
   }
 }
