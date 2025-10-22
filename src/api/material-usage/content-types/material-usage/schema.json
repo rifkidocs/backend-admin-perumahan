@@ -37,12 +37,6 @@
       "required": true,
       "maxLength": 255
     },
-    "dicatat_oleh": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "required": true
-    },
     "keterangan": {
       "type": "text"
     }

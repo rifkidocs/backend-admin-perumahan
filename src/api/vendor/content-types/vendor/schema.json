@@ -58,14 +58,8 @@
     },
     "materials": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::material.material",
-      "mappedBy": "supplier"
-    },
-    "purchasings": {
-      "type": "relation",
       "relation": "oneToMany",
-      "target": "api::purchasing.purchasing",
+      "target": "api::material.material",
       "mappedBy": "supplier"
     },
     "kas_keluars": {

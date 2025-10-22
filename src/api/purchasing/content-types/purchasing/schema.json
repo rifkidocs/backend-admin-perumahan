@@ -17,11 +17,8 @@
       "unique": true
     },
     "supplier": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::vendor.vendor",
-      "required": true,
-      "inversedBy": "purchasings"
+      "type": "string",
+      "required": true
     },
     "materials": {
       "type": "component",
@@ -52,12 +49,6 @@
     },
     "catatan": {
       "type": "text"
-    },
-    "created_by": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "required": true
     },
     "approved_by": {
       "type": "relation",
