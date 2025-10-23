@@ -36,14 +36,11 @@
       "minLength": 2,
       "maxLength": 50
     },
-    "status": {
+    "status_penempatan": {
       "type": "enumeration",
-      "enum": [
-        "aktif",
-        "selesai",
-        "dipindahkan"
-      ],
-      "required": true
+      "enum": ["aktif", "selesai", "dipindahkan"],
+      "required": true,
+      "default": "aktif"
     },
     "notes": {
       "type": "text",

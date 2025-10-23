@@ -256,6 +256,14 @@
       "relation": "oneToMany",
       "target": "api::cuti.cuti",
       "mappedBy": "employee"
+    },
+    "current_project": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "current_location": {
+      "type": "string",
+      "maxLength": 100
     }
   }
 }
