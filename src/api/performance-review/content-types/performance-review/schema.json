@@ -4,69 +4,84 @@
   "info": {
     "singularName": "performance-review",
     "pluralName": "performance-reviews",
-    "displayName": "Performance Review",
-    "description": "Data penilaian kinerja karyawan"
+    "displayName": "Penilaian Kinerja",
+    "description": "Data evaluasi kinerja karyawan"
   },
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
-    "review_period": {
+    "nik_karyawan": {
       "type": "string",
       "required": true,
-      "maxLength": 50
+      "unique": true
     },
-    "review_date": {
-      "type": "date",
+    "nama_karyawan": {
+      "type": "string",
       "required": true
     },
-    "overall_score": {
+    "divisi": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::departemen.departemen"
+    },
+    "jabatan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::jabatan.jabatan"
+    },
+    "tahun_evaluasi": {
+      "type": "integer",
+      "required": true
+    },
+    "bulan_evaluasi": {
+      "type": "integer",
+      "required": true
+    },
+    "rating_kinerja": {
       "type": "decimal",
       "required": true,
-      "min": 0,
-      "max": 100
+      "min": 1,
+      "max": 5
     },
-    "goals_achieved": {
-      "type": "integer",
-      "required": true,
-      "min": 0
+    "target_divisi": {
+      "type": "string"
     },
-    "goals_total": {
-      "type": "integer",
-      "required": true,
-      "min": 1
+    "pencapaian_target": {
+      "type": "string"
     },
-    "strengths": {
-      "type": "text",
-      "maxLength": 500
-    },
-    "improvements": {
-      "type": "text",
-      "maxLength": 500
-    },
-    "recommendations": {
-      "type": "text",
-      "maxLength": 500
+    "persentase_pencapaian": {
+      "type": "decimal"
     },
     "reviewer": {
       "type": "string",
-      "required": true,
-      "maxLength": 100
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": [
-        "draft",
-        "completed",
-        "approved"
-      ],
       "required": true
     },
-    "employee": {
+    "catatan_review": {
+      "type": "text"
+    },
+    "status_evaluasi": {
+      "type": "enumeration",
+      "default": "draft",
+      "enum": [
+        "draft",
+        "submitted",
+        "reviewed",
+        "approved"
+      ]
+    },
+    "tanggal_evaluasi": {
+      "type": "date",
+      "required": true
+    },
+    "tanggal_review": {
+      "type": "datetime"
+    },
+    "karyawan": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::karyawan.karyawan",
-      "inversedBy": "performance_reviews"
+      "target": "api::karyawan.karyawan"
     }
   }
 }

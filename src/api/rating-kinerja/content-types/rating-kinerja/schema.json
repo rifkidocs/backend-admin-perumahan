@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "rating_kinerjas",
+  "info": {
+    "singularName": "rating-kinerja",
+    "pluralName": "rating-kinerjas",
+    "displayName": "Rating Kinerja",
+    "description": "Distribusi rating kinerja karyawan"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "rating": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 5
+    },
+    "label_rating": {
+      "type": "enumeration",
+      "enum": [
+        "Poor",
+        "Needs Improvement",
+        "Satisfactory",
+        "Good",
+        "Excellent"
+      ],
+      "required": true
+    },
+    "jumlah_karyawan": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    },
+    "persentase": {
+      "type": "decimal",
+      "required": true,
+      "default": 0
+    },
+    "tahun": {
+      "type": "integer",
+      "required": true
+    },
+    "bulan": {
+      "type": "integer",
+      "required": true
+    },
+    "warna_badge": {
+      "type": "string"
+    }
+  }
+}

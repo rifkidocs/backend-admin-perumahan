@@ -1,0 +1,67 @@
+{
+  "kind": "collectionType",
+  "collectionName": "kpi_divisis",
+  "info": {
+    "singularName": "kpi-divisi",
+    "pluralName": "kpi-divisis",
+    "displayName": "KPI Divisi",
+    "description": "Key Performance Indicators per divisi"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama_divisi": {
+      "type": "string",
+      "required": true
+    },
+    "kode_divisi": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "target_bulanan": {
+      "type": "string",
+      "required": true
+    },
+    "target_tahunan": {
+      "type": "string",
+      "required": true
+    },
+    "pencapaian_bulanan": {
+      "type": "string"
+    },
+    "pencapaian_tahunan": {
+      "type": "string"
+    },
+    "persentase_pencapaian": {
+      "type": "decimal"
+    },
+    "tahun": {
+      "type": "integer",
+      "required": true
+    },
+    "bulan": {
+      "type": "integer",
+      "required": true
+    },
+    "status_target": {
+      "type": "enumeration",
+      "default": "kurang",
+      "enum": [
+        "tercapai",
+        "melebihi",
+        "kurang"
+      ]
+    },
+    "catatan": {
+      "type": "text"
+    },
+    "divisi": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::departemen.departemen"
+    }
+  }
+}
