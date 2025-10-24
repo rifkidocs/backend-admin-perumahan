@@ -227,15 +227,13 @@ Content-Type: application/json
 {
   "title": "Promo Akhir Tahun",
   "platform": "Instagram",
-  "post_type": "Carousel",
+  "post_type": "Image",
   "content_images": [file_uploads],
-  "content_video": [file_upload],
   "caption": "Miliki hunian impian di akhir tahun dengan promo spesial...",
   "hashtags": "#RumahImpian #PromoAkhirTahun #PerumahanBerkualitas",
   "thumbnail": [file_upload],
   "scheduled_date": "2023-12-01T10:00:00.000Z",
-  "is_published": false,
-  "engagement_rate": 0
+  "is_published": false
 }
 ```
 
@@ -247,26 +245,22 @@ Content-Type: application/json
 
 {
   "is_published": true,
-  "engagement_rate": 4.5,
   "caption": "Promo akhir tahun telah dimulai! Segera hubungi kami..."
 }
 ```
 
 #### Schema Fields
 
-| Field Name        | Type        | Required | Description                                                   |
-| ----------------- | ----------- | -------- | ------------------------------------------------------------- |
-| `title`           | String      | Yes      | Judul konten                                                  |
-| `platform`        | Enumeration | Yes      | Platform sosial media (Instagram, Facebook, TikTok, LinkedIn) |
-| `post_type`       | Enumeration | Yes      | Jenis post (Image, Video, Carousel, Reels, Story)             |
-| `content_images`  | Media       | No       | Gambar konten                                                 |
-| `content_video`   | Media       | No       | Video konten                                                  |
-| `caption`         | Text        | Yes      | Caption konten                                                |
-| `hashtags`        | String      | No       | Hashtag yang digunakan                                        |
-| `thumbnail`       | Media       | No       | Thumbnail konten                                              |
-| `scheduled_date`  | DateTime    | No       | Tanggal jadwal posting                                        |
-| `is_published`    | Boolean     | Yes      | Status publikasi                                              |
-| `engagement_rate` | Decimal     | No       | Tingkat engagement                                            |
+| Field Name       | Type        | Required | Description                                                   |
+| ---------------- | ----------- | -------- | ------------------------------------------------------------- |
+| `title`          | String      | Yes      | Judul konten                                                  |
+| `platform`       | Enumeration | Yes      | Platform sosial media (Instagram, Facebook, TikTok, LinkedIn) |
+| `post_type`      | Enumeration | Yes      | Jenis post (Image, Video, Carousel, Reels, Story)             |
+| `caption`        | Text        | Yes      | Caption konten                                                |
+| `hashtags`       | String      | No       | Hashtag yang digunakan                                        |
+| `thumbnail`      | Media       | No       | Thumbnail konten                                              |
+| `scheduled_date` | DateTime    | No       | Tanggal jadwal posting                                        |
+| `is_published`   | Boolean     | Yes      | Status publikasi                                              |
 
 ---
 
@@ -461,8 +455,7 @@ curl -X POST \
     "post_type": "Image",
     "caption": "Test caption for development #TestHashtag",
     "hashtags": "#TestHashtag #Development",
-    "is_published": false,
-    "engagement_rate": 0
+    "is_published": false
   }'
 ```
 
