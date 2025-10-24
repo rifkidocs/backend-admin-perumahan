@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "communication_templates",
+  "info": {
+    "singularName": "communication-template",
+    "pluralName": "communication-templates",
+    "displayName": "Communication Template",
+    "description": "Management system for email and WhatsApp communication templates"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "category": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Email", "WhatsApp"]
+    },
+    "lead_category": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Berminat", "Prioritas", "Closed"]
+    },
+    "subject": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "is_active": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "usage_count": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    }
+  }
+}

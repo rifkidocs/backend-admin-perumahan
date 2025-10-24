@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "social_media_contents",
+  "info": {
+    "singularName": "social-media-content",
+    "pluralName": "social-media-contents",
+    "displayName": "Social Media Content",
+    "description": "Management system for social media marketing content"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "platform": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Instagram", "Facebook", "TikTok", "LinkedIn"]
+    },
+    "post_type": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Image", "Video", "Carousel", "Reels", "Story"]
+    },
+    "content_images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "content_video": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["videos"]
+    },
+    "caption": {
+      "type": "text",
+      "required": true,
+      "maxLength": 2000
+    },
+    "hashtags": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "scheduled_date": {
+      "type": "datetime"
+    },
+    "is_published": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "engagement_rate": {
+      "type": "decimal",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    }
+  }
+}

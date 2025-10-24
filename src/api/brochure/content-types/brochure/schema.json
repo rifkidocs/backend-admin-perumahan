@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "brochures",
+  "info": {
+    "singularName": "brochure",
+    "pluralName": "brochures",
+    "displayName": "Brochure",
+    "description": "Management system for housing brochures and digital catalogs"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["files"]
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "brochures"
+    },
+    "unit_types": {
+      "type": "json",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "is_active": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  }
+}

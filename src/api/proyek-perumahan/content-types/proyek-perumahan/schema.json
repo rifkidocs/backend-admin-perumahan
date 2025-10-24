@@ -275,6 +275,18 @@
       "relation": "oneToMany",
       "target": "api::labor-estimation.labor-estimation",
       "mappedBy": "proyek"
+    },
+    "brochures": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::brochure.brochure",
+      "mappedBy": "project"
+    },
+    "marketing_videos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::marketing-video.marketing-video",
+      "mappedBy": "project"
     }
   }
 }

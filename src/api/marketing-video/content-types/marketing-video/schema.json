@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "marketing_videos",
+  "info": {
+    "singularName": "marketing-video",
+    "pluralName": "marketing-videos",
+    "displayName": "Marketing Video",
+    "description": "Management system for marketing videos and 360° tours"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "video_file": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["videos"]
+    },
+    "thumbnail": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "video_type": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Tour Standar", "Tour 360°", "Promosi", "Testimoni"]
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "marketing_videos"
+    },
+    "unit_type": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "is_active": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  }
+}
