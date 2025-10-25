@@ -4,69 +4,88 @@
   "info": {
     "singularName": "promo",
     "pluralName": "promos",
-    "displayName": "Promo",
-    "description": ""
+    "displayName": "Promotion",
+    "description": "Promotion management system for housing projects"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
-    "nama_promo": {
-      "type": "string"
+    "name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
     },
-    "kode_promo": {
-      "type": "string"
+    "code": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "minLength": 3,
+      "maxLength": 20
     },
-    "deskripsi": {
-      "type": "text"
-    },
-    "tanggal_mulai": {
-      "type": "date"
-    },
-    "tanggal_selesai": {
-      "type": "date"
-    },
-    "jenis_promo": {
+    "type": {
       "type": "enumeration",
-      "enum": [
-        "Diskon",
-        "Cashback",
-        "Hadiah Langsung",
-        "Free Item"
-      ]
+      "required": true,
+      "enum": ["Diskon Langsung", "Cashback", "Free Item"]
     },
-    "nilai_promo": {
-      "type": "decimal"
+    "value": {
+      "type": "biginteger",
+      "required": true,
+      "min": 0
     },
-    "syarat_ketentuan": {
-      "type": "text"
-    },
-    "tipe_unit": {
-      "type": "string"
-    },
-    "status_promo": {
+    "value_type": {
       "type": "enumeration",
-      "enum": [
-        "Aktif",
-        "Tidak Aktif"
-      ]
+      "required": true,
+      "enum": ["Fixed", "Percentage", "Item Value"]
     },
-    "gambar_promo": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+    "start_date": {
+      "type": "date",
+      "required": true
     },
-    "proyek_perumahan": {
+    "end_date": {
+      "type": "date",
+      "required": true
+    },
+    "unit_types": {
+      "type": "json",
+      "required": true
+    },
+    "project": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "promos"
+      "inversedBy": "promotions"
+    },
+    "min_purchase": {
+      "type": "biginteger",
+      "min": 0
+    },
+    "max_discount": {
+      "type": "biginteger",
+      "min": 0
+    },
+    "usage_limit": {
+      "type": "integer",
+      "min": 0
+    },
+    "used_count": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "terms_conditions": {
+      "type": "richtext"
+    },
+    "status_promotion": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Aktif", "Tidak Aktif", "Expired"],
+      "default": "Aktif"
     }
   }
 }

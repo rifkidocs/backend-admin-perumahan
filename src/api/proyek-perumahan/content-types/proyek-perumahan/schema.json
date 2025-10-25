@@ -228,11 +228,17 @@
       "target": "api::progres-harian.progres-harian",
       "mappedBy": "proyek_perumahan"
     },
-    "promos": {
+    "unit_pricings": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToMany",
+      "target": "api::unit-pricing.unit-pricing",
+      "mappedBy": "project"
+    },
+    "promotions": {
+      "type": "relation",
+      "relation": "oneToMany",
       "target": "api::promo.promo",
-      "mappedBy": "proyek_perumahan"
+      "mappedBy": "project"
     },
     "site_plan_documents": {
       "type": "relation",

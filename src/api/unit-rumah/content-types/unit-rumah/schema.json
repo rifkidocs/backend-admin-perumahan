@@ -213,6 +213,12 @@
       "relation": "oneToMany",
       "target": "api::handover-document.handover-document",
       "mappedBy": "unit_rumah"
+    },
+    "unit_pricings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-pricing.unit-pricing",
+      "mappedBy": "unit_rumah"
     }
   }
 }

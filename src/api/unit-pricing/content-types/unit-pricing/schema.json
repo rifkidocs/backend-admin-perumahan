@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "unit_pricings",
+  "info": {
+    "singularName": "unit-pricing",
+    "pluralName": "unit-pricings",
+    "displayName": "Unit Pricing",
+    "description": "Unit pricing management for housing projects"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "unit_type": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 50
+    },
+    "price_base": {
+      "type": "biginteger",
+      "required": true,
+      "min": 0
+    },
+    "price_with_ppn": {
+      "type": "biginteger",
+      "required": true,
+      "min": 0
+    },
+    "price_with_extras": {
+      "type": "biginteger",
+      "required": true,
+      "min": 0
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "unit_pricings"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "unit_pricings"
+    },
+    "unit_specification": {
+      "type": "json"
+    },
+    "payment_options": {
+      "type": "enumeration",
+      "enum": ["KPR", "Cash", "Installment", "KPR + Cash"],
+      "required": true
+    },
+    "availability_status": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Available", "Sold", "Reserved"],
+      "default": "Available"
+    },
+    "is_active": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "effective_date": {
+      "type": "date",
+      "required": true
+    },
+    "expiry_date": {
+      "type": "date"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
+    }
+  }
+}
