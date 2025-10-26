@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "riwayat_pembayarans",
+  "info": {
+    "singularName": "riwayat-pembayaran",
+    "pluralName": "riwayat-pembayarans",
+    "displayName": "Riwayat Pembayaran",
+    "description": "Riwayat pembayaran untuk subkontraktor"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "subkontraktor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::subkontraktor.subkontraktor",
+      "inversedBy": "riwayat_pembayarans",
+      "required": true
+    },
+    "jumlah_pembayaran": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "tanggal_pembayaran": {
+      "type": "date",
+      "required": true
+    },
+    "metode_pembayaran": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Transfer Bank", "Tunai", "Cek"]
+    },
+    "nomor_referensi": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "termin": {
+      "type": "integer",
+      "min": 1
+    },
+    "deskripsi": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "status_pembayaran": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Pending", "Berhasil", "Gagal"],
+      "default": "Pending"
+    },
+    "bukti_pembayaran": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images", "files"]
+    },
+    "catatan": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "dibuat_oleh": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

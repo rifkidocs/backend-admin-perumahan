@@ -293,6 +293,30 @@
       "relation": "oneToMany",
       "target": "api::marketing-video.marketing-video",
       "mappedBy": "project"
+    },
+    "pekerjas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pekerja.pekerja",
+      "mappedBy": "proyek"
+    },
+    "subkontraktors": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::subkontraktor.subkontraktor",
+      "mappedBy": "proyek"
+    },
+    "jadwal_kerjas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jadwal-kerja.jadwal-kerja",
+      "mappedBy": "proyek"
+    },
+    "penugasans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penugasan.penugasan",
+      "mappedBy": "proyek"
     }
   }
 }

@@ -74,7 +74,7 @@
       "type": "text",
       "maxLength": 300
     },
-    "status": {
+    "status_pekerja": {
       "type": "enumeration",
       "enum": ["aktif", "nonaktif", "cuti", "terminated"],
       "default": "aktif"

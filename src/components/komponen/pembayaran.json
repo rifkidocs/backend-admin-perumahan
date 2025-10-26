@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_komponen_pembayarans",
+  "info": {
+    "displayName": "Pembayaran",
+    "description": "Komponen untuk data pembayaran subkontraktor"
+  },
+  "options": {},
+  "attributes": {
+    "total_dibayar": {
+      "type": "decimal",
+      "min": 0,
+      "default": 0
+    },
+    "outstanding": {
+      "type": "decimal",
+      "min": 0,
+      "default": 0
+    },
+    "jadwal_pembayaran": {
+      "type": "json"
+    }
+  }
+}

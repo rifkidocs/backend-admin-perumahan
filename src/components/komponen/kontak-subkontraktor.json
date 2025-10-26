@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_komponen_kontak_subkontraktors",
+  "info": {
+    "displayName": "Kontak Subkontraktor",
+    "description": "Komponen kontak khusus untuk subkontraktor dengan PIC"
+  },
+  "options": {},
+  "attributes": {
+    "pic_name": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "telepon": {
+      "type": "string",
+      "required": true,
+      "regex": "^[0-9]{8,15}$"
+    },
+    "email": {
+      "type": "email",
+      "required": false
+    }
+  }
+}

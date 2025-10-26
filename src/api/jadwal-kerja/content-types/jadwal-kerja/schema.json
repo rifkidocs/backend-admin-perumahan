@@ -1,0 +1,81 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jadwal_kerjas",
+  "info": {
+    "singularName": "jadwal-kerja",
+    "pluralName": "jadwal-kerjas",
+    "displayName": "Jadwal Kerja",
+    "description": "Jadwal kerja harian untuk pekerja konstruksi"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tanggal": {
+      "type": "date",
+      "required": true
+    },
+    "shift": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "Pagi (07:00-15:00)",
+        "Siang (08:00-16:00)",
+        "Lembur (16:00-20:00)"
+      ]
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "jadwal_kerjas"
+    },
+    "lokasi_kerja": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "pekerjas": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pekerja.pekerja",
+      "inversedBy": "jadwal_kerjas"
+    },
+    "mandor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pekerja.pekerja"
+    },
+    "jam_mulai": {
+      "type": "time",
+      "required": true
+    },
+    "jam_selesai": {
+      "type": "time",
+      "required": true
+    },
+    "target_pekerjaan": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "status_jadwal": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Dijadwalkan", "Berlangsung", "Selesai", "Dibatalkan"],
+      "default": "Dijadwalkan"
+    },
+    "jumlah_pekerja": {
+      "type": "integer",
+      "min": 0,
+      "required": true
+    },
+    "kehadiran": {
+      "type": "json"
+    },
+    "catatan": {
+      "type": "text",
+      "maxLength": 500
+    }
+  }
+}

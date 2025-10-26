@@ -1,0 +1,111 @@
+{
+  "kind": "collectionType",
+  "collectionName": "subkontraktors",
+  "info": {
+    "singularName": "subkontraktor",
+    "pluralName": "subkontraktors",
+    "displayName": "Subkontraktor",
+    "description": "Manajemen subkontraktor untuk proyek konstruksi"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama_perusahaan": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "jenis_pekerjaan": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "Pekerjaan Struktur",
+        "Pekerjaan Atap",
+        "Instalasi Listrik",
+        "Instalasi Plumbing",
+        "Pekerjaan Finishing",
+        "Pekerjaan Landscape",
+        "Pekerjaan Mekanikal",
+        "Pekerjaan Keamanan",
+        "Pembersihan",
+        "Lainnya"
+      ]
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "subkontraktors"
+    },
+    "kontak": {
+      "type": "component",
+      "component": "komponen.kontak-subkontraktor",
+      "repeatable": false,
+      "required": true
+    },
+    "alamat": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "nilai_kontrak": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "progress_pekerjaan": {
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "status_kontrak": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Aktif", "Selesai", "Dibatalkan"],
+      "default": "Aktif"
+    },
+    "tanggal_mulai": {
+      "type": "date",
+      "required": true
+    },
+    "tanggal_selesai_estimasi": {
+      "type": "date",
+      "required": true
+    },
+    "tanggal_selesai_aktual": {
+      "type": "date"
+    },
+    "pembayaran": {
+      "type": "component",
+      "component": "komponen.pembayaran",
+      "repeatable": false
+    },
+    "kontrak_dokumen": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"]
+    },
+    "surat_penawaran": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"]
+    },
+    "dokumen_pendukung": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "files"]
+    },
+    "riwayat_pembayarans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::riwayat-pembayaran.riwayat-pembayaran",
+      "mappedBy": "subkontraktor"
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "kind": "collectionType",
+  "collectionName": "penugasans",
+  "info": {
+    "singularName": "penugasan",
+    "pluralName": "penugasans",
+    "displayName": "Penugasan",
+    "description": "Penugasan pekerjaan untuk pekerja konstruksi"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama_tugas": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "deskripsi": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "penugasans"
+    },
+    "lokasi": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "penanggung_jawab": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pekerja.pekerja"
+    },
+    "pekerjas": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pekerja.pekerja",
+      "inversedBy": "penugasans"
+    },
+    "tanggal_mulai": {
+      "type": "date",
+      "required": true
+    },
+    "tanggal_selesai": {
+      "type": "date",
+      "required": true
+    },
+    "status_tugas": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Belum Mulai", "On Progress", "Selesai", "Dibatalkan"],
+      "default": "Belum Mulai"
+    },
+    "progress_persentase": {
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "prioritas": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Rendah", "Sedang", "Tinggi", "Urgent"],
+      "default": "Sedang"
+    },
+    "estimasi_durasi": {
+      "type": "integer",
+      "min": 1
+    },
+    "jumlah_pekerja": {
+      "type": "integer",
+      "min": 1,
+      "required": true
+    },
+    "materials_required": {
+      "type": "json"
+    },
+    "target_output": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "actual_output": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "catatan": {
+      "type": "text",
+      "maxLength": 500
+    }
+  }
+}

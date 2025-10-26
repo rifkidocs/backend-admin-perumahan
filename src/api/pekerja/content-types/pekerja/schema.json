@@ -1,0 +1,117 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pekerjas",
+  "info": {
+    "singularName": "pekerja",
+    "pluralName": "pekerjas",
+    "displayName": "Pekerja",
+    "description": "Tenaga kerja lapangan untuk proyek konstruksi"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama_lengkap": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "nik": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[0-9]{16}$"
+    },
+    "posisi": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "Mandor",
+        "Tukang Batu",
+        "Tukang Kayu",
+        "Tukang Cat",
+        "Tukang Listrik",
+        "Tukang Plumbing",
+        "Tukang Besi",
+        "Tukang Keramik",
+        "Kernet",
+        "Operator Alat",
+        "Security",
+        "Cleaning Service"
+      ]
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "pekerjas"
+    },
+    "kontak": {
+      "type": "component",
+      "component": "komponen.kontak",
+      "repeatable": false,
+      "required": true
+    },
+    "tanggal_mulai": {
+      "type": "date",
+      "required": true
+    },
+    "tanggal_berakhir": {
+      "type": "date"
+    },
+    "status_pekerja": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["Aktif", "Nonaktif", "Cuti"],
+      "default": "Aktif"
+    },
+    "alamat": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "keahlian": {
+      "type": "json"
+    },
+    "upah_harian": {
+      "type": "decimal",
+      "min": 0
+    },
+    "dokumen": {
+      "type": "component",
+      "component": "komponen.dokumen",
+      "repeatable": true
+    },
+    "foto": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "ktp": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images", "files"]
+    },
+    "kontrak": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"]
+    },
+    "jadwal_kerjas": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::jadwal-kerja.jadwal-kerja",
+      "mappedBy": "pekerjas"
+    },
+    "penugasans": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::penugasan.penugasan",
+      "mappedBy": "pekerjas"
+    }
+  }
+}
