@@ -25,7 +25,14 @@
     },
     "status_absensi": {
       "type": "enumeration",
-      "enum": ["hadir", "terlambat", "absen", "izin", "sakit", "lembur"],
+      "enum": [
+        "hadir",
+        "terlambat",
+        "absen",
+        "izin",
+        "sakit",
+        "lembur"
+      ],
       "required": true,
       "default": "hadir"
     },
@@ -41,7 +48,9 @@
     "foto_absensi": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "required": true
     },
     "lokasi_absensi": {
@@ -80,7 +89,11 @@
     },
     "approval_status": {
       "type": "enumeration",
-      "enum": ["pending", "approved", "rejected"],
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
       "default": "pending"
     },
     "approved_by": {

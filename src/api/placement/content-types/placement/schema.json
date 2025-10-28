@@ -38,7 +38,11 @@
     },
     "status_penempatan": {
       "type": "enumeration",
-      "enum": ["aktif", "selesai", "dipindahkan"],
+      "enum": [
+        "aktif",
+        "selesai",
+        "dipindahkan"
+      ],
       "required": true,
       "default": "aktif"
     },

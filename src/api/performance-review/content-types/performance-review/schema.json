@@ -82,6 +82,12 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan"
+    },
+    "employee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "performance_reviews"
     }
   }
 }

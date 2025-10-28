@@ -16,17 +16,25 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
-      "inversedBy": "leave_requests",
-      "required": true
+      "inversedBy": "leave_requests"
     },
     "request_type": {
       "type": "enumeration",
-      "enum": ["cuti", "izin_pribadi", "izin_dinas", "izin_sakit"],
+      "enum": [
+        "cuti",
+        "izin_pribadi",
+        "izin_dinas",
+        "izin_sakit"
+      ],
       "required": true
     },
     "leave_type": {
       "type": "enumeration",
-      "enum": ["tahunan", "melahirkan", "sakit"],
+      "enum": [
+        "tahunan",
+        "melahirkan",
+        "sakit"
+      ],
       "required": true
     },
     "start_date": {
@@ -49,7 +57,12 @@
     },
     "request_status": {
       "type": "enumeration",
-      "enum": ["pending", "approved", "rejected", "cancelled"],
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "cancelled"
+      ],
       "required": true,
       "default": "pending"
     },
@@ -68,7 +81,10 @@
     "medical_certificate": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "is_paid": {
       "type": "boolean",
@@ -102,6 +118,12 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user"
+    },
+    "penyetuju": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "cuti"
     }
   }
 }

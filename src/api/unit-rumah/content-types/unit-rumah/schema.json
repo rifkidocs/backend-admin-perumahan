@@ -101,7 +101,11 @@
     },
     "handover_status": {
       "type": "enumeration",
-      "enum": ["pending", "completed", "rejected"]
+      "enum": [
+        "pending",
+        "completed",
+        "rejected"
+      ]
     },
     "construction_cost": {
       "type": "biginteger"
@@ -119,13 +123,18 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "floor_plans": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "location_map": {
       "type": "string",

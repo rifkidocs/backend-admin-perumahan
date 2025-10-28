@@ -10,6 +10,7 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "basic_salary": {
       "type": "decimal",
@@ -53,14 +54,14 @@
     },
     "payment_method": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "transfer",
         "cash",
         "check"
-      ],
-      "required": true
+      ]
     },
-    "employee": {
+    "karyawan": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::karyawan.karyawan",

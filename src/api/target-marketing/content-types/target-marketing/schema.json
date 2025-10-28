@@ -55,7 +55,11 @@
     },
     "status_pembayaran_komisi": {
       "type": "enumeration",
-      "enum": ["belum-dibayar", "sebagian", "lunas"],
+      "enum": [
+        "belum-dibayar",
+        "sebagian",
+        "lunas"
+      ],
       "required": true,
       "default": "belum-dibayar"
     },
@@ -64,13 +68,20 @@
     },
     "metode_pembayaran": {
       "type": "enumeration",
-      "enum": ["transfer", "cash", "check"]
+      "enum": [
+        "transfer",
+        "cash",
+        "check"
+      ]
     },
     "bukti_pembayaran": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "notes": {
       "type": "text",

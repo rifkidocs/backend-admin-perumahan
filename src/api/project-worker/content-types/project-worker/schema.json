@@ -25,7 +25,11 @@
     },
     "worker_type": {
       "type": "enumeration",
-      "enum": ["karyawan", "outsourced", "harian"],
+      "enum": [
+        "karyawan",
+        "outsourced",
+        "harian"
+      ],
       "required": true
     },
     "employee_id": {
@@ -76,7 +80,12 @@
     },
     "status_pekerja": {
       "type": "enumeration",
-      "enum": ["aktif", "nonaktif", "cuti", "terminated"],
+      "enum": [
+        "aktif",
+        "nonaktif",
+        "cuti",
+        "terminated"
+      ],
       "default": "aktif"
     },
     "project": {

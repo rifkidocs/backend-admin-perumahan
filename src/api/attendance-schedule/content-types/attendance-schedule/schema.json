@@ -16,8 +16,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
-      "inversedBy": "attendance_schedules",
-      "required": true
+      "inversedBy": "attendance_schedules"
     },
     "schedule_name": {
       "type": "string",

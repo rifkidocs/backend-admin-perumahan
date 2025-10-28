@@ -16,12 +16,15 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
-      "inversedBy": "leave_quotas",
-      "required": true
+      "inversedBy": "leave_quotas"
     },
     "leave_type": {
       "type": "enumeration",
-      "enum": ["tahunan", "melahirkan", "sakit"],
+      "enum": [
+        "tahunan",
+        "melahirkan",
+        "sakit"
+      ],
       "required": true
     },
     "annual_quota": {

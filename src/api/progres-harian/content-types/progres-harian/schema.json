@@ -74,13 +74,17 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "photos_after": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "material_masuk": {
       "type": "json"
@@ -103,7 +107,11 @@
     },
     "status_harian": {
       "type": "enumeration",
-      "enum": ["sesuai_jadwal", "terlambat", "maju_jadwal"],
+      "enum": [
+        "sesuai_jadwal",
+        "terlambat",
+        "maju_jadwal"
+      ],
       "default": "sesuai_jadwal"
     },
     "deskripsi": {
