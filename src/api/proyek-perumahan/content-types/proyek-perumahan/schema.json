@@ -323,6 +323,12 @@
       "relation": "oneToMany",
       "target": "api::lead-marketing.lead-marketing",
       "mappedBy": "interest"
+    },
+    "bookings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::booking.booking",
+      "mappedBy": "project"
     }
   }
 }
