@@ -23,7 +23,8 @@
         "exhibition_report",
         "open_house_report",
         "canvassing_report",
-        "visit_report"
+        "visit_report",
+        "create_content_report"
       ],
       "required": true
     },

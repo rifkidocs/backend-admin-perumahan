@@ -33,7 +33,7 @@ Dokumentasi ini menjelaskan implementasi sistem Jadwal & Kegiatan Marketing meng
     },
     "activity_type": {
       "type": "enumeration",
-      "enum": ["exhibition", "open_house", "site_visit", "canvassing", "customer_visit", "phone_call"],
+      "enum": ["exhibition", "open_house", "site_visit", "canvassing", "customer_visit", "phone_call", "create_content"],
       "required": true
     },
     "description": {
@@ -143,7 +143,7 @@ Dokumentasi ini menjelaskan implementasi sistem Jadwal & Kegiatan Marketing meng
     },
     "report_type": {
       "type": "enumeration",
-      "enum": ["exhibition_report", "open_house_report", "canvassing_report", "visit_report"],
+      "enum": ["exhibition_report", "open_house_report", "canvassing_report", "visit_report", "create_content_report"],
       "required": true
     },
     "schedule": {

@@ -33,6 +33,7 @@ module.exports = {
                 canvassing: "Canvassing",
                 customer_visit: "Kunjungan Customer",
                 phone_call: "Telepon",
+                create_content: "Membuat Konten",
             };
 
             const date = new Date(data.start_date).toLocaleDateString("id-ID");
