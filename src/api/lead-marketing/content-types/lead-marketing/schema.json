@@ -24,7 +24,7 @@
     },
     "email": {
       "type": "email",
-      "required": true
+      "required": false
     },
     "address": {
       "type": "text",
@@ -34,30 +34,29 @@
       "type": "enumeration",
       "enum": [
         "website",
-        "pameran",
-        "referensi",
-        "iklan",
-        "sosmed",
+        "kunjungan",
+        "media_social",
+        "digital_marketing",
         "lainnya"
       ],
       "required": true
     },
     "interest": {
-      "type": "string",
-      "maxLength": 50
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "interested_leads"
     },
-    "budget": {
-      "type": "biginteger"
+    "rencana_pembelian": {
+      "type": "enumeration",
+      "enum": ["cash", "cash_bertahap", "kpr"],
+      "required": false
     },
     "status_lead": {
       "type": "enumeration",
-      "enum": [
-        "baru",
-        "berminat",
-        "prioritas"
-      ],
+      "enum": ["ragu_ragu", "berminat", "prioritas"],
       "required": true,
-      "default": "baru"
+      "default": "ragu_ragu"
     },
     "date": {
       "type": "date",
