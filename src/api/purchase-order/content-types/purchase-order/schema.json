@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchase_orders",
+  "info": {
+    "singularName": "purchase-order",
+    "pluralName": "purchase-orders",
+    "displayName": "Purchase Order",
+    "description": "Purchase orders for materials and services"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "poNumber": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "supplier": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::supplier.supplier",
+      "inversedBy": "purchase_orders"
+    },
+    "materials": {
+      "type": "component",
+      "component": "shared.material-item",
+      "repeatable": true
+    },
+    "totalAmount": {
+      "type": "decimal",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "sent",
+        "approved",
+        "rejected",
+        "completed",
+        "cancelled",
+        "delivered"
+      ],
+      "default": "draft"
+    },
+    "deliveryDate": {
+      "type": "date"
+    },
+    "paymentTerms": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

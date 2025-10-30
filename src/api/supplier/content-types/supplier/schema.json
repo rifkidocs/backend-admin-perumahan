@@ -1,0 +1,81 @@
+{
+  "kind": "collectionType",
+  "collectionName": "suppliers",
+  "info": {
+    "singularName": "supplier",
+    "pluralName": "suppliers",
+    "displayName": "Supplier",
+    "description": "Supplier management for construction materials and services"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "code": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "Perusahaan",
+        "Individu"
+      ]
+    },
+    "contact": {
+      "type": "component",
+      "component": "komponen.kontak",
+      "repeatable": false
+    },
+    "address": {
+      "type": "text"
+    },
+    "materials": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::material.material",
+      "mappedBy": "suppliers"
+    },
+    "rating": {
+      "type": "decimal"
+    },
+    "status_supplier": {
+      "type": "enumeration",
+      "default": "active",
+      "enum": [
+        "active",
+        "inactive",
+        "blacklist"
+      ]
+    },
+    "lastOrderDate": {
+      "type": "date"
+    },
+    "totalPurchases": {
+      "type": "decimal"
+    },
+    "documents": {
+      "type": "component",
+      "component": "komponen.dokumen",
+      "repeatable": true
+    },
+    "purchase_orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchase-order.purchase-order",
+      "mappedBy": "supplier"
+    },
+    "evaluations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::supplier-evaluation.supplier-evaluation",
+      "mappedBy": "supplier"
+    }
+  }
+}

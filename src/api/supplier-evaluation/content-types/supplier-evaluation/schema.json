@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "supplier_evaluations",
+  "info": {
+    "singularName": "supplier-evaluation",
+    "pluralName": "supplier-evaluations",
+    "displayName": "Supplier Evaluation",
+    "description": "Evaluations of supplier performance"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "supplier": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::supplier.supplier",
+      "inversedBy": "evaluations"
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "material": {
+      "type": "string",
+      "required": true
+    },
+    "priceRating": {
+      "type": "integer",
+      "min": 1,
+      "max": 5,
+      "required": true
+    },
+    "qualityRating": {
+      "type": "integer",
+      "min": 1,
+      "max": 5,
+      "required": true
+    },
+    "deliveryRating": {
+      "type": "integer",
+      "min": 1,
+      "max": 5,
+      "required": true
+    },
+    "overallRating": {
+      "type": "decimal",
+      "min": 1,
+      "max": 5,
+      "required": true
+    },
+    "notes": {
+      "type": "text"
+    },
+    "evaluatedBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

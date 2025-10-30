@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_materials",
+  "info": {
+    "displayName": "Material",
+    "description": "Component for materials supplied by vendors"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "unit": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "string"
+    },
+    "specifications": {
+      "type": "text"
+    }
+  }
+}

@@ -16,21 +16,32 @@
       "required": true,
       "maxLength": 255
     },
+    "kode_material": {
+      "type": "string",
+      "unique": true,
+      "maxLength": 50
+    },
     "kategori": {
       "type": "enumeration",
       "enum": [
-        "Material Struktur",
-        "Material Atap",
-        "Material Finishing",
-        "Peralatan",
-        "Material Kayu"
+        "Struktur",
+        "Finishing",
+        "MEP",
+        "Alat Bantu"
       ],
       "required": true
     },
     "satuan": {
-      "type": "string",
-      "required": true,
-      "maxLength": 50
+      "type": "enumeration",
+      "enum": [
+        "sak",
+        "pcs",
+        "kg",
+        "meter",
+        "batang",
+        "kaleng"
+      ],
+      "required": true
     },
     "stok": {
       "type": "integer",
@@ -45,7 +56,11 @@
     },
     "status_material": {
       "type": "enumeration",
-      "enum": ["Tersedia", "Segera Habis", "Habis"],
+      "enum": [
+        "Tersedia",
+        "Segera Habis",
+        "Habis"
+      ],
       "required": true,
       "default": "Tersedia"
     },
@@ -57,10 +72,20 @@
       "type": "decimal",
       "min": 0
     },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
     "supplier": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::vendor.vendor",
+      "inversedBy": "materials"
+    },
+    "suppliers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::supplier.supplier",
       "inversedBy": "materials"
     },
     "lokasi_gudang": {
@@ -74,7 +99,10 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     }
   }
 }

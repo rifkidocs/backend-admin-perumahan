@@ -6,23 +6,28 @@
   },
   "options": {},
   "attributes": {
-    "material": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::material.material"
+    "name": {
+      "type": "string",
+      "required": true
     },
     "quantity": {
       "type": "integer",
       "required": true,
       "min": 1
     },
-    "unit_price": {
+    "unit": {
+      "type": "string",
+      "required": true
+    },
+    "price": {
       "type": "decimal",
+      "required": true,
       "min": 0
     },
-    "total_price": {
+    "quality": {
       "type": "decimal",
-      "min": 0
+      "min": 0,
+      "max": 5
     }
   }
 }
