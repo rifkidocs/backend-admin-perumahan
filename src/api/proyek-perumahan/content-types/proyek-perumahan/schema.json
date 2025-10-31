@@ -329,6 +329,12 @@
       "relation": "oneToMany",
       "target": "api::booking.booking",
       "mappedBy": "project"
+    },
+    "penerimaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penerimaan-material.penerimaan-material",
+      "mappedBy": "project"
     }
   }
 }

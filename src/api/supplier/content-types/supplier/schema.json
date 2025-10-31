@@ -76,6 +76,12 @@
       "relation": "oneToMany",
       "target": "api::supplier-evaluation.supplier-evaluation",
       "mappedBy": "supplier"
+    },
+    "penerimaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penerimaan-material.penerimaan-material",
+      "mappedBy": "supplier"
     }
   }
 }

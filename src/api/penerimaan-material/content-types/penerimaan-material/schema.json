@@ -5,43 +5,105 @@
     "singularName": "penerimaan-material",
     "pluralName": "penerimaan-materials",
     "displayName": "Penerimaan Material",
-    "description": ""
+    "description": "Material receiving system for warehouse management"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
-    "nomor_penerimaan": {
+    "poNumber": {
       "type": "string",
       "required": true
     },
-    "tanggal_penerimaan": {
-      "type": "date"
+    "receivingDate": {
+      "type": "date",
+      "required": true
     },
-    "status_penerimaan_material": {
-      "type": "enumeration",
-      "enum": [
-        "Lengkap",
-        "Kurang",
-        "Return"
-      ]
+    "receivingTime": {
+      "type": "time",
+      "required": true
     },
-    "keterangan": {
+    "supplier": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::supplier.supplier",
+      "inversedBy": "penerimaan_materials"
+    },
+    "deliveryPerson": {
+      "type": "string",
+      "required": true
+    },
+    "deliveryPersonPhone": {
       "type": "string"
     },
-    "bukti_penerimaan": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+    "material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::material.material",
+      "inversedBy": "penerimaan_materials"
     },
-    "item_penerimaan": {
-      "type": "json"
+    "quantity": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "unit": {
+      "type": "string",
+      "required": true
+    },
+    "condition": {
+      "type": "enumeration",
+      "enum": [
+        "Baik",
+        "Rusak",
+        "Kurang"
+      ],
+      "required": true,
+      "default": "Baik"
+    },
+    "storageLocation": {
+      "type": "string",
+      "required": true
+    },
+    "statusReceiving": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "in-progress",
+        "completed",
+        "rejected"
+      ],
+      "required": true,
+      "default": "pending"
+    },
+    "qualityChecked": {
+      "type": "boolean",
+      "default": false
+    },
+    "qualityCheckDate": {
+      "type": "datetime"
+    },
+    "qualityChecker": {
+      "type": "string"
+    },
+    "temperature": {
+      "type": "decimal"
+    },
+    "humidity": {
+      "type": "decimal"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "receivedBy": {
+      "type": "string",
+      "required": true
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "penerimaan_materials"
     },
     "purchasing": {
       "type": "relation",
