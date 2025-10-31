@@ -39,7 +39,13 @@
     },
     "status_po": {
       "type": "enumeration",
-      "enum": ["Diproses", "Dikirim", "Diterima", "Terlambat", "Dibatalkan"],
+      "enum": [
+        "Diproses",
+        "Dikirim",
+        "Diterima",
+        "Terlambat",
+        "Dibatalkan"
+      ],
       "required": true,
       "default": "Diproses"
     },

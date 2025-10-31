@@ -10,6 +10,7 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "poNumber": {
       "type": "string",
@@ -53,13 +54,13 @@
     },
     "condition": {
       "type": "enumeration",
+      "required": true,
+      "default": "Baik",
       "enum": [
         "Baik",
         "Rusak",
         "Kurang"
-      ],
-      "required": true,
-      "default": "Baik"
+      ]
     },
     "storageLocation": {
       "type": "string",
@@ -67,14 +68,14 @@
     },
     "statusReceiving": {
       "type": "enumeration",
+      "required": true,
+      "default": "pending",
       "enum": [
         "pending",
         "in-progress",
         "completed",
         "rejected"
-      ],
-      "required": true,
-      "default": "pending"
+      ]
     },
     "qualityChecked": {
       "type": "boolean",
@@ -116,6 +117,13 @@
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
       "inversedBy": "penerimaan_materials"
+    },
+    "nota": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }
