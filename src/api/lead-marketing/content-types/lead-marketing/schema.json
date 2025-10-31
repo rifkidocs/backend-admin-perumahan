@@ -28,6 +28,7 @@
     },
     "address": {
       "type": "text",
+      "required": false,
       "maxLength": 500
     },
     "source": {
@@ -64,6 +65,7 @@
     },
     "notes": {
       "type": "text",
+      "required": false,
       "maxLength": 1000
     },
     "marketing": {
