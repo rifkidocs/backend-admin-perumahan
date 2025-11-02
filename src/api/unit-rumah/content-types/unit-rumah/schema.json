@@ -34,26 +34,26 @@
     },
     "price": {
       "type": "biginteger",
-      "required": true
+      "required": false
     },
     "land_area": {
       "type": "integer",
-      "required": true,
+      "required": false,
       "min": 0
     },
     "building_area": {
       "type": "integer",
-      "required": true,
+      "required": false,
       "min": 0
     },
     "bedrooms": {
       "type": "integer",
-      "required": true,
+      "required": false,
       "min": 0
     },
     "bathrooms": {
       "type": "integer",
-      "required": true,
+      "required": false,
       "min": 0
     },
     "garage": {
@@ -81,14 +81,14 @@
     },
     "progress": {
       "type": "integer",
-      "required": true,
+      "required": false,
       "default": 0,
       "min": 0,
       "max": 100
     },
     "estimated_completion": {
       "type": "date",
-      "required": true
+      "required": false
     },
     "construction_start": {
       "type": "date",
@@ -138,10 +138,6 @@
         "images",
         "files"
       ]
-    },
-    "location_map": {
-      "type": "string",
-      "regex": "^-?[0-9]{1,3}\\.[0-9]+,-?[0-9]{1,3}\\.[0-9]+$"
     },
     "notes": {
       "type": "text",
