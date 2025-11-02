@@ -18,7 +18,11 @@
     },
     "document_type": {
       "type": "enumeration",
-      "enum": ["BAST", "Check List", "Dokumen Garansi"],
+      "enum": [
+        "BAST",
+        "Check List",
+        "Dokumen Garansi"
+      ],
       "required": true
     },
     "unit": {
@@ -33,14 +37,22 @@
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "handover_date": {
       "type": "date"
     },
     "status_handover": {
       "type": "enumeration",
-      "enum": ["draft", "signed", "complete", "active"],
+      "enum": [
+        "draft",
+        "signed",
+        "complete",
+        "active"
+      ],
       "default": "draft"
     },
     "signature_required": {
@@ -50,7 +62,10 @@
     "signature_file": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "description": {
       "type": "text",

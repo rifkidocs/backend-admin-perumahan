@@ -18,14 +18,21 @@
     },
     "document_type": {
       "type": "enumeration",
-      "enum": ["RAB", "BOQ Material", "BOQ Infrastruktur"],
+      "enum": [
+        "RAB",
+        "BOQ Material",
+        "BOQ Infrastruktur"
+      ],
       "required": true
     },
     "file": {
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "unit_type": {
       "type": "string",
@@ -43,7 +50,12 @@
     },
     "status_boq": {
       "type": "enumeration",
-      "enum": ["draft", "approved", "active", "archived"],
+      "enum": [
+        "draft",
+        "approved",
+        "active",
+        "archived"
+      ],
       "default": "draft"
     },
     "description": {
@@ -52,7 +64,10 @@
     },
     "currency": {
       "type": "enumeration",
-      "enum": ["IDR", "USD"],
+      "enum": [
+        "IDR",
+        "USD"
+      ],
       "default": "IDR"
     },
     "approved_by": {

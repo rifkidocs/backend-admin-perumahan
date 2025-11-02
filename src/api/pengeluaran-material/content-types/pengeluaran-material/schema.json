@@ -95,6 +95,12 @@
         "images",
         "files"
       ]
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "pengeluaran_materials"
     }
   }
 }

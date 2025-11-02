@@ -49,13 +49,22 @@
     },
     "payment_options": {
       "type": "enumeration",
-      "enum": ["KPR", "Cash", "Installment", "KPR + Cash"],
+      "enum": [
+        "KPR",
+        "Cash",
+        "Installment",
+        "KPR + Cash"
+      ],
       "required": true
     },
     "availability_status": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Available", "Sold", "Reserved"],
+      "enum": [
+        "Available",
+        "Sold",
+        "Reserved"
+      ],
       "default": "Available"
     },
     "is_active": {
