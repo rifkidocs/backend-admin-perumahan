@@ -1,0 +1,93 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stock_opnames",
+  "info": {
+    "singularName": "stock-opname",
+    "pluralName": "stock-opnames",
+    "displayName": "Stock Opname",
+    "description": "Pemeriksaan stock fisik material vs sistem"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "opname_number": {
+      "type": "string",
+      "maxLength": 50,
+      "required": true,
+      "unique": true
+    },
+    "opname_date": {
+      "type": "date",
+      "required": true
+    },
+    "opname_time": {
+      "type": "time",
+      "required": true
+    },
+    "location": {
+      "type": "string",
+      "maxLength": 255,
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Semua Kategori",
+      "enum": [
+        "Struktur",
+        "Finishing",
+        "MEP",
+        "Alat Bantu",
+        "Semua Kategori"
+      ]
+    },
+    "status_opname": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Draft",
+      "enum": [
+        "Draft",
+        "In Progress",
+        "Completed",
+        "Reviewed"
+      ]
+    },
+    "pic": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "reviewer": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "stock_opname_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::stock-opname-item.stock-opname-item",
+      "mappedBy": "stock_opname"
+    },
+    "total_items": {
+      "type": "integer",
+      "min": 0
+    },
+    "total_variance": {
+      "type": "integer"
+    },
+    "document_attachment": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    }
+  }
+}
