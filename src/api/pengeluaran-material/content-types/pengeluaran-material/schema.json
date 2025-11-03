@@ -4,8 +4,8 @@
   "info": {
     "singularName": "pengeluaran-material",
     "pluralName": "pengeluaran-materials",
-    "displayName": "Pengeluaran Material",
-    "description": "Sistem Pengeluaran Material (Issuance) dari gudang ke proyek"
+    "displayName": "Pengeluaran & Distribusi Material",
+    "description": "Sistem Pengeluaran dan Distribusi Material dari gudang ke proyek dengan tracking lengkap"
   },
   "options": {
     "draftAndPublish": false
@@ -13,7 +13,12 @@
   "attributes": {
     "mrNumber": {
       "type": "string",
-      "required": true,
+      "required": false,
+      "unique": true
+    },
+    "distributionNumber": {
+      "type": "string",
+      "required": false,
       "unique": true
     },
     "date": {
@@ -78,11 +83,14 @@
     "status_issuance": {
       "type": "enumeration",
       "enum": [
+        "pending",
+        "in-transit",
+        "delivered",
         "Pending",
         "Sedang Diproses",
         "Selesai"
       ],
-      "default": "Pending"
+      "default": "pending"
     },
     "notes": {
       "type": "text"
@@ -95,6 +103,82 @@
         "images",
         "files"
       ]
+    },
+    "driver": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "escort": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "supervisor": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "vehicle": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "priorityLevel": {
+      "type": "enumeration",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ],
+      "default": "normal"
+    },
+    "estimatedArrival": {
+      "type": "datetime"
+    },
+    "actualArrival": {
+      "type": "datetime"
+    },
+    "departureTime": {
+      "type": "datetime"
+    },
+    "deliveryCost": {
+      "type": "decimal",
+      "min": 0
+    },
+    "trackingNotes": {
+      "type": "text"
+    },
+    "receiverName": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "receiverPosition": {
+      "type": "string",
+      "maxLength": 255
+    },
+    "deliveryNotes": {
+      "type": "text"
+    },
+    "vehicleNumber": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "vehicleCapacity": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "transportType": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "needCrane": {
+      "type": "boolean",
+      "default": false
+    },
+    "needHelper": {
+      "type": "boolean",
+      "default": false
+    },
+    "specialInstructions": {
+      "type": "text"
     },
     "unit_rumah": {
       "type": "relation",
