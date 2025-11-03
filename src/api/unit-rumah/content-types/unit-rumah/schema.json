@@ -229,7 +229,7 @@
       "mappedBy": "unit_rumah"
     },
     "kelebihan_tanah": {
-      "type": "integer"
+      "type": "decimal"
     }
   }
 }
