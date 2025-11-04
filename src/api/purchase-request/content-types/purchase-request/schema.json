@@ -1,0 +1,110 @@
+{
+  "kind": "collectionType",
+  "collectionName": "purchase_requests",
+  "info": {
+    "singularName": "purchase-request",
+    "pluralName": "purchase-requests",
+    "displayName": "Purchase Request",
+    "description": "Purchase Request system for external supplier procurement"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "pr_number": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "request_date": {
+      "type": "date",
+      "required": true
+    },
+    "needed_date": {
+      "type": "date",
+      "required": true
+    },
+    "material_name": {
+      "type": "string",
+      "maxLength": 200,
+      "required": true
+    },
+    "quantity": {
+      "type": "decimal",
+      "required": true,
+      "min": 1
+    },
+    "unit": {
+      "type": "string",
+      "required": true
+    },
+    "estimated_price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "requester": {
+      "type": "string",
+      "maxLength": 100,
+      "required": true
+    },
+    "proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan"
+    },
+    "request_type": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Proyek",
+      "enum": [
+        "Proyek",
+        "Gudang"
+      ]
+    },
+    "status_purchase": {
+      "type": "enumeration",
+      "required": true,
+      "default": "submitted",
+      "enum": [
+        "submitted",
+        "approved",
+        "processed",
+        "completed",
+        "rejected"
+      ]
+    },
+    "priority": {
+      "type": "enumeration",
+      "default": "normal",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ]
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "supplier_id": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::supplier.supplier"
+    },
+    "approved_by": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "approved_date": {
+      "type": "date"
+    },
+    "po_reference": {
+      "type": "string",
+      "maxLength": 50
+    }
+  }
+}

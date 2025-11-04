@@ -283,6 +283,12 @@
       "relation": "oneToOne",
       "target": "api::salary.salary",
       "inversedBy": "karyawan"
+    },
+    "purchase_requests_approved": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchase-request.purchase-request",
+      "mappedBy": "approved_by"
     }
   }
 }
