@@ -5,21 +5,32 @@
     "singularName": "purchase-order",
     "pluralName": "purchase-orders",
     "displayName": "Purchase Order",
-    "description": "Purchase orders for materials and services"
+    "description": "Purchase orders for materials and services with workflow management"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "poNumber": {
+    "kode": {
       "type": "string",
       "required": true,
+      "unique": true,
+      "maxLength": 20
+    },
+    "nomor_po": {
+      "type": "string",
       "unique": true
     },
-    "date": {
+    "tanggal": {
       "type": "date",
       "required": true
+    },
+    "tanggal_order": {
+      "type": "date"
+    },
+    "tanggal_estimasi_delivery": {
+      "type": "date"
     },
     "supplier": {
       "type": "relation",
@@ -27,13 +38,35 @@
       "target": "api::supplier.supplier",
       "inversedBy": "purchase_orders"
     },
+    "items": {
+      "type": "component",
+      "component": "shared.material-item",
+      "repeatable": true
+    },
     "materials": {
       "type": "component",
       "component": "shared.material-item",
       "repeatable": true
     },
+    "total_amount": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
     "totalAmount": {
       "type": "decimal",
+      "min": 0
+    },
+    "status_po": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "dikirim",
+        "diterima_sebagian",
+        "diterima",
+        "dibatalkan"
+      ],
+      "default": "draft",
       "required": true
     },
     "status": {
@@ -49,6 +82,51 @@
       ],
       "default": "draft"
     },
+    "status_payment": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "partial",
+        "paid",
+        "overdue",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "status_delivery": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "processing",
+        "shipped",
+        "partial_delivered",
+        "delivered",
+        "returned"
+      ],
+      "default": "pending"
+    },
+    "status_price": {
+      "type": "enumeration",
+      "enum": [
+        "standard",
+        "negotiated",
+        "promo",
+        "special",
+        "emergency"
+      ],
+      "default": "standard"
+    },
+    "status_quality": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "passed",
+        "failed",
+        "conditional",
+        "rework"
+      ],
+      "default": "pending"
+    },
     "deliveryDate": {
       "type": "date"
     },
@@ -57,6 +135,15 @@
     },
     "notes": {
       "type": "text"
+    },
+    "catatan": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "purchase_request": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::purchase-request.purchase-request"
     }
   }
 }

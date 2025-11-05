@@ -6,22 +6,53 @@
   },
   "options": {},
   "attributes": {
+    "material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::material.material"
+    },
     "name": {
-      "type": "string",
-      "required": true
+      "type": "string"
+    },
+    "jumlah": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 10000
     },
     "quantity": {
       "type": "integer",
-      "required": true,
       "min": 1
     },
+    "satuan": {
+      "type": "string"
+    },
     "unit": {
-      "type": "string",
-      "required": true
+      "type": "string"
+    },
+    "harga": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "harga_satuan": {
+      "type": "decimal",
+      "min": 0
+    },
+    "unit_price": {
+      "type": "decimal",
+      "min": 0
+    },
+    "total_price": {
+      "type": "decimal",
+      "min": 0
+    },
+    "subtotal": {
+      "type": "decimal",
+      "min": 0
     },
     "price": {
       "type": "decimal",
-      "required": true,
       "min": 0
     },
     "quality": {

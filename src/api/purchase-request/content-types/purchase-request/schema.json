@@ -39,10 +39,18 @@
       "type": "string",
       "required": true
     },
-    "estimated_price": {
+    "unit_price": {
       "type": "decimal",
       "required": true,
       "min": 0
+    },
+    "total_price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "estimated_price": {
+      "type": "decimal"
     },
     "requester": {
       "type": "string",
@@ -105,6 +113,12 @@
     "po_reference": {
       "type": "string",
       "maxLength": 50
+    },
+    "purchase_orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::purchase-order.purchase-order",
+      "mappedBy": "purchase_request"
     }
   }
 }
