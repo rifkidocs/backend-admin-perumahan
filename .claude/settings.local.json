@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run strapi:*)"
+      "Bash(npm run strapi:*)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

@@ -4,12 +4,13 @@
   "info": {
     "singularName": "purchasing",
     "pluralName": "purchasings",
-    "displayName": "Purchase Order",
+    "displayName": "Purchasing",
     "description": "Manajemen Purchase Order dan delivery material"
   },
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "nomor_po": {
       "type": "string",
@@ -22,8 +23,8 @@
     },
     "materials": {
       "type": "component",
-      "repeatable": true,
       "component": "shared.material-item",
+      "repeatable": true,
       "required": true
     },
     "tanggal_order": {
@@ -39,15 +40,15 @@
     },
     "status_po": {
       "type": "enumeration",
+      "required": true,
+      "default": "Diproses",
       "enum": [
         "Diproses",
         "Dikirim",
         "Diterima",
         "Terlambat",
         "Dibatalkan"
-      ],
-      "required": true,
-      "default": "Diproses"
+      ]
     },
     "total_harga": {
       "type": "decimal",

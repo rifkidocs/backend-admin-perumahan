@@ -25,26 +25,13 @@
       "type": "date",
       "required": true
     },
-    "material_name": {
-      "type": "string",
-      "maxLength": 200,
+    "items": {
+      "type": "component",
+      "component": "shared.material-item",
+      "repeatable": true,
       "required": true
     },
-    "quantity": {
-      "type": "decimal",
-      "required": true,
-      "min": 1
-    },
-    "unit": {
-      "type": "string",
-      "required": true
-    },
-    "unit_price": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
-    },
-    "total_price": {
+    "total_amount": {
       "type": "decimal",
       "required": true,
       "min": 0
@@ -53,9 +40,9 @@
       "type": "decimal"
     },
     "requester": {
-      "type": "string",
-      "maxLength": 100,
-      "required": true
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
     },
     "proyek": {
       "type": "relation",
