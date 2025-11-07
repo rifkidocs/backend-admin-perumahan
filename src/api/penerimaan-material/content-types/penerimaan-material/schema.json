@@ -14,15 +14,18 @@
   "attributes": {
     "poNumber": {
       "type": "string",
-      "required": true
+      "required": true,
+      "unique": true,
+      "maxLength": 50
     },
     "receivingDate": {
       "type": "date",
       "required": true
     },
     "receivingTime": {
-      "type": "time",
-      "required": true
+      "type": "string",
+      "required": true,
+      "regex": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
     },
     "supplier": {
       "type": "relation",
@@ -32,10 +35,13 @@
     },
     "deliveryPerson": {
       "type": "string",
-      "required": true
+      "required": true,
+      "minLength": 3,
+      "maxLength": 100
     },
     "deliveryPersonPhone": {
-      "type": "string"
+      "type": "string",
+      "regex": "^(\\+62|62|0)[0-9]{9,13}$"
     },
     "material": {
       "type": "relation",
@@ -46,10 +52,12 @@
     "quantity": {
       "type": "decimal",
       "required": true,
-      "min": 0
+      "min": 0.01,
+      "max": 1000000
     },
     "unit": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": ["sak", "pcs", "kg", "kaleng", "meter", "batang", "liter", "dus"],
       "required": true
     },
     "condition": {
@@ -64,7 +72,9 @@
     },
     "storageLocation": {
       "type": "string",
-      "required": true
+      "required": true,
+      "minLength": 5,
+      "maxLength": 200
     },
     "statusReceiving": {
       "type": "enumeration",
@@ -84,21 +94,25 @@
     "qualityCheckDate": {
       "type": "datetime"
     },
-    "qualityChecker": {
-      "type": "string"
-    },
     "temperature": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": -10,
+      "max": 50
     },
     "humidity": {
-      "type": "decimal"
+      "type": "decimal",
+      "min": 0,
+      "max": 100
     },
     "notes": {
-      "type": "text"
+      "type": "text",
+      "maxLength": 1000
     },
     "receivedBy": {
-      "type": "string",
-      "required": true
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "penerimaan_materials_received"
     },
     "project": {
       "type": "relation",
@@ -112,6 +126,10 @@
       "target": "api::purchasing.purchasing",
       "inversedBy": "penerimaan_materials"
     },
+    "qualityChecker": {
+      "type": "string",
+      "maxLength": 100
+    },
     "penerima": {
       "type": "relation",
       "relation": "manyToOne",
@@ -121,9 +139,8 @@
     "nota": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "required": false,
+      "allowedTypes": ["images"]
     }
   }
 }

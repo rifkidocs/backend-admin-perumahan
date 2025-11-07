@@ -289,6 +289,12 @@
       "relation": "oneToMany",
       "target": "api::purchase-request.purchase-request",
       "mappedBy": "approved_by"
+    },
+    "penerimaan_materials_received": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penerimaan-material.penerimaan-material",
+      "mappedBy": "receivedBy"
     }
   }
 }

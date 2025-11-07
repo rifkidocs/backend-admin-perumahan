@@ -109,6 +109,12 @@
       "relation": "oneToMany",
       "target": "api::penerimaan-material.penerimaan-material",
       "mappedBy": "material"
+    },
+    "evaluations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::supplier-evaluation.supplier-evaluation",
+      "mappedBy": "material"
     }
   }
 }
