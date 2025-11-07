@@ -11,11 +11,11 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "project_name": {
-      "type": "string",
-      "required": true,
-      "minLength": 2,
-      "maxLength": 100
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "placements"
     },
     "location": {
       "type": "string",

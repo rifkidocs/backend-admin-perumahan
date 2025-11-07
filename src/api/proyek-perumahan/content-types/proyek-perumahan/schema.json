@@ -366,6 +366,12 @@
       "relation": "oneToMany",
       "target": "api::purchase-request.purchase-request",
       "mappedBy": "proyek"
+    },
+    "placements": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::placement.placement",
+      "mappedBy": "proyek_perumahan"
     }
   }
 }
