@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shifts",
+  "info": {
+    "singularName": "shift",
+    "pluralName": "shifts",
+    "displayName": "Shift",
+    "description": "Master shift untuk manajemen jadwal kerja karyawan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama_shift": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 50
+    },
+    "jam_mulai": {
+      "type": "string",
+      "required": true
+    },
+    "jam_selesai": {
+      "type": "string",
+      "required": true
+    },
+    "kode_shift": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 20
+    },
+    "keterangan": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "jadwal_kerjas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jadwal-kerja.jadwal-kerja",
+      "mappedBy": "shift"
+    },
+    "employees": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::karyawan.karyawan",
+      "mappedBy": "shift_preference"
+    }
+  }
+}

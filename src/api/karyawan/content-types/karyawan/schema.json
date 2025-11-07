@@ -295,6 +295,20 @@
       "relation": "oneToMany",
       "target": "api::penerimaan-material.penerimaan-material",
       "mappedBy": "receivedBy"
+    },
+    "is_security_personnel": {
+      "type": "boolean",
+      "default": false
+    },
+    "can_be_scheduled": {
+      "type": "boolean",
+      "default": true
+    },
+    "shift_preference": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::shift.shift",
+      "inversedBy": "employees"
     }
   }
 }

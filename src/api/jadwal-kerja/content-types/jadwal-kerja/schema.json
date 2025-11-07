@@ -17,13 +17,10 @@
       "required": true
     },
     "shift": {
-      "type": "enumeration",
-      "required": true,
-      "enum": [
-        "Pagi (07:00-15:00)",
-        "Siang (08:00-16:00)",
-        "Lembur (16:00-20:00)"
-      ]
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::shift.shift",
+      "inversedBy": "jadwal_kerjas"
     },
     "proyek": {
       "type": "relation",
@@ -42,19 +39,6 @@
       "target": "api::pekerja.pekerja",
       "inversedBy": "jadwal_kerjas"
     },
-    "mandor": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::pekerja.pekerja"
-    },
-    "jam_mulai": {
-      "type": "time",
-      "required": true
-    },
-    "jam_selesai": {
-      "type": "time",
-      "required": true
-    },
     "target_pekerjaan": {
       "type": "text",
       "maxLength": 500
@@ -62,8 +46,8 @@
     "status_jadwal": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Dijadwalkan", "Berlangsung", "Selesai", "Dibatalkan"],
-      "default": "Dijadwalkan"
+      "enum": ["scheduled", "in_progress", "completed", "cancelled"],
+      "default": "scheduled"
     },
     "jumlah_pekerja": {
       "type": "integer",
