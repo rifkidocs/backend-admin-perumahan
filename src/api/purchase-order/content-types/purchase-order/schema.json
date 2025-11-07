@@ -131,6 +131,12 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::purchase-request.purchase-request"
+    },
+    "evaluations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::supplier-evaluation.supplier-evaluation",
+      "mappedBy": "purchase_order_reference"
     }
   }
 }

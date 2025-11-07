@@ -5,22 +5,29 @@
     "singularName": "supplier-evaluation",
     "pluralName": "supplier-evaluations",
     "displayName": "Supplier Evaluation",
-    "description": "Evaluations of supplier performance"
+    "description": "Supplier performance evaluation system for purchasing management"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
+    "kode": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 50,
+      "regex": "^EVAL-[0-9]{8,15}$"
+    },
+    "tanggal": {
+      "type": "date",
+      "required": true
+    },
     "supplier": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::supplier.supplier",
       "inversedBy": "evaluations"
-    },
-    "date": {
-      "type": "date",
-      "required": true
     },
     "material": {
       "type": "relation",
@@ -28,37 +35,136 @@
       "target": "api::material.material",
       "inversedBy": "evaluations"
     },
-    "priceRating": {
+    "kualitas": {
       "type": "integer",
+      "required": true,
       "min": 1,
       "max": 5,
-      "required": true
+      "default": 3
     },
-    "qualityRating": {
+    "ketepatan_waktu": {
       "type": "integer",
+      "required": true,
       "min": 1,
       "max": 5,
-      "required": true
+      "default": 3
     },
-    "deliveryRating": {
+    "pelayanan": {
       "type": "integer",
+      "required": true,
       "min": 1,
       "max": 5,
-      "required": true
+      "default": 3
     },
-    "overallRating": {
+    "harga": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 5,
+      "default": 3
+    },
+    "total_skor": {
       "type": "decimal",
+      "required": true,
       "min": 1,
       "max": 5,
-      "required": true
+      "default": 3
+    },
+    "catatan": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "evaluator": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "evaluatedBy": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "evaluation_period": {
+      "type": "enumeration",
+      "enum": ["Weekly", "Monthly", "Quarterly", "Annually", "Project-Based"],
+      "default": "Monthly"
+    },
+    "purchase_order_reference": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::purchase-order.purchase-order",
+      "inversedBy": "evaluations"
+    },
+    "goods_receipt_reference": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::penerimaan-material.penerimaan-material",
+      "inversedBy": "evaluations"
+    },
+    "performance_kualitas": {
+      "type": "json",
+      "default": {
+        "product_quality": 0,
+        "specification_compliance": 0,
+        "defect_rate": 0,
+        "consistency": 0
+      }
+    },
+    "performance_waktu": {
+      "type": "json",
+      "default": {
+        "delivery_on_time": 0,
+        "lead_time": 0,
+        "response_time": 0,
+        "order_processing": 0
+      }
+    },
+    "performance_pelayanan": {
+      "type": "json",
+      "default": {
+        "communication": 0,
+        "problem_resolution": 0,
+        "flexibility": 0,
+        "documentation": 0
+      }
+    },
+    "performance_harga": {
+      "type": "json",
+      "default": {
+        "price_competitiveness": 0,
+        "payment_terms": 0,
+        "discount_offers": 0,
+        "cost_effectiveness": 0
+      }
+    },
+    "status_harga": {
+      "type": "enumeration",
+      "enum": ["Excellent", "Good", "Fair", "Poor"],
+      "default": "Good"
+    },
+    "status_kualitas": {
+      "type": "enumeration",
+      "enum": ["Excellent", "Good", "Fair", "Poor"],
+      "default": "Good"
+    },
+    "status_pengiriman": {
+      "type": "enumeration",
+      "enum": ["Excellent", "Good", "Fair", "Poor"],
+      "default": "Good"
+    },
+    "recommendation": {
+      "type": "enumeration",
+      "enum": ["Continue", "Monitor", "Improve", "Terminate"],
+      "default": "Continue"
+    },
+    "next_evaluation_date": {
+      "type": "date"
+    },
+    "improvement_notes": {
+      "type": "text",
+      "maxLength": 2000
     },
     "notes": {
       "type": "text"
-    },
-    "evaluatedBy": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user"
     }
   }
 }

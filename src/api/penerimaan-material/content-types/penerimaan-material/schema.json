@@ -141,6 +141,12 @@
       "multiple": false,
       "required": false,
       "allowedTypes": ["images"]
+    },
+    "evaluations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::supplier-evaluation.supplier-evaluation",
+      "mappedBy": "goods_receipt_reference"
     }
   }
 }
