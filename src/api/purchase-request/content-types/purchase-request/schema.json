@@ -106,6 +106,12 @@
       "relation": "oneToMany",
       "target": "api::purchase-order.purchase-order",
       "mappedBy": "purchase_request"
+    },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "purchaseRequest"
     }
   }
 }

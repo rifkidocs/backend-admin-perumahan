@@ -115,6 +115,12 @@
       "relation": "oneToMany",
       "target": "api::supplier-evaluation.supplier-evaluation",
       "mappedBy": "material"
+    },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "material"
     }
   }
 }

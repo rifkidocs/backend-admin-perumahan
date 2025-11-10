@@ -120,6 +120,12 @@
       "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "penerimaan_materials"
     },
+    "purchaseOrder": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::purchase-order.purchase-order",
+      "inversedBy": "penerimaan_materials"
+    },
     "purchasing": {
       "type": "relation",
       "relation": "manyToOne",
@@ -147,6 +153,12 @@
       "relation": "oneToMany",
       "target": "api::supplier-evaluation.supplier-evaluation",
       "mappedBy": "goods_receipt_reference"
+    },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "goodsReceipt"
     }
   }
 }

@@ -367,6 +367,12 @@
       "target": "api::purchase-request.purchase-request",
       "mappedBy": "proyek"
     },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "project"
+    },
     "placements": {
       "type": "relation",
       "relation": "oneToMany",

@@ -137,6 +137,18 @@
       "relation": "oneToMany",
       "target": "api::supplier-evaluation.supplier-evaluation",
       "mappedBy": "purchase_order_reference"
+    },
+    "penerimaan_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penerimaan-material.penerimaan-material",
+      "mappedBy": "purchaseOrder"
+    },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "purchaseOrder"
     }
   }
 }

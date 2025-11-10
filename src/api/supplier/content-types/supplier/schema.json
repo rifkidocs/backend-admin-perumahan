@@ -88,6 +88,12 @@
       "relation": "oneToMany",
       "target": "api::purchase-request.purchase-request",
       "mappedBy": "supplier_id"
+    },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "supplier"
     }
   }
 }

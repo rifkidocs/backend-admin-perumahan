@@ -309,6 +309,18 @@
       "relation": "manyToOne",
       "target": "api::shift.shift",
       "inversedBy": "employees"
+    },
+    "payment_invoices_paid": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "paidBy"
+    },
+    "payment_invoices_verified": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "verifiedBy"
     }
   }
 }

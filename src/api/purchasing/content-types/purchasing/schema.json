@@ -73,6 +73,12 @@
       "relation": "oneToMany",
       "target": "api::penerimaan-material.penerimaan-material",
       "mappedBy": "purchasing"
+    },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "purchaseOrder"
     }
   }
 }
