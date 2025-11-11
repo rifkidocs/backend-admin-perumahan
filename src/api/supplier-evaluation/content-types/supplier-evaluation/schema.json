@@ -16,8 +16,7 @@
       "type": "string",
       "required": true,
       "unique": true,
-      "maxLength": 50,
-      "regex": "^EVAL-[0-9]{8,15}$"
+      "maxLength": 50
     },
     "tanggal": {
       "type": "date",
