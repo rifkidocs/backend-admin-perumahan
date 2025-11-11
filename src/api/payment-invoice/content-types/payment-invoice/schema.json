@@ -26,21 +26,10 @@
       "type": "date",
       "required": true
     },
-    "poReference": {
-      "type": "string",
-      "required": true,
-      "maxLength": 50
-    },
     "supplier": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::supplier.supplier",
-      "inversedBy": "payment_invoices"
-    },
-    "material": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::material.material",
       "inversedBy": "payment_invoices"
     },
     "amount": {
@@ -124,23 +113,6 @@
       "relation": "manyToOne",
       "target": "api::purchase-order.purchase-order",
       "inversedBy": "payment_invoices"
-    },
-    "purchaseRequest": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::purchase-request.purchase-request",
-      "inversedBy": "payment_invoices"
-    },
-    "project": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "payment_invoices"
-    },
-    "items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "payment-invoice.invoice-item"
     },
     "attachments": {
       "type": "media",
