@@ -321,6 +321,12 @@
       "relation": "oneToMany",
       "target": "api::payment-invoice.payment-invoice",
       "mappedBy": "verifiedBy"
+    },
+    "kas_masuks_verified": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-masuk.kas-masuk",
+      "mappedBy": "verifiedBy"
     }
   }
 }

@@ -5,46 +5,83 @@
     "singularName": "kas-masuk",
     "pluralName": "kas-masuks",
     "displayName": "Kas Masuk",
-    "description": ""
+    "description": "Cash in system for tracking customer payments and KPR disbursements"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "nomor_transaksi": {
-      "type": "string"
+    "date": {
+      "type": "date",
+      "required": true
     },
-    "tanggal_transaksi": {
-      "type": "date"
-    },
-    "jenis_transaksi": {
+    "type": {
       "type": "enumeration",
-      "enum": [
-        "Booking",
-        "DP",
-        "Pelunasan",
-        "Pencairan KPR",
-        "Lainnya"
-      ]
+      "enum": ["booking", "dp", "pelunasan", "kpr", "lainnya"],
+      "required": true
     },
-    "nominal": {
-      "type": "decimal"
+    "amount": {
+      "type": "decimal",
+      "required": true,
+      "min": 1,
+      "max": 9999999999
     },
-    "metode_pembayaran": {
+    "customer": {
+      "type": "string",
+      "required": true,
+      "minLength": 3,
+      "maxLength": 200
+    },
+      "description": {
+      "type": "text",
+      "required": true,
+      "maxLength": 500
+    },
+    "paymentMethod": {
       "type": "enumeration",
-      "enum": [
-        "Transfer",
-        "Tunai",
-        "Cek"
-      ]
+      "enum": ["transfer", "cash", "cek", "giro"],
+      "required": true
     },
-    "keterangan": {
-      "type": "string"
+    "reference": {
+      "type": "string",
+      "maxLength": 100,
+      "default": ""
     },
-    "bukti_pembayaran": {
+    "notes": {
+      "type": "text",
+      "maxLength": 1000,
+      "default": ""
+    },
+    "status_transaksi": {
+      "type": "enumeration",
+      "enum": ["pending", "confirmed", "rejected"],
+      "required": true,
+      "default": "pending"
+    },
+    "statusPayment": {
+      "type": "enumeration",
+      "enum": ["pending", "verified", "rejected"],
+      "required": true,
+      "default": "pending"
+    },
+    "statusPrice": {
+      "type": "enumeration",
+      "enum": ["standard", "discount", "premium"],
+      "default": "standard"
+    },
+    "verifiedBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "kas_masuks_verified"
+    },
+    "verifiedDate": {
+      "type": "datetime"
+    },
+    "paymentProof": {
       "type": "media",
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "allowedTypes": [
         "images",
@@ -53,16 +90,22 @@
         "audios"
       ]
     },
-    "unit_rumah": {
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "kas_masuks"
+    },
+    "customerRelation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "kas_masuks"
+    },
+    "unitRelation": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::unit-rumah.unit-rumah",
-      "inversedBy": "kas_masuks"
-    },
-    "penerima": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::karyawan.karyawan",
       "inversedBy": "kas_masuks"
     }
   }

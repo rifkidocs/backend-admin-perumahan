@@ -117,6 +117,12 @@
       "relation": "oneToMany",
       "target": "api::handover-document.handover-document",
       "mappedBy": "konsumen"
+    },
+    "kas_masuks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-masuk.kas-masuk",
+      "mappedBy": "customerRelation"
     }
   }
 }

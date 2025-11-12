@@ -235,6 +235,12 @@
       "target": "api::kas-keluar.kas-keluar",
       "mappedBy": "proyek_perumahan"
     },
+    "kas_masuks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-masuk.kas-masuk",
+      "mappedBy": "project"
+    },
     "target_marketings": {
       "type": "relation",
       "relation": "oneToMany",
