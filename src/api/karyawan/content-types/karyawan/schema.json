@@ -327,6 +327,18 @@
       "relation": "oneToMany",
       "target": "api::kas-masuk.kas-masuk",
       "mappedBy": "verifiedBy"
+    },
+    "kas_keluars_created": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "createdBy"
+    },
+    "kas_keluars_approved": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "approvedBy"
     }
   }
 }

@@ -94,6 +94,12 @@
       "relation": "oneToMany",
       "target": "api::payment-invoice.payment-invoice",
       "mappedBy": "supplier"
+    },
+    "kas_keluars": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "supplier"
     }
   }
 }

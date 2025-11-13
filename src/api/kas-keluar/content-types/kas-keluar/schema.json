@@ -5,18 +5,142 @@
     "singularName": "kas-keluar",
     "pluralName": "kas-keluars",
     "displayName": "Kas Keluar",
-    "description": ""
+    "description": "Cash out management system for all expense transactions"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
+    "date": {
+      "type": "date",
+      "required": true,
+      "description": "Tanggal transaksi pengeluaran"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["material", "gaji", "operasional", "legal", "lainnya"],
+      "required": true,
+      "description": "Kategori pengeluaran"
+    },
+    "amount": {
+      "type": "integer",
+      "required": true,
+      "min": 1000,
+      "max": 9999999999,
+      "description": "Jumlah pengeluaran dalam Rupiah"
+    },
+    "supplier": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::supplier.supplier",
+      "inversedBy": "kas_keluars",
+      "required": true,
+      "description": "Supplier atau vendor"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "kas_keluars",
+      "nullable": true,
+      "description": "Proyek terkait (opsional)"
+    },
+    "description": {
+      "type": "string",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Deskripsi lengkap pengeluaran"
+    },
+    "paymentMethod": {
+      "type": "enumeration",
+      "enum": ["transfer", "cash", "cek", "giro"],
+      "required": true,
+      "description": "Metode pembayaran yang digunakan"
+    },
+    "invoiceNumber": {
+      "type": "string",
+      "maxLength": 50,
+      "unique": true,
+      "nullable": true,
+      "description": "Nomor invoice atau dokumen referensi"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000,
+      "nullable": true,
+      "description": "Catatan tambahan mengenai transaksi"
+    },
+    "approval_status": {
+      "type": "enumeration",
+      "enum": ["pending", "approved", "rejected"],
+      "required": true,
+      "default": "pending",
+      "description": "Status persetujuan transaksi"
+    },
+    "createdBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "kas_keluars_created",
+      "required": true,
+      "description": "Karyawan yang membuat transaksi"
+    },
+    "approvedBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "kas_keluars_approved",
+      "nullable": true,
+      "description": "Manager yang menyetujui transaksi"
+    },
+    "approvedAt": {
+      "type": "datetime",
+      "nullable": true,
+      "description": "Tanggal dan waktu persetujuan"
+    },
+    "attachment": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images", "files"],
+      "description": "Dokumen pendukung (invoice, kwitansi, dll)"
+    },
+    "bankAccount": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::bank-account.bank-account",
+      "inversedBy": "kas_keluars",
+      "nullable": true,
+      "description": "Rekening bank yang digunakan untuk pembayaran"
+    },
+    "department": {
+      "type": "enumeration",
+      "enum": ["keuangan", "gudang", "hrm", "project", "marketing"],
+      "nullable": true,
+      "description": "Departemen terkait pengeluaran"
+    },
+    "urgent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Status urgent untuk prioritas persetujuan"
+    },
+    "referenceDocument": {
+      "type": "string",
+      "maxLength": 100,
+      "nullable": true,
+      "description": "Nomor dokumen referensi terkait (PO, SPK, dll)"
+    },
     "nomor_transaksi": {
-      "type": "string"
+      "type": "string",
+      "required": false,
+      "description": "Legacy field for backward compatibility"
     },
     "tanggal_transaksi": {
-      "type": "date"
+      "type": "date",
+      "required": false,
+      "description": "Legacy field for backward compatibility"
     },
     "jenis_transaksi": {
       "type": "enumeration",
@@ -26,10 +150,14 @@
         "Operasional",
         "Biaya Legal",
         "Lainnya"
-      ]
+      ],
+      "required": false,
+      "description": "Legacy field for backward compatibility"
     },
     "nominal": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": false,
+      "description": "Legacy field for backward compatibility"
     },
     "metode_pembayaran": {
       "type": "enumeration",
@@ -37,42 +165,33 @@
         "Transfer",
         "Tunai",
         "Cek"
-      ]
+      ],
+      "required": false,
+      "description": "Legacy field for backward compatibility"
     },
     "keterangan": {
-      "type": "string"
-    },
-    "bukti_pembayaran": {
-      "type": "media",
-      "multiple": true,
+      "type": "string",
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "description": "Legacy field for backward compatibility"
     },
-    "penerima": {
-      "type": "string"
+        "penerima": {
+      "type": "string",
+      "required": false,
+      "description": "Legacy field for backward compatibility"
     },
     "vendor": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::vendor.vendor",
-      "inversedBy": "kas_keluars"
-    },
-    "proyek_perumahan": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "kas_keluars"
+      "inversedBy": "kas_keluars",
+      "description": "Legacy relation for backward compatibility"
     },
     "purchasing": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::purchasing.purchasing",
-      "inversedBy": "kas_keluars"
+      "inversedBy": "kas_keluars",
+      "description": "Legacy relation for backward compatibility"
     }
   }
 }

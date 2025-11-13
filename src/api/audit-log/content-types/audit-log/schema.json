@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "audit_logs",
+  "info": {
+    "singularName": "audit-log",
+    "pluralName": "audit-logs",
+    "displayName": "Audit Log",
+    "description": "System audit trail for tracking changes"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "action": {
+      "type": "enumeration",
+      "enum": ["create", "update", "delete", "status_change", "login", "logout"],
+      "required": true,
+      "description": "Type of action performed"
+    },
+    "entity": {
+      "type": "string",
+      "required": true,
+      "description": "Entity type that was modified"
+    },
+    "entityId": {
+      "type": "integer",
+      "description": "ID of the entity that was modified"
+    },
+    "changes": {
+      "type": "json",
+      "description": "Details of changes made"
+    },
+    "timestamp": {
+      "type": "datetime",
+      "required": true,
+      "description": "Timestamp of the action"
+    },
+    "userId": {
+      "type": "integer",
+      "description": "ID of the user who performed the action"
+    },
+    "ipAddress": {
+      "type": "string",
+      "maxLength": 45,
+      "description": "IP address of the user"
+    },
+    "userAgent": {
+      "type": "text",
+      "description": "User agent string"
+    }
+  }
+}
