@@ -35,8 +35,9 @@
       "relation": "manyToOne",
       "target": "api::supplier.supplier",
       "inversedBy": "kas_keluars",
-      "required": true,
-      "description": "Supplier atau vendor"
+      "required": false,
+      "nullable": true,
+      "description": "Supplier atau vendor (tidak required untuk kategori gaji)"
     },
     "project": {
       "type": "relation",
@@ -158,6 +159,20 @@
       "type": "decimal",
       "required": false,
       "description": "Legacy field for backward compatibility"
+    },
+    "salary_id": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::salary.salary",
+      "inversedBy": "kas_keluars",
+      "nullable": true,
+      "description": "Relasi ke data gaji yang menghasilkan transaksi ini"
+    },
+    "bankInfo": {
+      "type": "string",
+      "maxLength": 200,
+      "nullable": true,
+      "description": "Informasi rekening bank untuk transfer (auto-generated dari salary)"
     },
     "metode_pembayaran": {
       "type": "enumeration",

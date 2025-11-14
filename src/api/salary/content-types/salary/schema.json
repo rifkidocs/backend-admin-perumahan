@@ -66,6 +66,13 @@
       "relation": "oneToOne",
       "target": "api::karyawan.karyawan",
       "mappedBy": "salary"
+    },
+    "kas_keluars": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-keluar.kas-keluar",
+      "mappedBy": "salary_id",
+      "description": "Transaksi kas keluar yang dihasilkan dari data gaji ini"
     }
   }
 }
