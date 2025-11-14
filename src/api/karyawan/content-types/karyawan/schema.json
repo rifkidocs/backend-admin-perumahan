@@ -339,6 +339,18 @@
       "relation": "oneToMany",
       "target": "api::kas-keluar.kas-keluar",
       "mappedBy": "approvedBy"
+    },
+    "approved_payables": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "approvedBy"
+    },
+    "created_payables": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "createdBy"
     }
   }
 }
