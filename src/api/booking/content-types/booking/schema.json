@@ -120,6 +120,12 @@
       "type": "decimal",
       "required": false,
       "min": 0
+    },
+    "piutang_konsumens": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::piutang-konsumen.piutang-konsumen",
+      "mappedBy": "booking"
     }
   }
 }

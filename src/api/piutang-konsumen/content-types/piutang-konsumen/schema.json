@@ -1,0 +1,110 @@
+{
+  "kind": "collectionType",
+  "collectionName": "piutang_konsumens",
+  "info": {
+    "singularName": "piutang-konsumen",
+    "pluralName": "piutang-konsumens",
+    "displayName": "Piutang Konsumen",
+    "description": "Consumer receivables management for property sales"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "customer": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::konsumen.konsumen",
+      "inversedBy": "piutang_konsumens"
+    },
+    "unit": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "piutang_konsumens"
+    },
+    "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "piutang_konsumens"
+    },
+    "booking": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::booking.booking",
+      "inversedBy": "piutang_konsumens"
+    },
+    "total_price": {
+      "type": "biginteger",
+      "required": true
+    },
+    "booking_fee": {
+      "type": "biginteger",
+      "required": true,
+      "min": "0"
+    },
+    "down_payment": {
+      "type": "biginteger",
+      "required": true,
+      "min": "0"
+    },
+    "remaining_amount": {
+      "type": "biginteger",
+      "required": true,
+      "min": "0"
+    },
+    "payment_schedule": {
+      "type": "enumeration",
+      "enum": [
+        "cash",
+        "dp",
+        "termin",
+        "kpr"
+      ],
+      "required": true,
+      "default": "dp"
+    },
+    "kpr_status": {
+      "type": "enumeration",
+      "enum": [
+        "proses",
+        "disetujui",
+        "gagal",
+        "tidak"
+      ],
+      "required": true,
+      "default": "tidak"
+    },
+    "status_piutang": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "overdue",
+        "completed",
+        "cancelled"
+      ],
+      "required": true,
+      "default": "active"
+    },
+    "last_payment": {
+      "type": "date"
+    },
+    "next_payment": {
+      "type": "date"
+    },
+    "due_date": {
+      "type": "date"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "payment_history": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.payment-history"
+    }
+  }
+}

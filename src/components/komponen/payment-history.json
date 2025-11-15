@@ -1,0 +1,60 @@
+{
+  "collectionName": "components_payment_histories",
+  "info": {
+    "singularName": "payment-history",
+    "pluralName": "payment-histories",
+    "displayName": "Payment History",
+    "description": "Payment history records for consumer receivables"
+  },
+  "options": {},
+  "attributes": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "amount": {
+      "type": "biginteger",
+      "required": true,
+      "min": "1000"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "booking-fee",
+        "dp",
+        "termin",
+        "kpr",
+        "pelunasan"
+      ],
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "paid",
+        "pending",
+        "failed"
+      ],
+      "required": true,
+      "default": "paid"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "paymentMethod": {
+      "type": "enumeration",
+      "enum": [
+        "cash",
+        "transfer",
+        "check",
+        "giro",
+        "kpr-disbursement"
+      ]
+    },
+    "bankReference": {
+      "type": "string",
+      "maxLength": 100
+    }
+  }
+}

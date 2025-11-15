@@ -123,6 +123,12 @@
       "relation": "oneToMany",
       "target": "api::kas-masuk.kas-masuk",
       "mappedBy": "customerRelation"
+    },
+    "piutang_konsumens": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::piutang-konsumen.piutang-konsumen",
+      "mappedBy": "customer_relationship"
     }
   }
 }

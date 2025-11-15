@@ -384,6 +384,12 @@
       "relation": "oneToMany",
       "target": "api::placement.placement",
       "mappedBy": "proyek_perumahan"
+    },
+    "piutang_konsumens": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::piutang-konsumen.piutang-konsumen",
+      "mappedBy": "project"
     }
   }
 }
