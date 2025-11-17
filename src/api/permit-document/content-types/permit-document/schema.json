@@ -13,7 +13,12 @@
   "attributes": {
     "document_type": {
       "type": "enumeration",
-      "enum": ["IMB", "PBG", "Izin Lingkungan", "Izin Lainnya"],
+      "enum": [
+        "IMB",
+        "PBG",
+        "Izin Lingkungan",
+        "Izin Lainnya"
+      ],
       "required": true
     },
     "document_number": {
@@ -25,7 +30,10 @@
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "issue_date": {
       "type": "date"
@@ -35,7 +43,12 @@
     },
     "status_permit": {
       "type": "enumeration",
-      "enum": ["active", "expired", "pending", "draft"],
+      "enum": [
+        "active",
+        "expired",
+        "pending",
+        "draft"
+      ],
       "default": "pending"
     },
     "issuing_authority": {
@@ -51,12 +64,22 @@
     },
     "renewal_status": {
       "type": "enumeration",
-      "enum": ["not_required", "pending", "in_progress", "completed"],
+      "enum": [
+        "not_required",
+        "pending",
+        "in_progress",
+        "completed"
+      ],
       "default": "not_required"
     },
     "priority": {
       "type": "enumeration",
-      "enum": ["low", "medium", "high", "critical"],
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
       "default": "high"
     },
     "is_legal_requirement": {
@@ -65,7 +88,11 @@
     },
     "compliance_status": {
       "type": "enumeration",
-      "enum": ["compliant", "non_compliant", "pending_review"],
+      "enum": [
+        "compliant",
+        "non_compliant",
+        "pending_review"
+      ],
       "default": "pending_review"
     },
     "project": {

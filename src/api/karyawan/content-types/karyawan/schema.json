@@ -162,12 +162,6 @@
       "target": "api::cuti.cuti",
       "mappedBy": "penyetuju"
     },
-    "permintaan_materials": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::permintaan-material.permintaan-material",
-      "mappedBy": "penyetuju"
-    },
     "penerimaan_materials": {
       "type": "relation",
       "relation": "oneToMany",

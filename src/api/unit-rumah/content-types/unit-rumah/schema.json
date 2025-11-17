@@ -165,12 +165,6 @@
       "target": "api::karyawan.karyawan",
       "inversedBy": "unit_sales"
     },
-    "permintaan_materials": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::permintaan-material.permintaan-material",
-      "mappedBy": "unit_rumah"
-    },
     "pengeluaran_materials": {
       "type": "relation",
       "relation": "oneToMany",

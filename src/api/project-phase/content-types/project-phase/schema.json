@@ -35,7 +35,12 @@
     },
     "phase_status": {
       "type": "enumeration",
-      "enum": ["planning", "ongoing", "completed", "delayed"],
+      "enum": [
+        "planning",
+        "ongoing",
+        "completed",
+        "delayed"
+      ],
       "required": true,
       "default": "planning"
     },
@@ -63,7 +68,8 @@
     "proyek_perumahan": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan"
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "phases"
     },
     "tasks": {
       "type": "relation",

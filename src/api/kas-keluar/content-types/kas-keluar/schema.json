@@ -19,7 +19,13 @@
     },
     "category": {
       "type": "enumeration",
-      "enum": ["material", "gaji", "operasional", "legal", "lainnya"],
+      "enum": [
+        "material",
+        "gaji",
+        "operasional",
+        "legal",
+        "lainnya"
+      ],
       "required": true,
       "description": "Kategori pengeluaran"
     },
@@ -56,7 +62,12 @@
     },
     "paymentMethod": {
       "type": "enumeration",
-      "enum": ["transfer", "cash", "cek", "giro"],
+      "enum": [
+        "transfer",
+        "cash",
+        "cek",
+        "giro"
+      ],
       "required": true,
       "description": "Metode pembayaran yang digunakan"
     },
@@ -75,7 +86,11 @@
     },
     "approval_status": {
       "type": "enumeration",
-      "enum": ["pending", "approved", "rejected"],
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
       "required": true,
       "default": "pending",
       "description": "Status persetujuan transaksi"
@@ -84,17 +99,13 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
-      "inversedBy": "kas_keluars_created",
-      "required": true,
-      "description": "Karyawan yang membuat transaksi"
+      "inversedBy": "kas_keluars_created"
     },
     "approvedBy": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
-      "inversedBy": "kas_keluars_approved",
-      "nullable": true,
-      "description": "Manager yang menyetujui transaksi"
+      "inversedBy": "kas_keluars_approved"
     },
     "approvedAt": {
       "type": "datetime",
@@ -105,7 +116,10 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files"],
+      "allowedTypes": [
+        "images",
+        "files"
+      ],
       "description": "Dokumen pendukung (invoice, kwitansi, dll)"
     },
     "bankAccount": {
@@ -118,7 +132,13 @@
     },
     "department": {
       "type": "enumeration",
-      "enum": ["keuangan", "gudang", "hrm", "project", "marketing"],
+      "enum": [
+        "keuangan",
+        "gudang",
+        "hrm",
+        "project",
+        "marketing"
+      ],
       "nullable": true,
       "description": "Departemen terkait pengeluaran"
     },
@@ -189,7 +209,7 @@
       "required": false,
       "description": "Legacy field for backward compatibility"
     },
-        "penerima": {
+    "penerima": {
       "type": "string",
       "required": false,
       "description": "Legacy field for backward compatibility"
@@ -205,8 +225,13 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::purchasing.purchasing",
-      "inversedBy": "kas_keluars",
-      "description": "Legacy relation for backward compatibility"
+      "inversedBy": "kas_keluars"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "kas_keluars"
     }
   }
 }

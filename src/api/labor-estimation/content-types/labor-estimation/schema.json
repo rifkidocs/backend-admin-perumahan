@@ -22,7 +22,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
-      "required": true
+      "inversedBy": "labor_estimations"
     },
     "mandor": {
       "type": "integer",

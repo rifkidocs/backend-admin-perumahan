@@ -217,12 +217,6 @@
       "target": "api::project-material.project-material",
       "mappedBy": "proyek_perumahan"
     },
-    "permintaan_materials": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::permintaan-material.permintaan-material",
-      "mappedBy": "proyek_perumahan"
-    },
     "pengeluaran_materials": {
       "type": "relation",
       "relation": "oneToMany",

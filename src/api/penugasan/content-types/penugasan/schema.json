@@ -55,7 +55,12 @@
     "status_tugas": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Belum Mulai", "On Progress", "Selesai", "Dibatalkan"],
+      "enum": [
+        "Belum Mulai",
+        "On Progress",
+        "Selesai",
+        "Dibatalkan"
+      ],
       "default": "Belum Mulai"
     },
     "progress_persentase": {
@@ -67,7 +72,12 @@
     "prioritas": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Rendah", "Sedang", "Tinggi", "Urgent"],
+      "enum": [
+        "Rendah",
+        "Sedang",
+        "Tinggi",
+        "Urgent"
+      ],
       "default": "Sedang"
     },
     "estimasi_durasi": {

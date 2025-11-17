@@ -64,7 +64,11 @@
     "status_kontrak": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Aktif", "Selesai", "Dibatalkan"],
+      "enum": [
+        "Aktif",
+        "Selesai",
+        "Dibatalkan"
+      ],
       "default": "Aktif"
     },
     "tanggal_mulai": {
@@ -87,19 +91,26 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["files"]
+      "allowedTypes": [
+        "files"
+      ]
     },
     "surat_penawaran": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["files"]
+      "allowedTypes": [
+        "files"
+      ]
     },
     "dokumen_pendukung": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "riwayat_pembayarans": {
       "type": "relation",

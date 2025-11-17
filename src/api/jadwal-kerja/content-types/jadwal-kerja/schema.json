@@ -46,7 +46,12 @@
     "status_jadwal": {
       "type": "enumeration",
       "required": true,
-      "enum": ["scheduled", "in_progress", "completed", "cancelled"],
+      "enum": [
+        "scheduled",
+        "in_progress",
+        "completed",
+        "cancelled"
+      ],
       "default": "scheduled"
     },
     "jumlah_pekerja": {

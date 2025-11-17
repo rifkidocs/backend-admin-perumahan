@@ -18,18 +18,29 @@
     },
     "category": {
       "type": "enumeration",
-      "enum": ["Arsitektur", "Struktur", "MEP"],
+      "enum": [
+        "Arsitektur",
+        "Struktur",
+        "MEP"
+      ],
       "required": true
     },
     "file": {
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "file_format": {
       "type": "enumeration",
-      "enum": ["DWG", "PDF", "JPG"],
+      "enum": [
+        "DWG",
+        "PDF",
+        "JPG"
+      ],
       "required": true
     },
     "version": {
@@ -45,7 +56,11 @@
     },
     "status_drawing": {
       "type": "enumeration",
-      "enum": ["draft", "active", "archived"],
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
       "default": "draft"
     },
     "description": {

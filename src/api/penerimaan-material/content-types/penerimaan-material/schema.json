@@ -57,7 +57,16 @@
     },
     "unit": {
       "type": "enumeration",
-      "enum": ["sak", "pcs", "kg", "kaleng", "meter", "batang", "liter", "dus"],
+      "enum": [
+        "sak",
+        "pcs",
+        "kg",
+        "kaleng",
+        "meter",
+        "batang",
+        "liter",
+        "dus"
+      ],
       "required": true
     },
     "condition": {
@@ -146,7 +155,9 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "evaluations": {
       "type": "relation",

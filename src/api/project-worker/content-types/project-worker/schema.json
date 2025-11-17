@@ -99,6 +99,12 @@
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
       "inversedBy": "project_assignments"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "workers"
     }
   }
 }

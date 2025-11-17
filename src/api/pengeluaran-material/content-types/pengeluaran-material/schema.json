@@ -185,6 +185,18 @@
       "relation": "manyToOne",
       "target": "api::unit-rumah.unit-rumah",
       "inversedBy": "pengeluaran_materials"
+    },
+    "penyetuju": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "pengeluaran_materials"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "pengeluaran_materials"
     }
   }
 }

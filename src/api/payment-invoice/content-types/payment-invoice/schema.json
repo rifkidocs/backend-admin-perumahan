@@ -43,7 +43,13 @@
     "category": {
       "type": "enumeration",
       "required": true,
-      "enum": ["material", "jasa", "operasional", "legal", "lainnya"]
+      "enum": [
+        "material",
+        "jasa",
+        "operasional",
+        "legal",
+        "lainnya"
+      ]
     },
     "project": {
       "type": "relation",
@@ -54,7 +60,13 @@
     "paymentTerms": {
       "type": "enumeration",
       "required": true,
-      "enum": ["cash", "dp", "termin", "net30", "net60"]
+      "enum": [
+        "cash",
+        "dp",
+        "termin",
+        "net30",
+        "net60"
+      ]
     },
     "notes": {
       "type": "text",
@@ -64,7 +76,13 @@
       "type": "enumeration",
       "required": true,
       "default": "pending",
-      "enum": ["pending", "partial", "paid", "overdue", "cancelled"]
+      "enum": [
+        "pending",
+        "partial",
+        "paid",
+        "overdue",
+        "cancelled"
+      ]
     },
     "paidAmount": {
       "type": "decimal",
@@ -85,7 +103,10 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "approvedBy": {
       "type": "relation",
@@ -98,7 +119,13 @@
     },
     "paymentMethod": {
       "type": "enumeration",
-      "enum": ["transfer", "cash", "check", "giro", "others"]
+      "enum": [
+        "transfer",
+        "cash",
+        "check",
+        "giro",
+        "others"
+      ]
     },
     "bankAccount": {
       "type": "string",
@@ -117,7 +144,12 @@
     "priority": {
       "type": "enumeration",
       "default": "normal",
-      "enum": ["low", "normal", "high", "urgent"]
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ]
     },
     "taxIncluded": {
       "type": "boolean",
@@ -142,7 +174,14 @@
     },
     "department": {
       "type": "enumeration",
-      "enum": ["gudang", "proyek", "hrm", "marketing", "operasional", "umum"]
+      "enum": [
+        "gudang",
+        "proyek",
+        "hrm",
+        "marketing",
+        "operasional",
+        "umum"
+      ]
     },
     "createdBy": {
       "type": "relation",
@@ -158,13 +197,22 @@
       "type": "enumeration",
       "required": true,
       "default": "IDR",
-      "enum": ["IDR", "USD", "EUR"]
+      "enum": [
+        "IDR",
+        "USD",
+        "EUR"
+      ]
     },
     "statusInvoice": {
       "type": "enumeration",
       "required": true,
       "default": "received",
-      "enum": ["received", "verified", "rejected", "cancelled"]
+      "enum": [
+        "received",
+        "verified",
+        "rejected",
+        "cancelled"
+      ]
     },
     "paymentReference": {
       "type": "string",
@@ -188,14 +236,23 @@
     "purchaseOrder": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::purchase-order.purchase-order",
+      "target": "api::purchasing.purchasing",
       "inversedBy": "payment_invoices"
     },
     "attachments": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "paidBy": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "payment_invoices_paid"
     }
   }
 }

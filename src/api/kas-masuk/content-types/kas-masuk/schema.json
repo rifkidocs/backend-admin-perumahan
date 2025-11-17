@@ -18,7 +18,13 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": ["booking", "dp", "pelunasan", "kpr", "lainnya"],
+      "enum": [
+        "booking",
+        "dp",
+        "pelunasan",
+        "kpr",
+        "lainnya"
+      ],
       "required": true
     },
     "amount": {
@@ -33,14 +39,19 @@
       "minLength": 3,
       "maxLength": 200
     },
-      "description": {
+    "description": {
       "type": "text",
       "required": true,
       "maxLength": 500
     },
     "paymentMethod": {
       "type": "enumeration",
-      "enum": ["transfer", "cash", "cek", "giro"],
+      "enum": [
+        "transfer",
+        "cash",
+        "cek",
+        "giro"
+      ],
       "required": true
     },
     "reference": {
@@ -55,19 +66,31 @@
     },
     "status_transaksi": {
       "type": "enumeration",
-      "enum": ["pending", "confirmed", "rejected"],
+      "enum": [
+        "pending",
+        "confirmed",
+        "rejected"
+      ],
       "required": true,
       "default": "pending"
     },
     "statusPayment": {
       "type": "enumeration",
-      "enum": ["pending", "verified", "rejected"],
+      "enum": [
+        "pending",
+        "verified",
+        "rejected"
+      ],
       "required": true,
       "default": "pending"
     },
     "statusPrice": {
       "type": "enumeration",
-      "enum": ["standard", "discount", "premium"],
+      "enum": [
+        "standard",
+        "discount",
+        "premium"
+      ],
       "default": "standard"
     },
     "verifiedBy": {
@@ -103,6 +126,18 @@
       "inversedBy": "kas_masuks"
     },
     "unitRelation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "kas_masuks"
+    },
+    "penerima": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "kas_masuks"
+    },
+    "unit_rumah": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::unit-rumah.unit-rumah",

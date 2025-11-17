@@ -39,7 +39,10 @@
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "description": {
       "type": "text",
@@ -56,7 +59,13 @@
     },
     "status": {
       "type": "enumeration",
-      "enum": ["active", "expired", "renewal-needed", "draft", "review"],
+      "enum": [
+        "active",
+        "expired",
+        "renewal-needed",
+        "draft",
+        "review"
+      ],
       "default": "draft"
     },
     "issued_by": {
@@ -77,12 +86,22 @@
     },
     "priority": {
       "type": "enumeration",
-      "enum": ["low", "medium", "high", "critical"],
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
       "default": "medium"
     },
     "access_level": {
       "type": "enumeration",
-      "enum": ["public", "internal", "confidential", "restricted"],
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "restricted"
+      ],
       "default": "internal"
     },
     "tags": {
@@ -90,7 +109,12 @@
     },
     "approval_status": {
       "type": "enumeration",
-      "enum": ["pending", "approved", "rejected", "needs_revision"],
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "needs_revision"
+      ],
       "default": "pending"
     },
     "approved_by": {
@@ -102,6 +126,12 @@
       "maxLength": 500
     },
     "project": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "documents"
+    },
+    "proyek_perumahan": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",

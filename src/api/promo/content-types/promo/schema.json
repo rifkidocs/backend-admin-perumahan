@@ -27,7 +27,11 @@
     "type": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Diskon Langsung", "Cashback", "Free Item"]
+      "enum": [
+        "Diskon Langsung",
+        "Cashback",
+        "Free Item"
+      ]
     },
     "value": {
       "type": "biginteger",
@@ -37,7 +41,11 @@
     "value_type": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Fixed", "Percentage", "Item Value"]
+      "enum": [
+        "Fixed",
+        "Percentage",
+        "Item Value"
+      ]
     },
     "start_date": {
       "type": "date",
@@ -84,7 +92,11 @@
     "status_promotion": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Aktif", "Tidak Aktif", "Expired"],
+      "enum": [
+        "Aktif",
+        "Tidak Aktif",
+        "Expired"
+      ],
       "default": "Aktif"
     }
   }

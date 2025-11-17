@@ -47,7 +47,8 @@
     "proyek": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan"
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "purchase_requests"
     },
     "request_type": {
       "type": "enumeration",
@@ -92,7 +93,8 @@
     "approved_by": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::karyawan.karyawan"
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "purchase_requests_approved"
     },
     "approved_date": {
       "type": "date"

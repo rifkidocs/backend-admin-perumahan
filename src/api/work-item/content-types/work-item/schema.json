@@ -20,7 +20,6 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
-      "required": true,
       "inversedBy": "work_items"
     },
     "bobot": {

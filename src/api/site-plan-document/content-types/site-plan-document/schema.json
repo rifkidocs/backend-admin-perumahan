@@ -20,11 +20,19 @@
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "file_format": {
       "type": "enumeration",
-      "enum": ["PDF", "DWG", "JPG", "PNG"],
+      "enum": [
+        "PDF",
+        "DWG",
+        "JPG",
+        "PNG"
+      ],
       "required": true
     },
     "version": {
@@ -40,7 +48,11 @@
     },
     "status_site_plan": {
       "type": "enumeration",
-      "enum": ["draft", "active", "archived"],
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
       "default": "draft"
     },
     "scale": {
@@ -68,8 +80,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "site_plan_documents",
-      "required": false
+      "inversedBy": "site_plan_documents"
     }
   }
 }

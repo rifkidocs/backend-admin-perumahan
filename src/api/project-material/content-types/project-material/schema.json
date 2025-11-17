@@ -123,6 +123,12 @@
       "relation": "manyToOne",
       "target": "api::vendor.vendor",
       "inversedBy": "supplied_materials"
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "materials"
     }
   }
 }
