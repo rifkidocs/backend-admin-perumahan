@@ -56,18 +56,10 @@
       "max": 1000000
     },
     "unit": {
-      "type": "enumeration",
-      "enum": [
-        "sak",
-        "pcs",
-        "kg",
-        "kaleng",
-        "meter",
-        "batang",
-        "liter",
-        "dus"
-      ],
-      "required": true
+      "type": "string",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 50
     },
     "condition": {
       "type": "enumeration",
