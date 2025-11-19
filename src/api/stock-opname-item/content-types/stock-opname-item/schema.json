@@ -17,17 +17,17 @@
       "maxLength": 255
     },
     "system_stock": {
-      "type": "integer",
+      "type": "decimal",
       "required": true,
       "min": 0
     },
     "physical_stock": {
-      "type": "integer",
+      "type": "decimal",
       "required": true,
       "min": 0
     },
     "difference": {
-      "type": "integer"
+      "type": "decimal"
     },
     "unit": {
       "type": "string",

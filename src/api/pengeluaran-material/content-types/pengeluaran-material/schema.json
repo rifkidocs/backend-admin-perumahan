@@ -197,6 +197,12 @@
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "pengeluaran_materials"
+    },
+    "gudang": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
+      "inversedBy": "pengeluaran_materials"
     }
   }
 }

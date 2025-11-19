@@ -103,16 +103,6 @@
     "qualityCheckDate": {
       "type": "datetime"
     },
-    "temperature": {
-      "type": "decimal",
-      "min": -10,
-      "max": 50
-    },
-    "humidity": {
-      "type": "decimal",
-      "min": 0,
-      "max": 100
-    },
     "notes": {
       "type": "text",
       "maxLength": 1000
@@ -164,6 +154,17 @@
       "relation": "oneToMany",
       "target": "api::supplier-evaluation.supplier-evaluation",
       "mappedBy": "goods_receipt_reference"
+    },
+    "sisa_quantity": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "gudang": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
+      "inversedBy": "penerimaan_materials"
     },
     "payment_invoices": {
       "type": "relation",

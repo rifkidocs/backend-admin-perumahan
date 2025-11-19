@@ -80,6 +80,12 @@
     "total_variance": {
       "type": "integer"
     },
+    "gudang": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
+      "inversedBy": "stock_opnames"
+    },
     "document_attachment": {
       "type": "media",
       "multiple": true,

@@ -21,27 +21,10 @@
       "unique": true,
       "maxLength": 50
     },
-    "kategori": {
-      "type": "enumeration",
-      "enum": [
-        "Struktur",
-        "Finishing",
-        "MEP",
-        "Alat Bantu"
-      ],
-      "required": true
-    },
-    "satuan": {
-      "type": "enumeration",
-      "enum": [
-        "sak",
-        "pcs",
-        "kg",
-        "meter",
-        "batang",
-        "kaleng"
-      ],
-      "required": true
+      "satuan": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
     },
     "stok": {
       "type": "integer",

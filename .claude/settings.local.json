@@ -27,7 +27,8 @@
     "deny": [
       "Bash(npm run strapi:*)",
       "Bash(cp:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npm run develop:*)"
     ],
     "ask": []
   }

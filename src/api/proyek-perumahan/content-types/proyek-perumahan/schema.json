@@ -384,6 +384,12 @@
       "relation": "oneToMany",
       "target": "api::piutang-konsumen.piutang-konsumen",
       "mappedBy": "project"
+    },
+    "gudangs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::gudang.gudang",
+      "mappedBy": "proyek_perumahan"
     }
   }
 }
