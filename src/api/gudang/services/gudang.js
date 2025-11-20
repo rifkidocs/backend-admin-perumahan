@@ -42,12 +42,19 @@ module.exports = createCoreService('api::gudang.gudang', ({ strapi }) => ({
         where: { gudang: gudangId }
       });
 
+    // Cek relasi dengan materials
+    const materialsCount = await strapi.query('api::material.material')
+      .count({
+        where: { lokasi_gudang: gudangId }
+      });
+
     return {
-      canDelete: penerimaanCount === 0 && pengeluaranCount === 0 && stockOpnameCount === 0,
+      canDelete: penerimaanCount === 0 && pengeluaranCount === 0 && stockOpnameCount === 0 && materialsCount === 0,
       dependencies: {
         penerimaan_material: penerimaanCount,
         pengeluaran_material: pengeluaranCount,
-        stock_opname: stockOpnameCount
+        stock_opname: stockOpnameCount,
+        materials: materialsCount
       }
     };
   },
@@ -118,5 +125,25 @@ module.exports = createCoreService('api::gudang.gudang', ({ strapi }) => ({
     });
 
     return Object.values(stockSummary);
+  },
+
+  // Method untuk mendapatkan materials yang tersimpan di gudang tertentu
+  async getGudangMaterials(gudangId) {
+    return await strapi.query('api::material.material').findMany({
+      where: {
+        lokasi_gudang: gudangId,
+        is_active: true
+      },
+      populate: ['supplier', 'suppliers']
+    });
+  },
+
+  // Method untuk memindahkan material antar gudang
+  async transferMaterial(materialId, fromGudangId, toGudangId) {
+    // Update lokasi_gudang material
+    return await strapi.query('api::material.material').update({
+      where: { id: materialId },
+      data: { lokasi_gudang: toGudangId }
+    });
   }
 }));

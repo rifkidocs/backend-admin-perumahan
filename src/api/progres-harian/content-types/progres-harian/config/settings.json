@@ -1,0 +1,143 @@
+{
+  "settings": {
+    "mainField": "update_date",
+    "defaultSortBy": "update_date:DESC"
+  },
+  "metadatas": {
+    "id": {
+      "edit": {},
+      "list": {
+        "label": "ID",
+        "searchable": false
+      }
+    },
+    "update_date": {
+      "edit": {},
+      "list": {
+        "label": "Tanggal Update",
+        "searchable": true,
+        "sortable": true
+      }
+    },
+    "blok_unit": {
+      "edit": {},
+      "list": {
+        "label": "Blok/Unit",
+        "searchable": true,
+        "sortable": true
+      }
+    },
+    "aktivitas": {
+      "edit": {},
+      "list": {
+        "label": "Aktivitas",
+        "searchable": true,
+        "sortable": true
+      }
+    },
+    "persentase_progres": {
+      "edit": {},
+      "list": {
+        "label": "Progress (%)",
+        "searchable": false,
+        "sortable": true
+      }
+    },
+    "status_harian": {
+      "edit": {},
+      "list": {
+        "label": "Status Harian",
+        "searchable": false,
+        "sortable": true
+      }
+    },
+    "created_by": {
+      "edit": {},
+      "list": {
+        "label": "Dibuat Oleh",
+        "searchable": true,
+        "sortable": true
+      }
+    },
+    "proyek_perumahan": {
+      "edit": {},
+      "list": {
+        "label": "Proyek",
+        "searchable": true,
+        "sortable": true
+      }
+    },
+    "unit_rumah": {
+      "edit": {},
+      "list": {
+        "label": "Unit Rumah",
+        "searchable": true,
+        "sortable": true
+      }
+    },
+    "createdAt": {
+      "edit": {},
+      "list": {
+        "label": "Dibuat",
+        "searchable": false,
+        "sortable": true
+      }
+    },
+    "updatedAt": {
+      "edit": {},
+      "list": {
+        "label": "Diperbarui",
+        "searchable": false,
+        "sortable": true
+      }
+    }
+  },
+  "layout": [
+    [
+      {
+        "name": "update_date",
+        "size": 6
+      },
+      {
+        "name": "status_harian",
+        "size": 6
+      }
+    ],
+    [
+      {
+        "name": "blok_unit",
+        "size": 6
+      },
+      {
+        "name": "persentase_progres",
+        "size": 6
+      }
+    ],
+    [
+      {
+        "name": "aktivitas",
+        "size": 12
+      }
+    ],
+    [
+      {
+        "name": "proyek_perumahan",
+        "size": 6
+      },
+      {
+        "name": "unit_rumah",
+        "size": 6
+      }
+    ],
+    [
+      {
+        "name": "created_by",
+        "size": 6
+      },
+      {
+        "name": "verified_by",
+        "size": 6
+      }
+    ]
+  ]
+}

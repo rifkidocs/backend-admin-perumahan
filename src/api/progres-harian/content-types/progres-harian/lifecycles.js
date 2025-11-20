@@ -15,9 +15,9 @@ module.exports = {
             throw new Error("Persentase harus antara 0-100");
         }
 
-        // Set created_by dari user yang sedang login
-        if (event.state.user) {
-            data.created_by = event.state.user.id;
+        // Set created_by dari user yang sedang login (gunakan username/email jika ada)
+        if (event.state.user && !data.created_by) {
+            data.created_by = event.state.user.username || event.state.user.email || 'System';
         }
 
         // Update unit progress automatically
@@ -75,6 +75,9 @@ module.exports = {
             strapi.log.warn(`Failed to resolve proyek_perumahan for progress update: ${e.message}`);
         }
 
+        // Update stock material secara otomatis
+        await strapi.service('api::progres-harian.progres-harian').updateMaterialStock(event.params.data.detail_penggunaan_material, 'subtract');
+
         // Log aktivitas jika ada service activity-log
         try {
             await strapi.service("api::activity-log.activity-log").create({
@@ -91,7 +94,7 @@ module.exports = {
     },
 
     async afterUpdate(event) {
-        const { result } = event;
+        const { result, params } = event;
 
         // Update progress proyek (resolve id or documentId same as afterCreate)
         try {
@@ -118,6 +121,15 @@ module.exports = {
             strapi.log.warn(`Failed to resolve proyek_perumahan for progress update: ${e.message}`);
         }
 
+        // Update stock material (handle changes in material usage)
+        const oldMaterialDetails = result.detail_penggunaan_material || [];
+        const newMaterialDetails = params.data.detail_penggunaan_material || [];
+
+        // Restore old stock first
+        await strapi.service('api::progres-harian.progres-harian').updateMaterialStock(oldMaterialDetails, 'add');
+        // Then subtract new usage
+        await strapi.service('api::progres-harian.progres-harian').updateMaterialStock(newMaterialDetails, 'subtract');
+
         // Log aktivitas
         try {
             await strapi.service("api::activity-log.activity-log").create({
@@ -134,6 +146,9 @@ module.exports = {
 
     async afterDelete(event) {
         const { result } = event;
+
+        // Restore stock material when progress report is deleted
+        await strapi.service('api::progres-harian.progres-harian').updateMaterialStock(result.detail_penggunaan_material, 'add');
 
         // Log aktivitas
         try {

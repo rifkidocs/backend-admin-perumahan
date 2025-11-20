@@ -41,7 +41,75 @@
       "type": "decimal",
       "min": 0
     },
-    "weather_condition": {
+    "notes": {
+      "type": "text",
+      "maxLength": 200
+    },
+      "verified_by": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "verified_date": {
+      "type": "date"
+    },
+    "photos_before": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "photos_after": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+        "persentase_progres": {
+      "type": "decimal"
+    },
+        "aktivitas": {
+      "type": "string",
+      "required": true,
+      "maxLength": 255
+    },
+    "status_harian": {
+      "type": "enumeration",
+      "enum": ["sesuai_jadwal", "terlambat", "maju_jadwal"],
+      "default": "sesuai_jadwal"
+    },
+    "deskripsi": {
+      "type": "text"
+    },
+    "catatan": {
+      "type": "text"
+    },
+    "mandor": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tukang": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    },
+    "kernet": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    },
+    "total_pekerja": {
+      "type": "integer",
+      "min": 0
+    },
+    "persentase_kehadiran": {
+      "type": "integer",
+      "min": 0,
+      "max": 100
+    },
+    "catatan_kehadiran": {
+      "type": "text"
+    },
+    "kondisi_cuaca": {
       "type": "enumeration",
       "enum": [
         "cerah",
@@ -53,96 +121,32 @@
         "angin_kencang"
       ]
     },
-    "notes": {
-      "type": "text",
-      "maxLength": 200
-    },
-    "created_by": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user"
-    },
-    "verified_by": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user"
-    },
-    "verified_date": {
-      "type": "date"
-    },
-    "photos_before": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
-    "photos_after": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
-    "material_masuk": {
-      "type": "json"
-    },
-    "material_terpakai": {
-      "type": "json"
-    },
-    "persentase_progres": {
-      "type": "decimal"
-    },
-    "blok_unit": {
-      "type": "string",
-      "required": true,
-      "maxLength": 100
-    },
-    "aktivitas": {
-      "type": "string",
-      "required": true,
-      "maxLength": 255
-    },
-    "status_harian": {
+      "dampak_konstruksi": {
       "type": "enumeration",
-      "enum": [
-        "sesuai_jadwal",
-        "terlambat",
-        "maju_jadwal"
-      ],
-      "default": "sesuai_jadwal"
+      "enum": ["tidak_ada", "minor", "sedang", "signifikan"],
+      "default": "tidak_ada"
     },
-    "deskripsi": {
+    "durasi_tunda": {
+      "type": "integer",
+      "min": 0,
+      "description": "Durasi penundaan dalam menit"
+    },
+    "keterangan_cuaca": {
       "type": "text"
     },
-    "catatan": {
-      "type": "text"
+    "detail_penggunaan_material": {
+      "type": "json",
+      "description": "Array of materials used with material_id, jumlah, lokasi_unit, keterangan"
     },
-    "data_pekerja": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::worker-attendance.worker-attendance",
-      "mappedBy": "laporan_progress"
+    "foto_dokumentasi": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"],
+      "description": "Combined progress photos"
     },
-    "data_cuaca": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::weather-condition.weather-condition",
-      "mappedBy": "laporan_progress"
-    },
-    "penggunaan_material": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::material-usage.material-usage",
-      "mappedBy": "laporan_progress"
-    },
-    "dokumentasi_foto": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::progress-photo.progress-photo",
-      "mappedBy": "laporan_progress"
+    "detail_foto": {
+      "type": "json",
+      "description": "Photo metadata: lokasi, judul, deskripsi, kategori (pondasi/struktur/atap/finishing/instalasi/lainnya)"
     },
     "proyek_perumahan": {
       "type": "relation",
@@ -160,6 +164,12 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
+      "inversedBy": "progres_harians"
+    },
+    "materials": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::material.material",
       "inversedBy": "progres_harians"
     }
   }

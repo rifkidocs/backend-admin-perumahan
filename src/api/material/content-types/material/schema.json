@@ -72,8 +72,10 @@
       "inversedBy": "materials"
     },
     "lokasi_gudang": {
-      "type": "string",
-      "maxLength": 255
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
+      "inversedBy": "materials"
     },
     "deskripsi": {
       "type": "text"
@@ -104,6 +106,12 @@
       "relation": "oneToMany",
       "target": "api::payment-invoice.payment-invoice",
       "mappedBy": "material"
+    },
+    "progres_harians": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::progres-harian.progres-harian",
+      "mappedBy": "materials"
     }
   }
 }

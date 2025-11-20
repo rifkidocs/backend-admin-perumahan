@@ -81,4 +81,48 @@ module.exports = createCoreService('api::progres-harian.progres-harian', ({ stra
             reports,
         };
     },
+
+    // Helper function untuk update stock material
+    async updateMaterialStock(materialUsageDetails, action) {
+        if (!materialUsageDetails || !Array.isArray(materialUsageDetails)) {
+            return;
+        }
+
+        try {
+            for (const usage of materialUsageDetails) {
+                const { material_id, jumlah } = usage;
+
+                if (!material_id || !jumlah) {
+                    continue;
+                }
+
+                const material = await strapi.entityService.findOne('api::material.material', material_id);
+
+                if (!material) {
+                    strapi.log.warn(`Material with ID ${material_id} not found`);
+                    continue;
+                }
+
+                const currentStock = material.stok || 0;
+                let newStock;
+
+                if (action === 'subtract') {
+                    newStock = Math.max(0, currentStock - jumlah);
+                } else if (action === 'add') {
+                    newStock = currentStock + jumlah;
+                } else {
+                    continue;
+                }
+
+                await strapi.entityService.update('api::material.material', material_id, {
+                    data: { stok: newStock }
+                });
+
+                strapi.log.info(`Updated stock for material ${material.nama_material}: ${currentStock} → ${newStock} (${action})`);
+            }
+        } catch (error) {
+            strapi.log.error('Error updating material stock:', error);
+            throw new Error(`Failed to update material stock: ${error.message}`);
+        }
+    },
 }));

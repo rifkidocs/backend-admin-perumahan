@@ -87,6 +87,12 @@
       "target": "api::stock-opname.stock-opname",
       "mappedBy": "gudang"
     },
+    "materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::material.material",
+      "mappedBy": "lokasi_gudang"
+    },
     "foto_gudang": {
       "type": "media",
       "multiple": true,
