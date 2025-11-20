@@ -1,0 +1,74 @@
+{
+  "kind": "collectionType",
+  "collectionName": "distribusi_materials",
+  "info": {
+    "singularName": "distribusi-material",
+    "pluralName": "distribusi-materials",
+    "displayName": "Distribusi Material",
+    "description": "Tracking perpindahan material antar gudang"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nomor_distribusi": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 50
+    },
+    "gudang_asal": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
+      "required": true
+    },
+    "gudang_tujuan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
+      "required": true
+    },
+    "material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::material.material",
+      "required": true
+    },
+    "jumlah": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["Pending", "Dikirim", "Diterima", "Ditolak"],
+      "default": "Pending",
+      "required": true
+    },
+    "tanggal_pengiriman": {
+      "type": "date"
+    },
+    "tanggal_diterima": {
+      "type": "date"
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "bukti_foto": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
+    "penerima": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "pengirim": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    }
+  }
+}

@@ -18,10 +18,9 @@
     },
     "kode_material": {
       "type": "string",
-      "unique": true,
       "maxLength": 50
     },
-      "satuan": {
+    "satuan": {
       "type": "string",
       "required": true,
       "maxLength": 50
@@ -39,11 +38,7 @@
     },
     "status_material": {
       "type": "enumeration",
-      "enum": [
-        "Tersedia",
-        "Segera Habis",
-        "Habis"
-      ],
+      "enum": ["Tersedia", "Segera Habis", "Habis"],
       "required": true,
       "default": "Tersedia"
     },
@@ -84,10 +79,7 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     },
     "penerimaan_materials": {
       "type": "relation",
