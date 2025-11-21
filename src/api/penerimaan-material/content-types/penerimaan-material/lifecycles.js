@@ -1,31 +1,113 @@
 module.exports = {
-  async afterCreate(event) {
-    const { result, params } = event;
+  async beforeCreate(event) {
+    const { params } = event;
     const { data } = params;
+
+    if (data.list_materials && Array.isArray(data.list_materials)) {
+      for (const item of data.list_materials) {
+        // If material is not selected but new material name is provided
+        if (!item.material && item.nama_material_baru) {
+          // Check if material already exists
+          const existingMaterial = await strapi.db
+            .query("api::material.material")
+            .findOne({
+              where: { nama_material: item.nama_material_baru },
+            });
+
+          if (existingMaterial) {
+            item.material = existingMaterial.id;
+          } else {
+            // Create new material
+            const newMaterial = await strapi.entityService.create(
+              "api::material.material",
+              {
+                data: {
+                  nama_material: item.nama_material_baru,
+                  stok: 0, // Initial stock 0, will be updated in afterCreate
+                  satuan: item.unit,
+                  status_material: "Tersedia",
+                  sisa_proyek: 100, // Default value
+                  // Add other required fields with defaults if necessary
+                },
+              }
+            );
+            item.material = newMaterial.id;
+          }
+        }
+      }
+    }
+  },
+
+  async beforeUpdate(event) {
+    const { params } = event;
+    const { data } = params;
+
+    if (data.list_materials && Array.isArray(data.list_materials)) {
+      for (const item of data.list_materials) {
+        // If material is not selected but new material name is provided
+        if (!item.material && item.nama_material_baru) {
+          // Check if material already exists
+          const existingMaterial = await strapi.db
+            .query("api::material.material")
+            .findOne({
+              where: { nama_material: item.nama_material_baru },
+            });
+
+          if (existingMaterial) {
+            item.material = existingMaterial.id;
+          } else {
+            // Create new material
+            const newMaterial = await strapi.entityService.create(
+              "api::material.material",
+              {
+                data: {
+                  nama_material: item.nama_material_baru,
+                  stok: 0,
+                  satuan: item.unit,
+                  status_material: "Tersedia",
+                  sisa_proyek: 100,
+                },
+              }
+            );
+            item.material = newMaterial.id;
+          }
+        }
+      }
+    }
+  },
+
+  async afterCreate(event) {
+    const { result } = event;
 
     if (
       result.statusReceiving === "completed" &&
-      result.material &&
-      result.quantity
+      result.list_materials &&
+      Array.isArray(result.list_materials)
     ) {
-      const material = await strapi.entityService.findOne(
-        "api::material.material",
-        result.material.id || result.material,
-        {
-          fields: ["stok"],
-        }
-      );
+      for (const item of result.list_materials) {
+        if (item.material && item.quantity) {
+          const materialId = item.material.id || item.material;
 
-      if (material) {
-        await strapi.entityService.update(
-          "api::material.material",
-          material.id,
-          {
-            data: {
-              stok: material.stok + result.quantity,
-            },
+          const material = await strapi.entityService.findOne(
+            "api::material.material",
+            materialId,
+            {
+              fields: ["stok"],
+            }
+          );
+
+          if (material) {
+            await strapi.entityService.update(
+              "api::material.material",
+              material.id,
+              {
+                data: {
+                  stok: Number(material.stok) + Number(item.quantity),
+                },
+              }
+            );
           }
-        );
+        }
       }
     }
   },
@@ -35,39 +117,36 @@ module.exports = {
     const { data } = params;
 
     // Check if status changed to 'completed'
-    // Note: This simple check assumes we don't revert from completed back to pending.
-    // Ideally we should check the previous state, but Strapi v4 lifecycles don't easily give previous state in afterUpdate without a beforeUpdate fetch.
-    // For now, we assume the transition is one-way or the user is careful.
-
     if (
       data.statusReceiving === "completed" &&
-      result.statusReceiving === "completed"
+      result.statusReceiving === "completed" &&
+      result.list_materials &&
+      Array.isArray(result.list_materials)
     ) {
-      // We need to be careful here. If we just update a note on a completed receipt, this might trigger again?
-      // Strapi's `data` in params only contains the *changed* fields usually.
-      // So if `statusReceiving` is in `data`, it means it was just updated.
+      for (const item of result.list_materials) {
+        if (item.material && item.quantity) {
+          const materialId = item.material.id || item.material;
 
-      const materialId = result.material.id || result.material;
-      const quantity = result.quantity;
+          const material = await strapi.entityService.findOne(
+            "api::material.material",
+            materialId,
+            {
+              fields: ["stok"],
+            }
+          );
 
-      const material = await strapi.entityService.findOne(
-        "api::material.material",
-        materialId,
-        {
-          fields: ["stok"],
-        }
-      );
-
-      if (material) {
-        await strapi.entityService.update(
-          "api::material.material",
-          material.id,
-          {
-            data: {
-              stok: material.stok + quantity,
-            },
+          if (material) {
+            await strapi.entityService.update(
+              "api::material.material",
+              material.id,
+              {
+                data: {
+                  stok: Number(material.stok) + Number(item.quantity),
+                },
+              }
+            );
           }
-        );
+        }
       }
     }
   },

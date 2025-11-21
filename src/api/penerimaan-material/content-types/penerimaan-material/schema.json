@@ -43,33 +43,11 @@
       "type": "string",
       "regex": "^(\\+62|62|0)[0-9]{9,13}$"
     },
-    "material": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::material.material",
-      "inversedBy": "penerimaan_materials"
-    },
-    "quantity": {
-      "type": "decimal",
-      "required": true,
-      "min": 0.01,
-      "max": 1000000
-    },
-    "unit": {
-      "type": "string",
-      "required": true,
-      "minLength": 1,
-      "maxLength": 50
-    },
-    "condition": {
-      "type": "enumeration",
-      "required": true,
-      "default": "Baik",
-      "enum": [
-        "Baik",
-        "Rusak",
-        "Kurang"
-      ]
+    "list_materials": {
+      "type": "component",
+      "repeatable": true,
+      "component": "penerimaan.material-item",
+      "required": true
     },
     "storageLocation": {
       "type": "string",
@@ -81,19 +59,7 @@
       "type": "enumeration",
       "required": true,
       "default": "pending",
-      "enum": [
-        "pending",
-        "in-progress",
-        "completed",
-        "rejected"
-      ]
-    },
-    "qualityChecked": {
-      "type": "boolean",
-      "default": false
-    },
-    "qualityCheckDate": {
-      "type": "datetime"
+      "enum": ["pending", "in-progress", "completed", "rejected"]
     },
     "notes": {
       "type": "text",
@@ -123,10 +89,6 @@
       "target": "api::purchasing.purchasing",
       "inversedBy": "penerimaan_materials"
     },
-    "qualityChecker": {
-      "type": "string",
-      "maxLength": 100
-    },
     "penerima": {
       "type": "relation",
       "relation": "manyToOne",
@@ -137,20 +99,13 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "evaluations": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::supplier-evaluation.supplier-evaluation",
       "mappedBy": "goods_receipt_reference"
-    },
-    "sisa_quantity": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
     },
     "gudang": {
       "type": "relation",

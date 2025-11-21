@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_penerimaan_material_items",
+  "info": {
+    "displayName": "Material Item",
+    "description": "Item material dalam penerimaan"
+  },
+  "options": {},
+  "attributes": {
+    "material": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::material.material"
+    },
+    "nama_material_baru": {
+      "type": "string",
+      "description": "Isi jika material belum ada di database"
+    },
+    "quantity": {
+      "type": "decimal",
+      "required": true,
+      "min": 0.01
+    },
+    "unit": {
+      "type": "string",
+      "required": true
+    },
+    "condition": {
+      "type": "enumeration",
+      "enum": ["Baik", "Rusak", "Kurang"],
+      "default": "Baik",
+      "required": true
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "qualityChecked": {
+      "type": "boolean",
+      "default": false
+    },
+    "qualityCheckDate": {
+      "type": "datetime"
+    },
+    "qualityChecker": {
+      "type": "string"
+    }
+  }
+}
