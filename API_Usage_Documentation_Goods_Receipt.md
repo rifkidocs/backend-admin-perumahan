@@ -43,7 +43,7 @@ Content-Type: application/json
   "quantity": 50,
   "unit": "sak",
   "condition": "Baik",
-  "storageLocation": "Gudang A - Rak 1",
+  "gudang": "gudang_document_id",
   "project": "project_document_id",
   "qualityChecked": false,
   "temperature": 25.5,
@@ -91,7 +91,7 @@ Content-Type: application/json
   "quantity": 100,
   "unit": "pcs",
   "condition": "Baik",
-  "storageLocation": "Gudang B - Area 2",
+  "gudang": "gudang_document_id",
   "project": "project_document_id",
   "receivedBy": "employee_document_id",
   "statusReceiving": "pending",
@@ -177,11 +177,10 @@ Content-Type: application/json
         "Kurang"
       ]
     },
-    "storageLocation": {
-      "type": "string",
-      "required": true,
-      "minLength": 5,
-      "maxLength": 200
+    "gudang": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang"
     },
     "statusReceiving": {
       "type": "enumeration",
@@ -441,7 +440,7 @@ const receivingData = {
   quantity: 25,
   unit: "sak",
   condition: "Baik",
-  storageLocation: "Gudang C - Area 3",
+  gudang: "gudang_document_id",
   receivedBy: "employee_document_id",
   statusReceiving: "pending",
   nota: fileId,
@@ -508,7 +507,7 @@ curl -X POST \
     "quantity": 10,
     "unit": "sak",
     "condition": "Baik",
-    "storageLocation": "Test Location",
+    "gudang": "gudang_document_id",
     "project": "project_document_id",
     "receivedBy": "employee_document_id",
     "statusReceiving": "pending"

@@ -43,7 +43,7 @@ Content-Type: application/json
   "quantity": 100,
   "unit": "sak",
   "condition": "Baik",
-  "storageLocation": "Gudang A - Rak 1",
+  "gudang": "gudang_document_id",
   "statusReceiving": "completed",
   "qualityChecked": true,
   "qualityCheckDate": "2024-03-20T10:00:00Z",
@@ -162,7 +162,7 @@ Content-Type: application/json
 | `quantity` | Number | Yes | Jumlah material | > 0 |
 | `unit` | String | Yes | Satuan material | sak, pcs, kg, kaleng, dll |
 | `condition` | String | Yes | Kondisi material | Baik, Rusak, Kurang |
-| `storageLocation` | String | Yes | Lokasi penyimpanan | Contoh: Gudang A - Rak 1 |
+| `gudang` | Relation | Yes | Gudang penyimpanan | Relasi ke api::gudang.gudang |
 | `statusReceiving` | String | Yes | Status penerimaan | pending, in-progress, completed |
 | `qualityChecked` | Boolean | No | Status QC | true/false |
 | `qualityCheckDate` | DateTime | No | Tanggal QC | ISO 8601 |
@@ -367,7 +367,7 @@ const receivingData = {
   quantity: 100,
   unit: "sak",
   condition: "Baik",
-  storageLocation: "Gudang A - Rak 1",
+  gudang: "gudang_document_id",
   statusReceiving: "pending",
   receivedBy: "Admin Gudang"
 };
@@ -469,7 +469,7 @@ curl -X POST \
     "quantity": 10,
     "unit": "sak",
     "condition": "Baik",
-    "storageLocation": "Gudang Test - Rak 1",
+    "gudang": "gudang_document_id",
     "statusReceiving": "pending",
     "receivedBy": "Test Admin"
   }'

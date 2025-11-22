@@ -49,12 +49,6 @@
       "component": "penerimaan.material-item",
       "required": true
     },
-    "storageLocation": {
-      "type": "string",
-      "required": true,
-      "minLength": 5,
-      "maxLength": 200
-    },
     "statusReceiving": {
       "type": "enumeration",
       "required": true,
