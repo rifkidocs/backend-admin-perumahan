@@ -36,6 +36,9 @@ module.exports = {
         }
       }
     }
+
+    // Calculate total prices
+    calculateTotalPrices(data);
   },
 
   // Store old status before update
@@ -86,6 +89,9 @@ module.exports = {
         }
       }
     }
+
+    // Calculate total prices
+    calculateTotalPrices(data);
   },
 
   async afterCreate(event) {
@@ -192,5 +198,38 @@ async function updateStock(record) {
         }
       }
     }
+  }
+}
+
+/**
+ * Calculate total prices for each material item and overall purchase total
+ * @param {Object} data - The penerimaan-material data object
+ */
+function calculateTotalPrices(data) {
+  if (!data.list_materials || !Array.isArray(data.list_materials)) {
+    return;
+  }
+
+  let totalPembelian = 0;
+
+  for (const item of data.list_materials) {
+    // Calculate total_harga for each item if harga_satuan is provided
+    if (item.harga_satuan && item.quantity) {
+      const hargaSatuan = Number(item.harga_satuan);
+      const quantity = Number(item.quantity);
+
+      // Calculate and round to 2 decimal places
+      item.total_harga = Math.round(hargaSatuan * quantity * 100) / 100;
+
+      totalPembelian += item.total_harga;
+    } else if (item.total_harga) {
+      // If total_harga is provided but not harga_satuan, just add to total
+      totalPembelian += Number(item.total_harga);
+    }
+  }
+
+  // Set total_pembelian, rounded to 2 decimal places
+  if (totalPembelian > 0) {
+    data.total_pembelian = Math.round(totalPembelian * 100) / 100;
   }
 }

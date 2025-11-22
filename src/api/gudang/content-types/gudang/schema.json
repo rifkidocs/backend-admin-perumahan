@@ -86,6 +86,12 @@
       "target": "api::material-gudang.material-gudang",
       "mappedBy": "gudang"
     },
+    "progres_harians": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::progres-harian.progres-harian",
+      "mappedBy": "gudang"
+    },
     "foto_gudang": {
       "type": "media",
       "multiple": true,

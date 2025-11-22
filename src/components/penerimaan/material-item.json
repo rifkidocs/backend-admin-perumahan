@@ -12,8 +12,7 @@
       "target": "api::material.material"
     },
     "nama_material_baru": {
-      "type": "string",
-      "description": "Isi jika material belum ada di database"
+      "type": "string"
     },
     "quantity": {
       "type": "decimal",
@@ -26,22 +25,21 @@
     },
     "condition": {
       "type": "enumeration",
-      "enum": ["Baik", "Rusak", "Kurang"],
+      "required": true,
       "default": "Baik",
-      "required": true
+      "enum": [
+        "Baik",
+        "Rusak",
+        "Kurang"
+      ]
     },
-    "keterangan": {
-      "type": "text"
+    "harga_satuan": {
+      "type": "biginteger",
+      "required": false
     },
-    "qualityChecked": {
-      "type": "boolean",
-      "default": false
-    },
-    "qualityCheckDate": {
-      "type": "datetime"
-    },
-    "qualityChecker": {
-      "type": "string"
+    "total_harga": {
+      "type": "biginteger",
+      "required": false
     }
   }
 }

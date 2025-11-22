@@ -93,26 +93,25 @@ module.exports = createCoreService(
     },
 
     // Helper function untuk update stock material
-    async updateMaterialStock(materialUsageDetails, action) {
-      if (!materialUsageDetails || !Array.isArray(materialUsageDetails)) {
+    async updateMaterialStock(listMaterials, gudangId, action) {
+      if (!listMaterials || !Array.isArray(listMaterials)) {
+        return;
+      }
+
+      if (!gudangId) {
+        strapi.log.warn(
+          `Cannot update stock: No gudang specified in progress report.`
+        );
         return;
       }
 
       try {
-        for (const usage of materialUsageDetails) {
-          const { material_id, jumlah, gudang_asal } = usage;
+        for (const item of listMaterials) {
+          // Handle both component structure (item.material.id) and direct ID if passed differently
+          const materialId = item.material?.id || item.material;
+          const quantity = item.quantity;
 
-          if (!material_id || !jumlah) {
-            continue;
-          }
-
-          // If gudang_asal is not provided, we can't deduct from specific warehouse
-          // For now, we'll log a warning and skip, or try to find a default warehouse?
-          // Given the strict requirement for material-gudang, we should probably skip.
-          if (!gudang_asal) {
-            strapi.log.warn(
-              `Cannot update stock for material ${material_id}: No gudang_asal specified in usage details.`
-            );
+          if (!materialId || !quantity) {
             continue;
           }
 
@@ -120,14 +119,14 @@ module.exports = createCoreService(
             .query("api::material-gudang.material-gudang")
             .findOne({
               where: {
-                material: material_id,
-                gudang: gudang_asal,
+                material: materialId,
+                gudang: gudangId,
               },
             });
 
           if (!materialGudang) {
             strapi.log.warn(
-              `Material-Gudang record not found for material ${material_id} in gudang ${gudang_asal}`
+              `Material-Gudang record not found for material ${materialId} in gudang ${gudangId}`
             );
             continue;
           }
@@ -136,9 +135,9 @@ module.exports = createCoreService(
           let newStock;
 
           if (action === "subtract") {
-            newStock = Math.max(0, currentStock - Number(jumlah));
+            newStock = Math.max(0, currentStock - Number(quantity));
           } else if (action === "add") {
-            newStock = currentStock + Number(jumlah);
+            newStock = currentStock + Number(quantity);
           } else {
             continue;
           }
@@ -158,7 +157,7 @@ module.exports = createCoreService(
           );
 
           strapi.log.info(
-            `Updated stock for material ${material_id} in gudang ${gudang_asal}: ${currentStock} → ${newStock} (${action})`
+            `Updated stock for material ${materialId} in gudang ${gudangId}: ${currentStock} → ${newStock} (${action})`
           );
         }
       } catch (error) {

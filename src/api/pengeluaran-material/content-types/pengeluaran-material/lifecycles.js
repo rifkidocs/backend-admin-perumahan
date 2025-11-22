@@ -5,8 +5,8 @@ module.exports = {
     // Decrement stock when status is 'approved'
     if (
       result.approvalStatus === "approved" &&
-      result.material &&
-      result.quantity &&
+      result.list_materials &&
+      Array.isArray(result.list_materials) &&
       result.gudang
     ) {
       await updateStock(result);
@@ -18,21 +18,35 @@ module.exports = {
     const { data } = params;
 
     // Check if status changed to 'approved'
-    // We need to check if it wasn't approved before.
-    // Ideally we should store old status in beforeUpdate like in penerimaan-material
-    // But for now, let's assume if data.approvalStatus is present and is 'approved', it's a change.
-
     if (
       data.approvalStatus === "approved" &&
       result.approvalStatus === "approved" &&
-      result.material &&
-      result.quantity &&
+      result.list_materials &&
+      Array.isArray(result.list_materials) &&
       result.gudang
     ) {
-      // Ideally we should check if it was already approved to avoid double deduction.
-      // Let's implement beforeUpdate to be safe.
+      // Check if it wasn't approved before to avoid double deduction
       if (params._oldStatus !== "approved") {
-        await updateStock(result);
+        // Need to fetch full record to get populated materials if they aren't in result
+        // result might not have deep population of components depending on the query
+        // But usually components are returned. Let's be safe and fetch if needed,
+        // but for now assuming result has it or we fetch it.
+        // Actually, strapi update result might not have component data fully populated if not requested.
+        // Let's fetch the full record to be safe, similar to penerimaan-material.
+
+        const fullRecord = await strapi.entityService.findOne(
+          "api::pengeluaran-material.pengeluaran-material",
+          result.id,
+          {
+            populate: {
+              list_materials: {
+                populate: ["material"],
+              },
+              gudang: true,
+            },
+          }
+        );
+        await updateStock(fullRecord);
       }
     }
   },
@@ -54,48 +68,55 @@ module.exports = {
 };
 
 async function updateStock(record) {
-  const materialId = record.material.id || record.material;
   const gudangId = record.gudang.id || record.gudang;
-  const quantity = record.quantity;
 
   console.log(
-    `📉 Processing issuance for material ${materialId} from gudang ${gudangId}, quantity: ${quantity}`
+    `📉 Processing issuance for record ${record.id} from gudang ${gudangId}`
   );
 
-  const materialGudang = await strapi.db
-    .query("api::material-gudang.material-gudang")
-    .findOne({
-      where: {
-        material: materialId,
-        gudang: gudangId,
-      },
-    });
+  if (record.list_materials && Array.isArray(record.list_materials)) {
+    for (const item of record.list_materials) {
+      if (item.material && item.quantity) {
+        const materialId = item.material.id || item.material;
+        const quantity = item.quantity;
 
-  if (materialGudang) {
-    const newStock = Number(materialGudang.stok) - Number(quantity);
+        console.log(`   - Material ${materialId}, quantity: ${quantity}`);
 
-    if (newStock < 0) {
-      strapi.log.warn(
-        `⚠️ Stock negative for material ${materialId} in gudang ${gudangId}. Current: ${materialGudang.stok}, Issuance: ${quantity}`
-      );
-    }
+        const materialGudang = await strapi.db
+          .query("api::material-gudang.material-gudang")
+          .findOne({
+            where: {
+              material: materialId,
+              gudang: gudangId,
+            },
+          });
 
-    await strapi.entityService.update(
-      "api::material-gudang.material-gudang",
-      materialGudang.id,
-      {
-        data: {
-          stok: newStock,
-          last_updated_by: "system (pengeluaran)",
-        },
+        if (materialGudang) {
+          const newStock = Number(materialGudang.stok) - Number(quantity);
+
+          if (newStock < 0) {
+            strapi.log.warn(
+              `⚠️ Stock negative for material ${materialId} in gudang ${gudangId}. Current: ${materialGudang.stok}, Issuance: ${quantity}`
+            );
+          }
+
+          await strapi.entityService.update(
+            "api::material-gudang.material-gudang",
+            materialGudang.id,
+            {
+              data: {
+                stok: newStock,
+                last_updated_by: "system (pengeluaran)",
+              },
+            }
+          );
+          console.log(`   ✅ Stock deducted. New stock: ${newStock}`);
+        } else {
+          console.error(
+            `   ❌ Material-Gudang record not found for material ${materialId} and gudang ${gudangId}`
+          );
+        }
       }
-    );
-    console.log(`✅ Stock deducted. New stock: ${newStock}`);
-  } else {
-    console.error(
-      `❌ Material-Gudang record not found for material ${materialId} and gudang ${gudangId}`
-    );
-    // Optionally create it with negative stock if allowed, or just log error.
-    // For now, let's log error.
+    }
   }
 }

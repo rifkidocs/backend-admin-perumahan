@@ -112,6 +112,25 @@
       "relation": "oneToMany",
       "target": "api::payment-invoice.payment-invoice",
       "mappedBy": "goodsReceipt"
+    },
+    "total_pembelian": {
+      "type": "decimal",
+      "required": false,
+      "min": 0,
+      "description": "Total nilai pembelian dari semua material yang diterima"
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "qualityChecked": {
+      "type": "boolean",
+      "default": false
+    },
+    "qualityCheckDate": {
+      "type": "datetime"
+    },
+    "qualityChecker": {
+      "type": "string"
     }
   }
 }
