@@ -72,12 +72,6 @@
       "target": "api::payment-invoice.payment-invoice",
       "mappedBy": "material"
     },
-    "progres_harians": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::progres-harian.progres-harian",
-      "mappedBy": "materials"
-    },
     "material_gudangs": {
       "type": "relation",
       "relation": "oneToMany",
