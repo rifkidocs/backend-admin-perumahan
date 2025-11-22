@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "material_gudangs",
+  "info": {
+    "singularName": "material-gudang",
+    "pluralName": "material-gudangs",
+    "displayName": "Material Gudang (Stok)",
+    "description": "Stok material per gudang"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "material": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::material.material",
+      "inversedBy": "material_gudangs"
+    },
+    "gudang": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
+      "inversedBy": "material_gudangs"
+    },
+    "stok": {
+      "type": "decimal",
+      "default": 0,
+      "required": true
+    },
+    "stok_minimal": {
+      "type": "integer",
+      "default": 0
+    },
+    "last_updated_by": {
+      "type": "string"
+    }
+  }
+}

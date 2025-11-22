@@ -25,26 +25,11 @@
       "required": true,
       "maxLength": 50
     },
-    "stok": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
-    },
-    "sisa_proyek": {
-      "type": "integer",
-      "required": true,
-      "min": 0,
-      "max": 100
-    },
     "status_material": {
       "type": "enumeration",
       "enum": ["Tersedia", "Segera Habis", "Habis"],
       "required": true,
       "default": "Tersedia"
-    },
-    "minimum_stock": {
-      "type": "integer",
-      "min": 0
     },
     "harga_satuan": {
       "type": "decimal",
@@ -64,12 +49,6 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::supplier.supplier",
-      "inversedBy": "materials"
-    },
-    "lokasi_gudang": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::gudang.gudang",
       "inversedBy": "materials"
     },
     "deskripsi": {
@@ -98,6 +77,12 @@
       "relation": "manyToMany",
       "target": "api::progres-harian.progres-harian",
       "mappedBy": "materials"
+    },
+    "material_gudangs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::material-gudang.material-gudang",
+      "mappedBy": "material"
     }
   }
 }

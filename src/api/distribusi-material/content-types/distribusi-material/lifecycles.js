@@ -3,133 +3,141 @@ module.exports = {
     const { data } = event.params;
 
     if (data.material && data.gudang_asal && data.jumlah) {
-      const material = await strapi.entityService.findOne(
-        "api::material.material",
-        data.material,
-        {
-          populate: ["lokasi_gudang"],
-        }
-      );
+      // Check stock in material-gudang
+      const materialGudang = await strapi.db
+        .query("api::material-gudang.material-gudang")
+        .findOne({
+          where: {
+            material: data.material,
+            gudang: data.gudang_asal,
+          },
+        });
 
-      if (!material) {
-        throw new Error("Material tidak ditemukan");
-      }
-
-      // Verify material is in the source warehouse
       if (
-        material.lokasi_gudang &&
-        material.lokasi_gudang.id !== data.gudang_asal
+        !materialGudang ||
+        Number(materialGudang.stok) < Number(data.jumlah)
       ) {
-        // Ideally we should check if the material ID passed actually belongs to the source warehouse.
-        // Since we are selecting a specific material ID, we assume the UI filters materials by warehouse.
-        // But for safety, we can check.
-        // However, if the user selects a material that is NOT in the source warehouse, this logic might be flawed if the UI allows it.
-        // Let's assume the material ID passed IS the one in the source warehouse.
-      }
-
-      if (material.stok < data.jumlah) {
         throw new Error(
-          `Stok tidak mencukupi di gudang asal. Stok tersedia: ${material.stok}`
+          `Stok tidak mencukupi di gudang asal. Stok tersedia: ${
+            materialGudang ? materialGudang.stok : 0
+          }`
         );
       }
+    }
+  },
+
+  async beforeUpdate(event) {
+    const { params } = event;
+    const { data, where } = params;
+
+    if (data.status) {
+      const oldRecord = await strapi.db
+        .query("api::distribusi-material.distribusi-material")
+        .findOne({
+          where: where,
+          select: ["status"],
+        });
+      params._oldStatus = oldRecord?.status;
     }
   },
 
   async afterUpdate(event) {
     const { result, params } = event;
     const { data } = params;
+    const oldStatus = params._oldStatus;
+    const newStatus = result.status;
 
-    // Check if status changed to 'Diterima'
-    if (data.status === "Diterima" && result.status === "Diterima") {
-      const distribusi = await strapi.entityService.findOne(
-        "api::distribusi-material.distribusi-material",
-        result.id,
-        {
-          populate: ["material", "gudang_asal", "gudang_tujuan"],
-        }
+    if (!oldStatus || oldStatus === newStatus) return;
+
+    const distribusi = await strapi.entityService.findOne(
+      "api::distribusi-material.distribusi-material",
+      result.id,
+      {
+        populate: ["material", "gudang_asal", "gudang_tujuan"],
+      }
+    );
+
+    if (!distribusi) return;
+
+    const materialId = distribusi.material.id;
+    const qty = Number(distribusi.jumlah);
+
+    // Logic for Deducting Source
+    // Trigger: Transition to 'Dikirim' OR Transition to 'Diterima' directly from 'Pending'
+    if (
+      newStatus === "Dikirim" ||
+      (newStatus === "Diterima" && oldStatus === "Pending")
+    ) {
+      console.log(
+        `🚚 Deducting stock from source gudang ${distribusi.gudang_asal.id}`
       );
+      await updateStock(
+        materialId,
+        distribusi.gudang_asal.id,
+        -qty,
+        "distribusi-out"
+      );
+    }
 
-      if (!distribusi) return;
-
-      // 1. Decrement stock at source warehouse
-      const sourceMaterial = distribusi.material;
-      if (sourceMaterial) {
-        await strapi.entityService.update(
-          "api::material.material",
-          sourceMaterial.id,
-          {
-            data: {
-              stok: sourceMaterial.stok - distribusi.jumlah,
-            },
-          }
-        );
-      }
-
-      // 2. Increment stock at destination warehouse
-      // 2. Increment stock at destination warehouse
-      // Find material with same code at destination
-      let destMaterial = null;
-
-      // First try to match by kode_material if it exists
-      if (sourceMaterial.kode_material) {
-        const destMaterialsByCode = await strapi.entityService.findMany(
-          "api::material.material",
-          {
-            filters: {
-              kode_material: sourceMaterial.kode_material,
-              lokasi_gudang: distribusi.gudang_tujuan.id,
-            },
-          }
-        );
-        if (destMaterialsByCode && destMaterialsByCode.length > 0) {
-          destMaterial = destMaterialsByCode[0];
-        }
-      }
-
-      // If not found by code (or code didn't exist), try by name
-      if (!destMaterial) {
-        const destMaterialsByName = await strapi.entityService.findMany(
-          "api::material.material",
-          {
-            filters: {
-              nama_material: sourceMaterial.nama_material,
-              lokasi_gudang: distribusi.gudang_tujuan.id,
-            },
-          }
-        );
-        if (destMaterialsByName && destMaterialsByName.length > 0) {
-          destMaterial = destMaterialsByName[0];
-        }
-      }
-
-      if (destMaterial) {
-        // Update existing material
-        await strapi.entityService.update(
-          "api::material.material",
-          destMaterial.id,
-          {
-            data: {
-              stok: destMaterial.stok + distribusi.jumlah,
-            },
-          }
-        );
-      } else {
-        // Create new material at destination
-        await strapi.entityService.create("api::material.material", {
-          data: {
-            nama_material: sourceMaterial.nama_material,
-            kode_material: sourceMaterial.kode_material,
-            satuan: sourceMaterial.satuan,
-            stok: distribusi.jumlah,
-            sisa_proyek: 100, // Default
-            status_material: "Tersedia",
-            minimum_stock: sourceMaterial.minimum_stock,
-            harga_satuan: sourceMaterial.harga_satuan,
-            lokasi_gudang: distribusi.gudang_tujuan.id,
-            deskripsi: sourceMaterial.deskripsi,
-          },
-        });
-      }
+    // Logic for Adding Destination
+    // Trigger: Transition to 'Diterima'
+    if (newStatus === "Diterima") {
+      console.log(
+        `📥 Adding stock to destination gudang ${distribusi.gudang_tujuan.id}`
+      );
+      await updateStock(
+        materialId,
+        distribusi.gudang_tujuan.id,
+        qty,
+        "distribusi-in"
+      );
     }
   },
 };
+
+async function updateStock(materialId, gudangId, qtyChange, reason) {
+  const materialGudang = await strapi.db
+    .query("api::material-gudang.material-gudang")
+    .findOne({
+      where: {
+        material: materialId,
+        gudang: gudangId,
+      },
+    });
+
+  if (materialGudang) {
+    const newStock =
+      Math.round((Number(materialGudang.stok) + Number(qtyChange)) * 100) / 100;
+
+    await strapi.entityService.update(
+      "api::material-gudang.material-gudang",
+      materialGudang.id,
+      {
+        data: {
+          stok: newStock,
+          last_updated_by: `system (${reason})`,
+        },
+      }
+    );
+  } else {
+    if (qtyChange > 0) {
+      // Create if adding stock
+      await strapi.entityService.create(
+        "api::material-gudang.material-gudang",
+        {
+          data: {
+            material: materialId,
+            gudang: gudangId,
+            stok: qtyChange,
+            stok_minimal: 0,
+            last_updated_by: `system (${reason})`,
+          },
+        }
+      );
+    } else {
+      console.error(
+        `❌ Cannot deduct stock: Record not found for material ${materialId} in gudang ${gudangId}`
+      );
+    }
+  }
+}

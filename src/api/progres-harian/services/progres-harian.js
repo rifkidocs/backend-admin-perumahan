@@ -1,128 +1,170 @@
-'use strict';
+"use strict";
 
 /**
  * progres-harian service
  */
 
-const { createCoreService } = require('@strapi/strapi').factories;
+const { createCoreService } = require("@strapi/strapi").factories;
 
-module.exports = createCoreService('api::progres-harian.progres-harian', ({ strapi }) => ({
+module.exports = createCoreService(
+  "api::progres-harian.progres-harian",
+  ({ strapi }) => ({
     async updateProjectProgress(projectId) {
-        if (!projectId) return;
+      if (!projectId) return;
 
-        // Ambil semua laporan progress untuk proyek ini
-        const reports = await strapi.entityService.findMany(
-            "api::progres-harian.progres-harian",
-            {
-                filters: { proyek_perumahan: projectId },
-                sort: { update_date: "desc" },
-                populate: ["proyek_perumahan"],
-            }
-        );
+      // Ambil semua laporan progress untuk proyek ini
+      const reports = await strapi.entityService.findMany(
+        "api::progres-harian.progres-harian",
+        {
+          filters: { proyek_perumahan: projectId },
+          sort: { update_date: "desc" },
+          populate: ["proyek_perumahan"],
+        }
+      );
 
-        if (reports.length === 0) return;
+      if (reports.length === 0) return;
 
-        // Hitung rata-rata progress
-        const totalProgress = reports.reduce(
-            (sum, report) => sum + (report.persentase_progres || report.progress_after || 0),
-            0
-        );
-        const averageProgress = Math.round(totalProgress / reports.length);
+      // Hitung rata-rata progress
+      const totalProgress = reports.reduce(
+        (sum, report) =>
+          sum + (report.persentase_progres || report.progress_after || 0),
+        0
+      );
+      const averageProgress = Math.round(totalProgress / reports.length);
 
-        // Update progress proyek
-        await strapi.entityService.update(
-            "api::proyek-perumahan.proyek-perumahan",
-            projectId,
-            {
-                data: {
-                    progress_percentage: averageProgress,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+      // Update progress proyek
+      await strapi.entityService.update(
+        "api::proyek-perumahan.proyek-perumahan",
+        projectId,
+        {
+          data: {
+            progress_percentage: averageProgress,
+            updatedAt: new Date(),
+          },
+        }
+      );
     },
 
     async getProgressSummary(projectId, startDate, endDate) {
-        const reports = await strapi.entityService.findMany(
-            "api::progres-harian.progres-harian",
-            {
-                filters: {
-                    proyek_perumahan: projectId,
-                    update_date: {
-                        $gte: startDate,
-                        $lte: endDate,
-                    },
-                },
-                sort: { update_date: "asc" },
-                populate: [
-                    "proyek_perumahan",
-                    "unit_rumah",
-                    "pelapor",
-                    "data_pekerja",
-                    "data_cuaca",
-                    "penggunaan_material",
-                    "dokumentasi_foto",
-                ],
-            }
-        );
+      const reports = await strapi.entityService.findMany(
+        "api::progres-harian.progres-harian",
+        {
+          filters: {
+            proyek_perumahan: projectId,
+            update_date: {
+              $gte: startDate,
+              $lte: endDate,
+            },
+          },
+          sort: { update_date: "asc" },
+          populate: [
+            "proyek_perumahan",
+            "unit_rumah",
+            "pelapor",
+            "data_pekerja",
+            "data_cuaca",
+            "penggunaan_material",
+            "dokumentasi_foto",
+          ],
+        }
+      );
 
-        return {
-            totalReports: reports.length,
-            averageProgress:
-                reports.length > 0
-                    ? Math.round(
-                        reports.reduce((sum, r) => sum + (r.persentase_progres || r.progress_after || 0), 0) / reports.length
-                    )
-                    : 0,
-            onScheduleCount: reports.filter((r) => r.status_harian === "sesuai_jadwal")
-                .length,
-            delayedCount: reports.filter((r) => r.status_harian === "terlambat").length,
-            aheadCount: reports.filter((r) => r.status_harian === "maju_jadwal").length,
-            reports,
-        };
+      return {
+        totalReports: reports.length,
+        averageProgress:
+          reports.length > 0
+            ? Math.round(
+                reports.reduce(
+                  (sum, r) =>
+                    sum + (r.persentase_progres || r.progress_after || 0),
+                  0
+                ) / reports.length
+              )
+            : 0,
+        onScheduleCount: reports.filter(
+          (r) => r.status_harian === "sesuai_jadwal"
+        ).length,
+        delayedCount: reports.filter((r) => r.status_harian === "terlambat")
+          .length,
+        aheadCount: reports.filter((r) => r.status_harian === "maju_jadwal")
+          .length,
+        reports,
+      };
     },
 
     // Helper function untuk update stock material
     async updateMaterialStock(materialUsageDetails, action) {
-        if (!materialUsageDetails || !Array.isArray(materialUsageDetails)) {
-            return;
-        }
+      if (!materialUsageDetails || !Array.isArray(materialUsageDetails)) {
+        return;
+      }
 
-        try {
-            for (const usage of materialUsageDetails) {
-                const { material_id, jumlah } = usage;
+      try {
+        for (const usage of materialUsageDetails) {
+          const { material_id, jumlah, gudang_asal } = usage;
 
-                if (!material_id || !jumlah) {
-                    continue;
-                }
+          if (!material_id || !jumlah) {
+            continue;
+          }
 
-                const material = await strapi.entityService.findOne('api::material.material', material_id);
+          // If gudang_asal is not provided, we can't deduct from specific warehouse
+          // For now, we'll log a warning and skip, or try to find a default warehouse?
+          // Given the strict requirement for material-gudang, we should probably skip.
+          if (!gudang_asal) {
+            strapi.log.warn(
+              `Cannot update stock for material ${material_id}: No gudang_asal specified in usage details.`
+            );
+            continue;
+          }
 
-                if (!material) {
-                    strapi.log.warn(`Material with ID ${material_id} not found`);
-                    continue;
-                }
+          const materialGudang = await strapi.db
+            .query("api::material-gudang.material-gudang")
+            .findOne({
+              where: {
+                material: material_id,
+                gudang: gudang_asal,
+              },
+            });
 
-                const currentStock = material.stok || 0;
-                let newStock;
+          if (!materialGudang) {
+            strapi.log.warn(
+              `Material-Gudang record not found for material ${material_id} in gudang ${gudang_asal}`
+            );
+            continue;
+          }
 
-                if (action === 'subtract') {
-                    newStock = Math.max(0, currentStock - jumlah);
-                } else if (action === 'add') {
-                    newStock = currentStock + jumlah;
-                } else {
-                    continue;
-                }
+          const currentStock = Number(materialGudang.stok) || 0;
+          let newStock;
 
-                await strapi.entityService.update('api::material.material', material_id, {
-                    data: { stok: newStock }
-                });
+          if (action === "subtract") {
+            newStock = Math.max(0, currentStock - Number(jumlah));
+          } else if (action === "add") {
+            newStock = currentStock + Number(jumlah);
+          } else {
+            continue;
+          }
 
-                strapi.log.info(`Updated stock for material ${material.nama_material}: ${currentStock} → ${newStock} (${action})`);
+          // Round to 2 decimals
+          newStock = Math.round(newStock * 100) / 100;
+
+          await strapi.entityService.update(
+            "api::material-gudang.material-gudang",
+            materialGudang.id,
+            {
+              data: {
+                stok: newStock,
+                last_updated_by: `system (progres-harian: ${action})`,
+              },
             }
-        } catch (error) {
-            strapi.log.error('Error updating material stock:', error);
-            throw new Error(`Failed to update material stock: ${error.message}`);
+          );
+
+          strapi.log.info(
+            `Updated stock for material ${material_id} in gudang ${gudang_asal}: ${currentStock} → ${newStock} (${action})`
+          );
         }
+      } catch (error) {
+        strapi.log.error("Error updating material stock:", error);
+        throw new Error(`Failed to update material stock: ${error.message}`);
+      }
     },
-}));
+  })
+);

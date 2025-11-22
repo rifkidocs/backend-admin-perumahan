@@ -24,10 +24,7 @@
     },
     "jenis_gudang": {
       "type": "enumeration",
-      "enum": [
-        "Gudang Induk",
-        "Gudang Proyek"
-      ],
+      "enum": ["Gudang Induk", "Gudang Proyek"],
       "required": true,
       "default": "Gudang Induk"
     },
@@ -38,7 +35,7 @@
     "alamat_lengkap": {
       "type": "text"
     },
-        "kontak_person": {
+    "kontak_person": {
       "type": "string",
       "maxLength": 255
     },
@@ -48,11 +45,7 @@
     },
     "status_gudang": {
       "type": "enumeration",
-      "enum": [
-        "Aktif",
-        "Non-Aktif",
-        "Maintenance"
-      ],
+      "enum": ["Aktif", "Non-Aktif", "Maintenance"],
       "required": true,
       "default": "Aktif"
     },
@@ -87,20 +80,17 @@
       "target": "api::stock-opname.stock-opname",
       "mappedBy": "gudang"
     },
-    "materials": {
+    "material_gudangs": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::material.material",
-      "mappedBy": "lokasi_gudang"
+      "target": "api::material-gudang.material-gudang",
+      "mappedBy": "gudang"
     },
     "foto_gudang": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     }
   }
 }
