@@ -26,17 +26,7 @@
       "type": "time",
       "required": true
     },
-    "location": {
-      "type": "string",
-      "maxLength": 255,
-      "required": true
-    },
-    "category": {
-      "type": "enumeration",
-      "required": true,
-      "default": "Semua Kategori",
-      "enum": ["Struktur", "Finishing", "MEP", "Alat Bantu", "Semua Kategori"]
-    },
+
     "status_opname": {
       "type": "enumeration",
       "required": true,
@@ -61,13 +51,7 @@
       "repeatable": true,
       "component": "stock-opname.item-opname"
     },
-    "total_items": {
-      "type": "integer",
-      "min": 0
-    },
-    "total_variance": {
-      "type": "integer"
-    },
+
     "gudang": {
       "type": "relation",
       "relation": "manyToOne",
