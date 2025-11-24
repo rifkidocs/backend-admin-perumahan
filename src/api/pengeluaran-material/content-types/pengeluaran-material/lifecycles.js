@@ -6,8 +6,7 @@ module.exports = {
     if (
       result.approvalStatus === "approved" &&
       result.list_materials &&
-      Array.isArray(result.list_materials) &&
-      result.gudang
+      Array.isArray(result.list_materials)
     ) {
       await updateStock(result);
     }
@@ -22,27 +21,18 @@ module.exports = {
       data.approvalStatus === "approved" &&
       result.approvalStatus === "approved" &&
       result.list_materials &&
-      Array.isArray(result.list_materials) &&
-      result.gudang
+      Array.isArray(result.list_materials)
     ) {
       // Check if it wasn't approved before to avoid double deduction
       if (params._oldStatus !== "approved") {
-        // Need to fetch full record to get populated materials if they aren't in result
-        // result might not have deep population of components depending on the query
-        // But usually components are returned. Let's be safe and fetch if needed,
-        // but for now assuming result has it or we fetch it.
-        // Actually, strapi update result might not have component data fully populated if not requested.
-        // Let's fetch the full record to be safe, similar to penerimaan-material.
-
         const fullRecord = await strapi.entityService.findOne(
           "api::pengeluaran-material.pengeluaran-material",
           result.id,
           {
             populate: {
               list_materials: {
-                populate: ["material"],
+                populate: ["material_gudang", "material"],
               },
-              gudang: true,
             },
           }
         );
@@ -68,35 +58,31 @@ module.exports = {
 };
 
 async function updateStock(record) {
-  const gudangId = record.gudang.id || record.gudang;
-
-  console.log(
-    `📉 Processing issuance for record ${record.id} from gudang ${gudangId}`
-  );
+  console.log(`📉 Processing issuance for record ${record.id}`);
 
   if (record.list_materials && Array.isArray(record.list_materials)) {
     for (const item of record.list_materials) {
-      if (item.material && item.quantity) {
-        const materialId = item.material.id || item.material;
+      // Handle Stock Source
+      if (item.sumber === "stok" && item.material_gudang && item.quantity) {
+        const materialGudangId =
+          item.material_gudang.id || item.material_gudang;
         const quantity = item.quantity;
 
-        console.log(`   - Material ${materialId}, quantity: ${quantity}`);
+        console.log(
+          `   - Processing Stock Deduction: MaterialGudang ID ${materialGudangId}, quantity: ${quantity}`
+        );
 
-        const materialGudang = await strapi.db
-          .query("api::material-gudang.material-gudang")
-          .findOne({
-            where: {
-              material: materialId,
-              gudang: gudangId,
-            },
-          });
+        const materialGudang = await strapi.entityService.findOne(
+          "api::material-gudang.material-gudang",
+          materialGudangId
+        );
 
         if (materialGudang) {
           const newStock = Number(materialGudang.stok) - Number(quantity);
 
           if (newStock < 0) {
             strapi.log.warn(
-              `⚠️ Stock negative for material ${materialId} in gudang ${gudangId}. Current: ${materialGudang.stok}, Issuance: ${quantity}`
+              `⚠️ Stock negative for MaterialGudang ${materialGudangId}. Current: ${materialGudang.stok}, Issuance: ${quantity}`
             );
           }
 
@@ -113,9 +99,17 @@ async function updateStock(record) {
           console.log(`   ✅ Stock deducted. New stock: ${newStock}`);
         } else {
           console.error(
-            `   ❌ Material-Gudang record not found for material ${materialId} and gudang ${gudangId}`
+            `   ❌ Material-Gudang record not found for ID ${materialGudangId}`
           );
         }
+      }
+      // Handle Direct Purchase
+      else if (item.sumber === "langsung_beli") {
+        console.log(
+          `   ℹ️ Direct purchase for material ${
+            item.material?.id || item.material
+          }, skipping stock deduction.`
+        );
       }
     }
   }

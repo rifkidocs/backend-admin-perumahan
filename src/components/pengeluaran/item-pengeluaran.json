@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_pengeluaran_item_pengeluarans",
+  "info": {
+    "displayName": "Item Pengeluaran",
+    "icon": "box",
+    "description": "Item pengeluaran material (stok atau beli langsung)"
+  },
+  "options": {},
+  "attributes": {
+    "sumber": {
+      "type": "enumeration",
+      "enum": ["stok", "langsung_beli"],
+      "default": "stok",
+      "required": true
+    },
+    "material_gudang": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::material-gudang.material-gudang"
+    },
+    "material": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::material.material"
+    },
+    "quantity": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "nota": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "files"]
+    }
+  }
+}
