@@ -35,24 +35,13 @@
       "type": "enumeration",
       "required": true,
       "default": "Semua Kategori",
-      "enum": [
-        "Struktur",
-        "Finishing",
-        "MEP",
-        "Alat Bantu",
-        "Semua Kategori"
-      ]
+      "enum": ["Struktur", "Finishing", "MEP", "Alat Bantu", "Semua Kategori"]
     },
     "status_opname": {
       "type": "enumeration",
       "required": true,
       "default": "Draft",
-      "enum": [
-        "Draft",
-        "In Progress",
-        "Completed",
-        "Reviewed"
-      ]
+      "enum": ["Draft", "In Progress", "Completed", "Reviewed"]
     },
     "pic": {
       "type": "relation",
@@ -67,11 +56,10 @@
     "notes": {
       "type": "text"
     },
-    "stock_opname_items": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::stock-opname-item.stock-opname-item",
-      "mappedBy": "stock_opname"
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "stock-opname.item-opname"
     },
     "total_items": {
       "type": "integer",
@@ -90,10 +78,7 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     }
   }
 }

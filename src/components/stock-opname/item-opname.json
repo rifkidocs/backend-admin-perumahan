@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_stock_opname_item_opnames",
+  "info": {
+    "displayName": "Item Opname",
+    "description": "Detail item stock opname"
+  },
+  "options": {},
+  "attributes": {
+    "material": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::material.material"
+    },
+    "system_stock": {
+      "type": "decimal",
+      "default": 0
+    },
+    "physical_stock": {
+      "type": "decimal",
+      "default": 0
+    },
+    "difference": {
+      "type": "decimal",
+      "default": 0
+    },
+    "notes": {
+      "type": "text"
+    },
+    "reason": {
+      "type": "enumeration",
+      "enum": [
+        "Rusak/Tidak Layak Pakai",
+        "Hilang/Pencurian",
+        "Kesalahan Input Sistem",
+        "Expired Date",
+        "Transfer Antar Lokasi",
+        "Retur Supplier",
+        "Sample/Display",
+        "Lainnya"
+      ]
+    }
+  }
+}
