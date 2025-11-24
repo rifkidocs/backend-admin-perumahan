@@ -9,9 +9,12 @@
   "attributes": {
     "sumber": {
       "type": "enumeration",
-      "enum": ["stok", "langsung_beli"],
+      "required": true,
       "default": "stok",
-      "required": true
+      "enum": [
+        "stok",
+        "langsung_beli"
+      ]
     },
     "material_gudang": {
       "type": "relation",
@@ -28,6 +31,28 @@
       "required": true,
       "min": 0
     },
+    "unit": {
+      "type": "string",
+      "required": true
+    },
+    "condition": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Baik",
+      "enum": [
+        "Baik",
+        "Rusak",
+        "Kurang"
+      ]
+    },
+    "harga_satuan": {
+      "type": "biginteger",
+      "required": false
+    },
+    "total_harga": {
+      "type": "biginteger",
+      "required": false
+    },
     "keterangan": {
       "type": "text"
     },
@@ -35,7 +60,10 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     }
   }
 }
