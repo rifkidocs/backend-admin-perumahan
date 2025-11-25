@@ -34,15 +34,19 @@ async function updateStock(stockOpname) {
         "api::stock-opname.stock-opname",
         id,
         {
-          populate: ["items", "items.material_gudang", "gudang"],
+          populate: ["items.material_gudang", "gudang"]
         }
       );
-      // Log carefully to avoid circular structure issues if any, though JSON.stringify usually handles simple objects fine
-      // strapi.log.info(`[StockOpname] Fetched data: ${JSON.stringify(opnameData, null, 2)}`);
-      // Commented out full JSON log to avoid spamming, but logging keys helps
-      strapi.log.info(
-        `[StockOpname] Fetched data keys: ${Object.keys(opnameData).join(", ")}`
-      );
+      
+      // Log the structure to debug population issues
+      strapi.log.info(`[StockOpname] Fetched data keys: ${Object.keys(opnameData).join(", ")}`);
+      if (opnameData.items && opnameData.items.length > 0) {
+        strapi.log.info(`[StockOpname] First item keys: ${Object.keys(opnameData.items[0]).join(", ")}`);
+        strapi.log.info(`[StockOpname] First item material_gudang type: ${typeof opnameData.items[0].material_gudang}`);
+        if (opnameData.items[0].material_gudang) {
+          strapi.log.info(`[StockOpname] First item material_gudang: ${JSON.stringify(opnameData.items[0].material_gudang)}`);
+        }
+      }
     } catch (e) {
       strapi.log.error(`[StockOpname] Error fetching data for ID ${id}:`, e);
       return;
@@ -73,45 +77,102 @@ async function updateStock(stockOpname) {
   for (const [index, item] of opnameData.items.entries()) {
     strapi.log.info(`[StockOpname] Processing item ${index} (ID: ${item.id})`);
 
-    if (item.material_gudang && item.physical_stock !== undefined) {
-      const materialGudangId =
-        typeof item.material_gudang === "object"
-          ? item.material_gudang.id
-          : item.material_gudang;
-      strapi.log.info(
-        `[StockOpname] Updating material_gudang ID: ${materialGudangId} with stock: ${item.physical_stock}`
-      );
+    // Enhanced validation and logging
+    strapi.log.info(`[StockOpname] Item ${index} material_gudang: ${JSON.stringify(item.material_gudang)}`);
+    strapi.log.info(`[StockOpname] Item ${index} physical_stock: ${item.physical_stock}`);
 
-      if (!materialGudangId) {
+    if (!item.material_gudang) {
+      strapi.log.warn(
+        `[StockOpname] Warning: Item ${index} in ${opnameData.opname_number} has no material_gudang assigned. Skipping.`
+      );
+      continue;
+    }
+
+    if (item.physical_stock === undefined || item.physical_stock === null) {
+      strapi.log.warn(
+        `[StockOpname] Warning: Item ${index} has no physical_stock defined. Skipping.`
+      );
+      continue;
+    }
+
+    // Get material_gudang ID - handle the count object issue
+    let materialGudangId = null;
+    
+    // Check if material_gudang is a count object (relation population issue)
+    if (item.material_gudang && typeof item.material_gudang === 'object' && item.material_gudang.count !== undefined) {
+      strapi.log.error(`[StockOpname] Error: material_gudang returned count object instead of relation. This suggests a relation population issue.`);
+      strapi.log.error(`[StockOpname] material_gudang value: ${JSON.stringify(item.material_gudang)}`);
+      
+      // Try to find the material_gudang by fetching the item directly with proper population
+      if (item.id) {
+        try {
+          strapi.log.info(`[StockOpname] Attempting to fetch item ${item.id} directly to get proper relation...`);
+          const directQuery = await strapi.db.query('stock-opname.item-opname').findOne({
+            where: { id: item.id },
+            populate: {
+              material_gudang: {
+                select: ['id']
+              }
+            }
+          });
+          
+          if (directQuery && directQuery.material_gudang && directQuery.material_gudang.id) {
+            materialGudangId = directQuery.material_gudang.id;
+            strapi.log.info(`[StockOpname] Successfully retrieved material_gudang ID: ${materialGudangId} from direct query`);
+          } else {
+            strapi.log.error(`[StockOpname] Direct query failed to return material_gudang relation`);
+          }
+        } catch (directQueryError) {
+          strapi.log.error(`[StockOpname] Direct query failed:`, directQueryError);
+        }
+      }
+    } else {
+      // Normal case - try to get ID from object or use primitive value
+      materialGudangId = item.material_gudang?.id || item.material_gudang;
+    }
+    
+    if (!materialGudangId) {
+      strapi.log.error(
+        `[StockOpname] Error: Could not determine material_gudang ID for item ${index}. material_gudang: ${JSON.stringify(item.material_gudang)}`
+      );
+      continue;
+    }
+    
+    strapi.log.info(
+      `[StockOpname] Updating material_gudang ID: ${materialGudangId} with stock: ${item.physical_stock}`
+    );
+
+    try {
+      // Verify the material_gudang exists before updating
+      const existingMaterial = await strapi.entityService.findOne(
+        "api::material-gudang.material-gudang",
+        materialGudangId
+      );
+      
+      if (!existingMaterial) {
         strapi.log.error(
-          `[StockOpname] Error: material_gudang ID is missing for item ${index}`
+          `[StockOpname] Error: material_gudang ID ${materialGudangId} does not exist`
         );
         continue;
       }
 
-      try {
-        await strapi.entityService.update(
-          "api::material-gudang.material-gudang",
-          materialGudangId,
-          {
-            data: {
-              stok: item.physical_stock,
-              last_updated_by: "Stock Opname " + opnameData.opname_number,
-            },
-          }
-        );
-        strapi.log.info(
-          `[StockOpname] Successfully updated material_gudang ID: ${materialGudangId}`
-        );
-      } catch (e) {
-        strapi.log.error(
-          `[StockOpname] Error updating material_gudang ID ${materialGudangId}:`,
-          e
-        );
-      }
-    } else if (!item.material_gudang) {
-      strapi.log.warn(
-        `[StockOpname] Warning: Item ${index} in ${opnameData.opname_number} has no material_gudang assigned. Skipping.`
+      await strapi.entityService.update(
+        "api::material-gudang.material-gudang",
+        materialGudangId,
+        {
+          data: {
+            stok: item.physical_stock,
+            last_updated_by: "Stock Opname " + (opnameData.opname_number || `ID:${id}`),
+          },
+        }
+      );
+      strapi.log.info(
+        `[StockOpname] Successfully updated material_gudang ID: ${materialGudangId} from stock ${existingMaterial.stok} to ${item.physical_stock}`
+      );
+    } catch (e) {
+      strapi.log.error(
+        `[StockOpname] Error updating material_gudang ID ${materialGudangId}:`,
+        e
       );
     }
   }
