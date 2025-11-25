@@ -6,10 +6,10 @@
   },
   "options": {},
   "attributes": {
-    "material": {
+    "material_gudang": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::material.material"
+      "target": "api::material-gudang.material-gudang"
     },
     "system_stock": {
       "type": "decimal",
