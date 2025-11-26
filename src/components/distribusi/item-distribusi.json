@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_distribusi_item_distribusis",
+  "info": {
+    "displayName": "Item Distribusi",
+    "icon": "box",
+    "description": "Item detail untuk distribusi material"
+  },
+  "options": {},
+  "attributes": {
+    "material_gudang": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::material-gudang.material-gudang"
+    },
+    "jumlah": {
+      "type": "integer",
+      "min": 1,
+      "required": true
+    },
+    "keterangan": {
+      "type": "text"
+    }
+  }
+}

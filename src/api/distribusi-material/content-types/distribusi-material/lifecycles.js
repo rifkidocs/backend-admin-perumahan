@@ -2,26 +2,36 @@ module.exports = {
   async beforeCreate(event) {
     const { data } = event.params;
 
-    if (data.material && data.gudang_asal && data.jumlah) {
-      // Check stock in material-gudang
-      const materialGudang = await strapi.db
-        .query("api::material-gudang.material-gudang")
-        .findOne({
-          where: {
-            material: data.material,
-            gudang: data.gudang_asal,
-          },
-        });
+    if (data.items && Array.isArray(data.items)) {
+      // Validation Loop
+      for (const item of data.items) {
+        if (!item.material_gudang || !item.jumlah) continue;
 
-      if (
-        !materialGudang ||
-        Number(materialGudang.stok) < Number(data.jumlah)
-      ) {
-        throw new Error(
-          `Stok tidak mencukupi di gudang asal. Stok tersedia: ${
-            materialGudang ? materialGudang.stok : 0
-          }`
-        );
+        const sourceStock = await strapi.db
+          .query("api::material-gudang.material-gudang")
+          .findOne({
+            where: { id: item.material_gudang },
+            populate: ["gudang", "material"],
+          });
+
+        if (!sourceStock) {
+          throw new Error(`Sumber stok (Material Gudang ID: ${item.material_gudang}) tidak ditemukan.`);
+        }
+
+        // Prevent sending to same warehouse
+        if (
+          data.gudang_tujuan &&
+          Number(sourceStock.gudang?.id) === Number(data.gudang_tujuan)
+        ) {
+           throw new Error(`Gudang tujuan tidak boleh sama dengan gudang asal untuk material ${sourceStock.material?.nama_material || ''}`);
+        }
+
+        // Check Sufficiency
+        if (Number(sourceStock.stok) < Number(item.jumlah)) {
+          throw new Error(
+            `Stok tidak mencukupi untuk ${sourceStock.material?.nama_material || 'item'}. Stok tersedia: ${sourceStock.stok}, Diminta: ${item.jumlah}`
+          );
+        }
       }
     }
   },
@@ -30,72 +40,114 @@ module.exports = {
     const { params } = event;
     const { data, where } = params;
 
-    if (data.status) {
+    // Capture old status
+    if (data.status_distribusi) {
       const oldRecord = await strapi.db
         .query("api::distribusi-material.distribusi-material")
         .findOne({
           where: where,
-          select: ["status"],
+          select: ["status_distribusi"],
         });
-      params._oldStatus = oldRecord?.status;
+      params._oldStatus = oldRecord?.status_distribusi;
     }
   },
 
   async afterUpdate(event) {
     const { result, params } = event;
-    const { data } = params;
     const oldStatus = params._oldStatus;
-    const newStatus = result.status;
+    const newStatus = result.status_distribusi;
 
     if (!oldStatus || oldStatus === newStatus) return;
 
+    // Populate deeply to get items and their nested material_gudang details
     const distribusi = await strapi.entityService.findOne(
       "api::distribusi-material.distribusi-material",
       result.id,
       {
-        populate: ["material", "gudang_asal", "gudang_tujuan"],
+        populate: {
+          items: {
+            populate: {
+              material_gudang: {
+                 populate: ["material", "gudang"]
+              }
+            }
+          },
+          gudang_tujuan: true,
+        },
       }
     );
 
-    if (!distribusi) return;
+    if (!distribusi || !distribusi.items) return;
 
-    const materialId = distribusi.material.id;
-    const qty = Number(distribusi.jumlah);
-
-    // Logic for Deducting Source
-    // Trigger: Transition to 'Dikirim' OR Transition to 'Diterima' directly from 'Pending'
-    if (
-      newStatus === "Dikirim" ||
-      (newStatus === "Diterima" && oldStatus === "Pending")
-    ) {
-      console.log(
-        `🚚 Deducting stock from source gudang ${distribusi.gudang_asal.id}`
-      );
-      await updateStock(
-        materialId,
-        distribusi.gudang_asal.id,
-        -qty,
-        "distribusi-out"
-      );
+    const targetGudangId = distribusi.gudang_tujuan?.id;
+    if (!targetGudangId) {
+      console.error("Missing target gudang in distribusi record");
+      return;
     }
 
-    // Logic for Adding Destination
-    // Trigger: Transition to 'Diterima'
-    if (newStatus === "Diterima") {
-      console.log(
-        `📥 Adding stock to destination gudang ${distribusi.gudang_tujuan.id}`
-      );
-      await updateStock(
-        materialId,
-        distribusi.gudang_tujuan.id,
-        qty,
-        "distribusi-in"
-      );
+    // Loop through all items to process stock changes
+    for (const item of distribusi.items) {
+        if(!item.material_gudang) continue;
+
+        const sourceStockId = item.material_gudang.id;
+        const materialId = item.material_gudang.material?.id;
+        const qty = Number(item.jumlah);
+
+        if (!materialId) continue;
+
+        // Logic for Deducting Source
+        if (
+          newStatus === "Dikirim" ||
+          (newStatus === "Diterima" && oldStatus === "Pending")
+        ) {
+          console.log(
+            `🚚 Deducting stock from source stock ID ${sourceStockId} (Qty: ${qty})`
+          );
+          await updateStockById(sourceStockId, -qty, "distribusi-out");
+        }
+
+        // Logic for Adding Destination
+        if (newStatus === "Diterima") {
+          console.log(
+            `📥 Adding stock to destination gudang ${targetGudangId} (Material ID: ${materialId}, Qty: ${qty})`
+          );
+          await updateStockByLocation(
+            materialId,
+            targetGudangId,
+            qty,
+            "distribusi-in"
+          );
+        }
     }
   },
 };
 
-async function updateStock(materialId, gudangId, qtyChange, reason) {
+// Update specific ID (Source)
+async function updateStockById(id, qtyChange, reason) {
+  const materialGudang = await strapi.entityService.findOne(
+    "api::material-gudang.material-gudang",
+    id
+  );
+
+  if (materialGudang) {
+    const newStock =
+      Math.round((Number(materialGudang.stok) + Number(qtyChange)) * 100) / 100;
+
+    await strapi.entityService.update(
+      "api::material-gudang.material-gudang",
+      id,
+      {
+        data: {
+          stok: newStock,
+          last_updated_by: `system (${reason})`,
+        },
+      }
+    );
+  }
+}
+
+// Find/Create and Update (Destination)
+async function updateStockByLocation(materialId, gudangId, qtyChange, reason) {
   const materialGudang = await strapi.db
     .query("api::material-gudang.material-gudang")
     .findOne({
@@ -135,8 +187,8 @@ async function updateStock(materialId, gudangId, qtyChange, reason) {
         }
       );
     } else {
-      console.error(
-        `❌ Cannot deduct stock: Record not found for material ${materialId} in gudang ${gudangId}`
+       console.error(
+        `❌ Cannot deduct stock (Destination): Record not found for material ${materialId} in gudang ${gudangId}`
       );
     }
   }

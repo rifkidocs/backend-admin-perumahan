@@ -17,34 +17,16 @@
       "unique": true,
       "maxLength": 50
     },
-    "gudang_asal": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::gudang.gudang",
-      "required": true
-    },
     "gudang_tujuan": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::gudang.gudang",
       "required": true
     },
-    "material": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::material.material",
-      "required": true
-    },
-    "jumlah": {
-      "type": "integer",
-      "required": true,
-      "min": 1
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": ["Pending", "Dikirim", "Diterima", "Ditolak"],
-      "default": "Pending",
-      "required": true
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "distribusi.item-distribusi"
     },
     "tanggal_pengiriman": {
       "type": "date"
@@ -52,23 +34,37 @@
     "tanggal_diterima": {
       "type": "date"
     },
-    "keterangan": {
-      "type": "text"
+    "status_distribusi": {
+      "type": "enumeration",
+      "enum": [
+        "Pending",
+        "Dikirim",
+        "Diterima",
+        "Ditolak"
+      ],
+      "default": "Pending",
+      "required": true
     },
-    "bukti_foto": {
-      "type": "media",
-      "multiple": true,
-      "allowedTypes": ["images"]
+    "pengirim": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
     },
     "penerima": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan"
     },
-    "pengirim": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::karyawan.karyawan"
+    "keterangan": {
+      "type": "text"
+    },
+    "bukti_foto": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }
