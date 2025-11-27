@@ -116,9 +116,6 @@
       ],
       "default": "pending"
     },
-    "tanggal_estimasi_delivery": {
-      "type": "date"
-    },
     "payment_terms": {
       "type": "string",
       "maxLength": 200

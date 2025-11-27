@@ -84,7 +84,13 @@
     },
     "evaluation_period": {
       "type": "enumeration",
-      "enum": ["Weekly", "Monthly", "Quarterly", "Annually", "Project-Based"],
+      "enum": [
+        "Weekly",
+        "Monthly",
+        "Quarterly",
+        "Annually",
+        "Project-Based"
+      ],
       "default": "Monthly"
     },
     "purchase_order_reference": {
@@ -137,22 +143,42 @@
     },
     "status_harga": {
       "type": "enumeration",
-      "enum": ["Excellent", "Good", "Fair", "Poor"],
+      "enum": [
+        "Excellent",
+        "Good",
+        "Fair",
+        "Poor"
+      ],
       "default": "Good"
     },
     "status_kualitas": {
       "type": "enumeration",
-      "enum": ["Excellent", "Good", "Fair", "Poor"],
+      "enum": [
+        "Excellent",
+        "Good",
+        "Fair",
+        "Poor"
+      ],
       "default": "Good"
     },
     "status_pengiriman": {
       "type": "enumeration",
-      "enum": ["Excellent", "Good", "Fair", "Poor"],
+      "enum": [
+        "Excellent",
+        "Good",
+        "Fair",
+        "Poor"
+      ],
       "default": "Good"
     },
     "recommendation": {
       "type": "enumeration",
-      "enum": ["Continue", "Monitor", "Improve", "Terminate"],
+      "enum": [
+        "Continue",
+        "Monitor",
+        "Improve",
+        "Terminate"
+      ],
       "default": "Continue"
     },
     "next_evaluation_date": {

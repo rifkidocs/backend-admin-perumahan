@@ -14,7 +14,7 @@
   "attributes": {
     "code": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true
     },
     "name": {
@@ -35,12 +35,6 @@
     },
     "address": {
       "type": "text"
-    },
-    "materials": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::material.material",
-      "mappedBy": "suppliers"
     },
     "rating": {
       "type": "decimal"
@@ -100,6 +94,9 @@
       "relation": "oneToMany",
       "target": "api::kas-keluar.kas-keluar",
       "mappedBy": "supplier"
+    },
+    "catatan": {
+      "type": "text"
     }
   }
 }

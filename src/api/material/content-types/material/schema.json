@@ -45,12 +45,7 @@
       "target": "api::vendor.vendor",
       "inversedBy": "materials"
     },
-    "suppliers": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::supplier.supplier",
-      "inversedBy": "materials"
-    },
+
     "deskripsi": {
       "type": "text"
     },
