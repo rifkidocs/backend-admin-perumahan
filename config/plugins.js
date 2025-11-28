@@ -22,4 +22,21 @@ module.exports = ({ env }) => ({
       autoPurgeCacheOnStart: true, // Automatically purge cache on Strapi startup
     },
   },
+  // "users-permissions": {
+  //   config: {
+  //     jwtManagement: "refresh",
+  //     sessions: {
+  //       accessTokenLifespan: 604800, // 1 week (default)
+  //       maxRefreshTokenLifespan: 2592000, // 30 days
+  //       idleRefreshTokenLifespan: 604800, // 7 days
+  //       httpOnly: false, // Set to true for HTTP-only cookies
+  //       cookie: {
+  //         name: "strapi_up_refresh",
+  //         sameSite: "lax",
+  //         path: "/",
+  //         secure: false, // true in production
+  //       },
+  //     },
+  //   },
+  // },
 });
