@@ -16,46 +16,110 @@ module.exports = {
     const { result, params } = event;
     const { data } = params;
 
-    // Check if status changed to 'approved'
+    // 1. Status changed to 'approved'
     if (
       data.approvalStatus === "approved" &&
       result.approvalStatus === "approved" &&
-      result.list_materials &&
-      Array.isArray(result.list_materials)
+      params._oldStatus !== "approved"
     ) {
-      // Check if it wasn't approved before to avoid double deduction
-      if (params._oldStatus !== "approved") {
-        const fullRecord = await strapi.entityService.findOne(
-          "api::pengeluaran-material.pengeluaran-material",
-          result.id,
-          {
-            populate: {
-              list_materials: {
-                populate: ["material_gudang", "material"],
-              },
-            },
-          }
-        );
-        await updateStock(fullRecord);
+      await updateStock(result);
+    }
+    // 2. Already approved and content changed (e.g. list_materials updated)
+    else if (
+      result.approvalStatus === "approved" &&
+      params._oldStatus === "approved"
+    ) {
+      // Restore old stock
+      if (params._oldRecord) {
+        await restoreStock(params._oldRecord);
       }
+      // Deduct new stock
+      await updateStock(result);
     }
   },
 
   async beforeUpdate(event) {
     const { params } = event;
-    const { data, where } = params;
+    const { where } = params;
 
-    if (data.approvalStatus) {
-      const oldRecord = await strapi.db
-        .query("api::pengeluaran-material.pengeluaran-material")
-        .findOne({
-          where: where,
-          select: ["approvalStatus"],
-        });
-      params._oldStatus = oldRecord?.approvalStatus;
+    const oldRecord = await strapi.entityService.findOne(
+      "api::pengeluaran-material.pengeluaran-material",
+      where.id,
+      {
+        populate: {
+          list_materials: {
+            populate: ["material_gudang"],
+          },
+        },
+      }
+    );
+
+    if (oldRecord) {
+      params._oldStatus = oldRecord.approvalStatus;
+      params._oldRecord = oldRecord;
+    }
+  },
+
+  async beforeDelete(event) {
+    const { where } = event.params;
+
+    const record = await strapi.entityService.findOne(
+      "api::pengeluaran-material.pengeluaran-material",
+      where.id,
+      {
+        populate: {
+          list_materials: {
+            populate: ["material_gudang"],
+          },
+        },
+      }
+    );
+
+    if (
+      record &&
+      record.approvalStatus === "approved" &&
+      record.list_materials &&
+      Array.isArray(record.list_materials)
+    ) {
+      await restoreStock(record);
     }
   },
 };
+
+async function restoreStock(record) {
+  console.log(`📈 Restoring stock for deleted/cancelled record ${record.id}`);
+
+  if (record.list_materials && Array.isArray(record.list_materials)) {
+    for (const item of record.list_materials) {
+      if (item.sumber === "stok" && item.material_gudang && item.quantity) {
+        const materialGudangId =
+          item.material_gudang.id || item.material_gudang;
+        const quantity = item.quantity;
+
+        const materialGudang = await strapi.entityService.findOne(
+          "api::material-gudang.material-gudang",
+          materialGudangId
+        );
+
+        if (materialGudang) {
+          const newStock = Number(materialGudang.stok) + Number(quantity);
+
+          await strapi.entityService.update(
+            "api::material-gudang.material-gudang",
+            materialGudang.id,
+            {
+              data: {
+                stok: newStock,
+                last_updated_by: "system (pengeluaran: restore)",
+              },
+            }
+          );
+          console.log(`   ✅ Stock restored. New stock: ${newStock}`);
+        }
+      }
+    }
+  }
+}
 
 async function updateStock(record) {
   console.log(`📉 Processing issuance for record ${record.id}`);

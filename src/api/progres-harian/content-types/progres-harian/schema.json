@@ -4,7 +4,7 @@
   "info": {
     "singularName": "progres-harian",
     "pluralName": "progres-harians",
-    "displayName": "Progress Update",
+    "displayName": "Progress Harian",
     "description": "Progress tracking for construction units"
   },
   "options": {
@@ -36,7 +36,13 @@
     "list_materials": {
       "type": "component",
       "repeatable": true,
-      "component": "penerimaan.material-item"
+      "component": "pengeluaran.item-pengeluaran"
+    },
+    "pengeluaran_material": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pengeluaran-material.pengeluaran-material",
+      "inversedBy": "progres_harian"
     },
     "gudang": {
       "type": "relation",

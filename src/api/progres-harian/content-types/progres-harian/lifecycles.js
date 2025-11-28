@@ -34,7 +34,7 @@ module.exports = {
   },
 
   async beforeUpdate(event) {
-    const { data, where } = event.params;
+    const { data } = event.params;
 
     // Validasi persentase
     if (
@@ -43,28 +43,12 @@ module.exports = {
     ) {
       throw new Error("Persentase harus antara 0-100");
     }
-
-    // Store old record for stock restoration in afterUpdate
-    // We need list_materials and gudang to restore stock
-    const oldRecord = await strapi.entityService.findOne(
-      "api::progres-harian.progres-harian",
-      where.id,
-      {
-        populate: {
-          list_materials: {
-            populate: ["material"],
-          },
-          gudang: true,
-        },
-      }
-    );
-    event.params._oldRecord = oldRecord;
   },
 
   async afterCreate(event) {
     const { result, params } = event;
 
-    // Update progress proyek secara otomatis
+    // 1. Update progress proyek secara otomatis
     try {
       let projectRef = params?.data?.proyek_perumahan;
       if (!projectRef && result?.proyek_perumahan) {
@@ -97,16 +81,37 @@ module.exports = {
       );
     }
 
-    // Update stock material secara otomatis
-    // Need to ensure we have the gudang ID.
-    // If params.data.gudang is provided, use it. Otherwise check result.gudang.
-    const gudangId = params.data.gudang || result.gudang?.id || result.gudang;
+    // 2. Create Pengeluaran Material if materials are used
+    if (result.list_materials && result.list_materials.length > 0) {
+      try {
+        const pengeluaranData = {
+          date: result.update_date,
+          time: new Date().toTimeString().split(" ")[0], // Current time
+          project: result.proyek_perumahan,
+          unit_rumah: result.unit_rumah,
+          list_materials: result.list_materials, // Structure should match now
+          requester: result.mandor || result.created_by || "System",
+          approvalStatus: "approved", // Auto-approve
+          status_issuance: "Selesai", // Auto-complete
+          notes: `Auto-generated from Progres Harian ID: ${result.id}`,
+          progres_harian: result.id,
+        };
 
-    await strapi
-      .service("api::progres-harian.progres-harian")
-      .updateMaterialStock(params.data.list_materials, gudangId, "subtract");
+        await strapi.entityService.create(
+          "api::pengeluaran-material.pengeluaran-material",
+          {
+            data: pengeluaranData,
+          }
+        );
+      } catch (error) {
+        strapi.log.error(
+          "Failed to create pengeluaran-material from progres-harian:",
+          error
+        );
+      }
+    }
 
-    // Log aktivitas jika ada service activity-log
+    // Log aktivitas
     try {
       await strapi.service("api::activity-log.activity-log").create({
         action: "CREATE_PROGRESS_REPORT",
@@ -124,7 +129,7 @@ module.exports = {
   async afterUpdate(event) {
     const { result, params } = event;
 
-    // Update progress proyek
+    // 1. Update progress proyek
     try {
       let projectRef = params?.data?.proyek_perumahan;
       if (!projectRef && result?.proyek_perumahan) {
@@ -157,27 +162,54 @@ module.exports = {
       );
     }
 
-    // Update stock material (handle changes in material usage)
-    const oldRecord = params._oldRecord;
-    const oldMaterialDetails = oldRecord?.list_materials || [];
-    const oldGudangId = oldRecord?.gudang?.id || oldRecord?.gudang;
+    // 2. Sync with Pengeluaran Material
+    // Find linked pengeluaran
+    const linkedPengeluaran = await strapi.db
+      .query("api::pengeluaran-material.pengeluaran-material")
+      .findOne({
+        where: { progres_harian: result.id },
+      });
 
-    const newMaterialDetails = params.data.list_materials || oldMaterialDetails; // If not updated, use old
-    // If gudang is updated in params, use it. Else use old gudang.
-    const newGudangId = params.data.gudang || oldGudangId;
+    if (result.list_materials && result.list_materials.length > 0) {
+      const pengeluaranData = {
+        date: result.update_date,
+        project: result.proyek_perumahan,
+        unit_rumah: result.unit_rumah,
+        list_materials: result.list_materials,
+        requester: result.mandor || result.created_by || "System",
+      };
 
-    // Restore old stock first (using old gudang)
-    if (oldMaterialDetails.length > 0 && oldGudangId) {
-      await strapi
-        .service("api::progres-harian.progres-harian")
-        .updateMaterialStock(oldMaterialDetails, oldGudangId, "add");
-    }
-
-    // Then subtract new usage (using new gudang)
-    if (newMaterialDetails.length > 0 && newGudangId) {
-      await strapi
-        .service("api::progres-harian.progres-harian")
-        .updateMaterialStock(newMaterialDetails, newGudangId, "subtract");
+      if (linkedPengeluaran) {
+        // Update existing
+        await strapi.entityService.update(
+          "api::pengeluaran-material.pengeluaran-material",
+          linkedPengeluaran.id,
+          {
+            data: pengeluaranData,
+          }
+        );
+      } else {
+        // Create new if not exists (e.g. added materials later)
+        await strapi.entityService.create(
+          "api::pengeluaran-material.pengeluaran-material",
+          {
+            data: {
+              ...pengeluaranData,
+              time: new Date().toTimeString().split(" ")[0],
+              approvalStatus: "approved",
+              status_issuance: "Selesai",
+              notes: `Auto-generated from Progres Harian ID: ${result.id}`,
+              progres_harian: result.id,
+            },
+          }
+        );
+      }
+    } else if (linkedPengeluaran) {
+      // If materials removed, delete the linked pengeluaran
+      await strapi.entityService.delete(
+        "api::pengeluaran-material.pengeluaran-material",
+        linkedPengeluaran.id
+      );
     }
 
     // Log aktivitas
@@ -195,33 +227,21 @@ module.exports = {
     }
   },
 
-  async beforeDelete(event) {
-    const { where } = event.params;
-
-    const record = await strapi.entityService.findOne(
-      "api::progres-harian.progres-harian",
-      where.id,
-      {
-        populate: {
-          list_materials: {
-            populate: ["material"],
-          },
-          gudang: true,
-        },
-      }
-    );
-    event.params._recordToDelete = record;
-  },
-
   async afterDelete(event) {
-    const { params } = event;
-    const record = params._recordToDelete;
+    const { result } = event;
 
-    if (record && record.list_materials && record.gudang) {
-      const gudangId = record.gudang.id || record.gudang;
-      await strapi
-        .service("api::progres-harian.progres-harian")
-        .updateMaterialStock(record.list_materials, gudangId, "add");
+    // Delete linked Pengeluaran Material
+    const linkedPengeluaran = await strapi.db
+      .query("api::pengeluaran-material.pengeluaran-material")
+      .findOne({
+        where: { progres_harian: result.id },
+      });
+
+    if (linkedPengeluaran) {
+      await strapi.entityService.delete(
+        "api::pengeluaran-material.pengeluaran-material",
+        linkedPengeluaran.id
+      );
     }
 
     // Log aktivitas
@@ -229,7 +249,7 @@ module.exports = {
       await strapi.service("api::activity-log.activity-log").create({
         action: "DELETE_PROGRESS_REPORT",
         entity_type: "progres-harian",
-        entity_id: record?.id,
+        entity_id: result.id,
         description: `Laporan progress harian dihapus`,
       });
     } catch (error) {

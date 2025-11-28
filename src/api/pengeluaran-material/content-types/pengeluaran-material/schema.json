@@ -170,6 +170,12 @@
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "pengeluaran_materials"
+    },
+    "progres_harian": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::progres-harian.progres-harian",
+      "inversedBy": "pengeluaran_material"
     }
   }
 }
