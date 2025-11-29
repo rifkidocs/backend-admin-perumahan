@@ -10,11 +10,8 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
-    "update_date": {
-      "type": "date",
-      "required": true
-    },
     "progress_before": {
       "type": "integer",
       "required": true,
@@ -29,14 +26,14 @@
     },
     "completed_work": {
       "type": "text",
-      "required": true,
       "minLength": 10,
-      "maxLength": 500
+      "maxLength": 500,
+      "required": true
     },
     "list_materials": {
       "type": "component",
-      "repeatable": true,
-      "component": "pengeluaran.item-pengeluaran"
+      "component": "pengeluaran.item-pengeluaran",
+      "repeatable": true
     },
     "pengeluaran_material": {
       "type": "relation",
@@ -69,26 +66,34 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "photos_after": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "persentase_progres": {
       "type": "decimal"
     },
     "aktivitas": {
       "type": "string",
-      "required": true,
-      "maxLength": 255
+      "maxLength": 255,
+      "required": true
     },
     "status_harian": {
       "type": "enumeration",
-      "enum": ["sesuai_jadwal", "terlambat", "maju_jadwal"],
-      "default": "sesuai_jadwal"
+      "default": "sesuai_jadwal",
+      "enum": [
+        "sesuai_jadwal",
+        "terlambat",
+        "maju_jadwal"
+      ]
     },
     "deskripsi": {
       "type": "text"
@@ -97,18 +102,21 @@
       "type": "text"
     },
     "mandor": {
-      "type": "string",
-      "maxLength": 100
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pekerja.pekerja",
+      "inversedBy": "mandor_progres_harians"
     },
     "tukang": {
-      "type": "integer",
-      "min": 0,
-      "default": 0
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::pekerja.pekerja",
+      "inversedBy": "tukang_progres_harians"
     },
     "kernet": {
       "type": "integer",
-      "min": 0,
-      "default": 0
+      "default": 0,
+      "min": 0
     },
     "total_pekerja": {
       "type": "integer",
@@ -136,13 +144,17 @@
     },
     "dampak_konstruksi": {
       "type": "enumeration",
-      "enum": ["tidak_ada", "minor", "sedang", "signifikan"],
-      "default": "tidak_ada"
+      "default": "tidak_ada",
+      "enum": [
+        "tidak_ada",
+        "minor",
+        "sedang",
+        "signifikan"
+      ]
     },
     "durasi_tunda": {
       "type": "integer",
-      "min": 0,
-      "description": "Durasi penundaan dalam menit"
+      "min": 0
     },
     "keterangan_cuaca": {
       "type": "text"
@@ -150,12 +162,12 @@
     "foto_dokumentasi": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["images"],
-      "description": "Combined progress photos"
+      "allowedTypes": [
+        "images"
+      ]
     },
     "detail_foto": {
-      "type": "json",
-      "description": "Photo metadata: lokasi, judul, deskripsi, kategori (pondasi/struktur/atap/finishing/instalasi/lainnya)"
+      "type": "json"
     },
     "proyek_perumahan": {
       "type": "relation",

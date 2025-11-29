@@ -58,7 +58,11 @@
     },
     "approvalStatus": {
       "type": "enumeration",
-      "enum": ["pending", "approved", "rejected"],
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
       "default": "pending"
     },
     "status_issuance": {
@@ -80,7 +84,10 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     },
     "driver": {
       "type": "string",
@@ -100,7 +107,12 @@
     },
     "priorityLevel": {
       "type": "enumeration",
-      "enum": ["low", "normal", "high", "urgent"],
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ],
       "default": "normal"
     },
     "estimatedArrival": {
@@ -175,7 +187,7 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::progres-harian.progres-harian",
-      "inversedBy": "pengeluaran_material"
+      "mappedBy": "pengeluaran_material"
     }
   }
 }

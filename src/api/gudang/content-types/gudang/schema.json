@@ -24,7 +24,10 @@
     },
     "jenis_gudang": {
       "type": "enumeration",
-      "enum": ["Gudang Induk", "Gudang Proyek"],
+      "enum": [
+        "Gudang Induk",
+        "Gudang Proyek"
+      ],
       "required": true,
       "default": "Gudang Induk"
     },
@@ -45,7 +48,11 @@
     },
     "status_gudang": {
       "type": "enumeration",
-      "enum": ["Aktif", "Non-Aktif", "Maintenance"],
+      "enum": [
+        "Aktif",
+        "Non-Aktif",
+        "Maintenance"
+      ],
       "required": true,
       "default": "Aktif"
     },
@@ -96,7 +103,10 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files"]
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     }
   }
 }
