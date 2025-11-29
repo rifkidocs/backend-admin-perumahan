@@ -12,40 +12,48 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "progres_harians"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "progres_harians"
+    },
+    "update_date": {
+      "type": "date",
+      "required": true
+    },
+    "status_harian": {
+      "type": "enumeration",
+      "enum": [
+        "sesuai_jadwal",
+        "terlambat",
+        "maju_jadwal"
+      ],
+      "default": "sesuai_jadwal"
+    },
     "progress_before": {
       "type": "integer",
-      "required": true,
       "min": 0,
-      "max": 100
+      "max": 100,
+      "required": true
     },
     "progress_after": {
       "type": "integer",
-      "required": true,
       "min": 0,
-      "max": 100
+      "max": 100,
+      "required": true
     },
     "completed_work": {
       "type": "text",
+      "required": true,
       "minLength": 10,
-      "maxLength": 500,
-      "required": true
-    },
-    "list_materials": {
-      "type": "component",
-      "component": "pengeluaran.item-pengeluaran",
-      "repeatable": true
-    },
-    "pengeluaran_material": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::pengeluaran-material.pengeluaran-material",
-      "inversedBy": "progres_harian"
-    },
-    "gudang": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::gudang.gudang",
-      "inversedBy": "progres_harians"
+      "maxLength": 500
     },
     "labor_hours": {
       "type": "decimal",
@@ -54,13 +62,6 @@
     "notes": {
       "type": "text",
       "maxLength": 200
-    },
-    "verified_by": {
-      "type": "string",
-      "maxLength": 100
-    },
-    "verified_date": {
-      "type": "date"
     },
     "photos_before": {
       "type": "media",
@@ -78,22 +79,17 @@
         "images"
       ]
     },
-    "persentase_progres": {
-      "type": "decimal"
+    "verified_by": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "verified_date": {
+      "type": "date"
     },
     "aktivitas": {
       "type": "string",
       "maxLength": 255,
       "required": true
-    },
-    "status_harian": {
-      "type": "enumeration",
-      "default": "sesuai_jadwal",
-      "enum": [
-        "sesuai_jadwal",
-        "terlambat",
-        "maju_jadwal"
-      ]
     },
     "deskripsi": {
       "type": "text"
@@ -115,8 +111,8 @@
     },
     "kernet": {
       "type": "integer",
-      "default": 0,
-      "min": 0
+      "min": 0,
+      "default": 0
     },
     "total_pekerja": {
       "type": "integer",
@@ -144,13 +140,13 @@
     },
     "dampak_konstruksi": {
       "type": "enumeration",
-      "default": "tidak_ada",
       "enum": [
         "tidak_ada",
         "minor",
         "sedang",
         "signifikan"
-      ]
+      ],
+      "default": "tidak_ada"
     },
     "durasi_tunda": {
       "type": "integer",
@@ -169,22 +165,30 @@
     "detail_foto": {
       "type": "json"
     },
-    "proyek_perumahan": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "progres_harians"
-    },
-    "unit_rumah": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::unit-rumah.unit-rumah",
-      "inversedBy": "progres_harians"
+    "list_materials": {
+      "type": "component",
+      "repeatable": true,
+      "component": "pengeluaran.item-pengeluaran"
     },
     "pelapor": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
+      "inversedBy": "progres_harians"
+    },
+    "persentase_progres": {
+      "type": "decimal"
+    },
+    "pengeluaran_material": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pengeluaran-material.pengeluaran-material",
+      "inversedBy": "progres_harian"
+    },
+    "gudang": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::gudang.gudang",
       "inversedBy": "progres_harians"
     }
   }
