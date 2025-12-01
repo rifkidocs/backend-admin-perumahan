@@ -22,6 +22,8 @@ module.exports = {
         const { data } = event.params;
 
         try {
+            console.log('[DEBUG LIFECYCLE] Incoming Data:', JSON.stringify(data, null, 2));
+
             // Validasi data lokasi
             if (!data.lokasi_absensi || !data.lokasi_absensi.check_in_location) {
                 throw new Error('Data lokasi check-in diperlukan');
@@ -32,13 +34,34 @@ module.exports = {
                 throw new Error('Koordinat tidak valid');
             }
 
+            // Helper to extract ID from relation input
+            const getRelationId = (relation) => {
+                if (!relation) return null;
+                if (typeof relation === 'number' || typeof relation === 'string') return relation;
+                if (relation.connect && Array.isArray(relation.connect) && relation.connect.length > 0) {
+                    // connect can be [{id: 1}] or [1]
+                    const first = relation.connect[0];
+                    return typeof first === 'object' ? first.id : first;
+                }
+                if (relation.id) return relation.id;
+                return null;
+            };
+
+            const karyawanId = getRelationId(data.karyawan);
+
+            if (!karyawanId) {
+                 // Maybe throw error or skip if not present (though schema says required)
+                 // For now, let's assume it's required
+                 throw new Error('Karyawan is required');
+            }
+
             // Cari jadwal absensi aktif untuk karyawan
             const today = new Date().toISOString().split('T')[0];
             const attendanceSchedule = await strapi.entityService.findMany(
                 'api::attendance-schedule.attendance-schedule',
                 {
                     filters: {
-                        employee: data.karyawan,
+                        employee: karyawanId,
                         is_active: true,
                         effective_date: { $lte: today },
                         $or: [
