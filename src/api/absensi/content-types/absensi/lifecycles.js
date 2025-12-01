@@ -37,13 +37,25 @@ module.exports = {
             // Helper to extract ID from relation input
             const getRelationId = (relation) => {
                 if (!relation) return null;
+                
+                // Case: Simple ID (number or string)
                 if (typeof relation === 'number' || typeof relation === 'string') return relation;
+                
+                // Case: Document Service "connect" syntax: { connect: [{ id: 1 }] } or { connect: [1] }
                 if (relation.connect && Array.isArray(relation.connect) && relation.connect.length > 0) {
-                    // connect can be [{id: 1}] or [1]
                     const first = relation.connect[0];
                     return typeof first === 'object' ? first.id : first;
                 }
+
+                // Case: Document Service "set" syntax: { set: [{ id: 1 }] } or { set: [1] }
+                if (relation.set && Array.isArray(relation.set) && relation.set.length > 0) {
+                    const first = relation.set[0];
+                    return typeof first === 'object' ? first.id : first;
+                }
+                
+                // Case: Direct object with ID: { id: 1 }
                 if (relation.id) return relation.id;
+                
                 return null;
             };
 
