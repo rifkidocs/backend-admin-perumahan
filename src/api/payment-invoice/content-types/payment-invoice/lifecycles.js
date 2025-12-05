@@ -1,5 +1,7 @@
 'use strict';
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 /**
  * payment-invoice lifecycle hooks
  */
@@ -88,6 +90,8 @@ module.exports = {
 
   // Before updating an invoice
   async beforeUpdate(event) {
+    await cleanupMediaOnUpdate(event);
+
     const { data, where } = event.params;
 
     // Get current invoice for comparison
@@ -159,6 +163,8 @@ module.exports = {
 
   // Before deleting an invoice
   async beforeDelete(event) {
+    await cleanupMediaOnDelete(event);
+
     const { where } = event.params;
 
     // Get invoice details for cleanup

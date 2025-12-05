@@ -1,5 +1,7 @@
 'use strict';
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 /**
  * kas-keluar lifecycles
  */
@@ -42,6 +44,11 @@ module.exports = {
   },
 
   beforeUpdate: async (params) => {
+    await cleanupMediaOnUpdate({
+      model: strapi.contentTypes['api::kas-keluar.kas-keluar'],
+      params: params.params
+    });
+
     // Extract data and where from the actual structure
     const data = params.params?.data || {};
     const where = params.params?.where || {};
@@ -131,5 +138,9 @@ module.exports = {
         }
       });
     }
+  },
+
+  beforeDelete: async (event) => {
+    await cleanupMediaOnDelete(event);
   }
 };

@@ -1,3 +1,5 @@
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
     async beforeCreate(event) {
         const { data } = event.params;
@@ -44,6 +46,8 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+
         const { data, where } = event.params;
 
         // Track revision changes
@@ -87,6 +91,8 @@ module.exports = {
     },
 
     async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
+
         const { where } = event.params;
 
         // Log deletion attempt

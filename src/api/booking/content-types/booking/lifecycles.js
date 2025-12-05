@@ -1,5 +1,7 @@
 'use strict';
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 /**
  * Lifecycle callbacks for the `booking` model.
  */
@@ -95,6 +97,8 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+
         const { data } = event.params;
         const { where } = event.params;
 
@@ -151,6 +155,8 @@ module.exports = {
     },
 
     async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
+
         const { where } = event.params;
 
         try {

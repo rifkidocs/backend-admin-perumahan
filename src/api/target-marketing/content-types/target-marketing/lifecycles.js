@@ -1,5 +1,7 @@
 'use strict';
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 /**
  * target-marketing lifecycle
  */
@@ -61,6 +63,10 @@ module.exports = {
         }
     },
 
+    async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+    },
+
     async afterUpdate(event) {
         const { data, where } = event.params;
         const { result } = event;
@@ -96,4 +102,8 @@ module.exports = {
             }
         }
     },
+
+    async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
+    }
 };

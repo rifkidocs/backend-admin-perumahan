@@ -1,5 +1,7 @@
 "use strict";
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
   async afterCreate(event) {
     const { result } = event;
@@ -14,6 +16,14 @@ module.exports = {
       await updateStock(result);
     }
   },
+
+  async beforeUpdate(event) {
+    await cleanupMediaOnUpdate(event);
+  },
+
+  async beforeDelete(event) {
+    await cleanupMediaOnDelete(event);
+  }
 };
 
 async function updateStock(stockOpname) {

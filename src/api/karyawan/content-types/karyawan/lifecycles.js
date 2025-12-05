@@ -33,10 +33,6 @@ module.exports = {
 
     async beforeUpdate(event) {
         await cleanupMediaOnUpdate(event);
-
-        const { data } = event.params;
-
-        // Add any update logic here if needed
     },
 
     async beforeDelete(event) {

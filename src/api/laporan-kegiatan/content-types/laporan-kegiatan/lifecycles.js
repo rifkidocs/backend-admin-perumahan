@@ -1,3 +1,5 @@
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
     async beforeCreate(event) {
         const { data } = event.params;
@@ -51,6 +53,8 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+
         const { data } = event.params;
 
         // Jika status berubah menjadi approved, set approval data
@@ -191,4 +195,8 @@ module.exports = {
             strapi.log.error("Error creating activity log:", error);
         }
     },
+
+    async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
+    }
 };

@@ -1,5 +1,7 @@
 "use strict";
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 // Fungsi untuk menghitung jarak menggunakan Haversine formula
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Earth's radius in kilometers
@@ -127,6 +129,8 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+
         const { data } = event.params;
 
         try {
@@ -161,5 +165,9 @@ module.exports = {
 
         // Log update record absensi
         strapi.log.info(`Record absensi diupdate - ID: ${result.id}, Status: ${result.status_absensi}`);
+    },
+
+    async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
     }
 };

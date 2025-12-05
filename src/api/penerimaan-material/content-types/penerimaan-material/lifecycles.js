@@ -1,3 +1,5 @@
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
   async beforeCreate(event) {
     const { params } = event;
@@ -43,6 +45,8 @@ module.exports = {
 
   // Store old status before update
   async beforeUpdate(event) {
+    await cleanupMediaOnUpdate(event);
+
     const { params } = event;
     const { data, where } = params;
 
@@ -132,6 +136,10 @@ module.exports = {
       await updateStock(fullRecord);
     }
   },
+
+  async beforeDelete(event) {
+      await cleanupMediaOnDelete(event);
+  }
 };
 
 async function updateStock(record) {

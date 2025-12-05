@@ -1,3 +1,5 @@
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
     async beforeCreate(event) {
         const { data } = event.params;
@@ -82,6 +84,8 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+
         const { data } = event.params;
 
         // Check for expiry
@@ -155,4 +159,8 @@ module.exports = {
             strapi.log.info(`Document ${data.document_name} updated to version ${data.version}`);
         }
     },
+
+    async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
+    }
 };

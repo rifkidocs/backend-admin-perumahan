@@ -1,5 +1,7 @@
 "use strict";
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 // Helper to extract ID from various relation formats (Strapi v4/v5 compatibility)
 function getRelationId(relationData) {
   if (!relationData) return null;
@@ -61,6 +63,8 @@ module.exports = {
   },
 
   async beforeUpdate(event) {
+    await cleanupMediaOnUpdate(event);
+
     const { data } = event.params;
 
     // Validasi persentase
@@ -353,6 +357,10 @@ module.exports = {
     } catch (error) {
       console.log("Activity log error:", error.message);
     }
+  },
+
+  async beforeDelete(event) {
+    await cleanupMediaOnDelete(event);
   },
 
   async afterDelete(event) {

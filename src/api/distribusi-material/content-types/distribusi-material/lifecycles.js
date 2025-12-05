@@ -1,3 +1,5 @@
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
   async beforeCreate(event) {
     const { data } = event.params;
@@ -37,6 +39,8 @@ module.exports = {
   },
 
   async beforeUpdate(event) {
+    await cleanupMediaOnUpdate(event);
+
     const { params } = event;
     const { data, where } = params;
 
@@ -120,6 +124,10 @@ module.exports = {
         }
     }
   },
+
+  async beforeDelete(event) {
+      await cleanupMediaOnDelete(event);
+  }
 };
 
 // Update specific ID (Source)

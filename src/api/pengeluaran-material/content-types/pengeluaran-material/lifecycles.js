@@ -1,3 +1,5 @@
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
   async beforeCreate(event) {
     const { data } = event.params;
@@ -53,6 +55,8 @@ module.exports = {
   },
 
   async beforeUpdate(event) {
+    await cleanupMediaOnUpdate(event);
+
     const { params } = event;
     const { where } = params;
 
@@ -75,6 +79,8 @@ module.exports = {
   },
 
   async beforeDelete(event) {
+    await cleanupMediaOnDelete(event);
+
     const { where } = event.params;
 
     const record = await strapi.entityService.findOne(

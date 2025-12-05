@@ -1,5 +1,7 @@
 'use strict';
 
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 /**
  * cuti (leave-request) lifecycle callbacks
  */
@@ -80,6 +82,8 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+
         const { data } = event.params;
 
         // Validate dates
@@ -176,6 +180,10 @@ module.exports = {
 
         // TODO: Send notification to employee about status change
         // TODO: Send email notification
+    },
+
+    async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
     }
 };
 

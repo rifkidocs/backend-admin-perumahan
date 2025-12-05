@@ -1,3 +1,5 @@
+const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+
 module.exports = {
     async beforeCreate(event) {
         const { data } = event.params;
@@ -68,6 +70,8 @@ module.exports = {
     },
 
     async beforeUpdate(event) {
+        await cleanupMediaOnUpdate(event);
+
         const { data, where } = event.params;
 
         // Recalculate progress percentage on update
@@ -96,4 +100,8 @@ module.exports = {
             data.investment_value = data.budget;
         }
     },
+
+    async beforeDelete(event) {
+        await cleanupMediaOnDelete(event);
+    }
 };
