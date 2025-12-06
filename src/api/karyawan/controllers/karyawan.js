@@ -33,9 +33,22 @@ module.exports = createCoreController('api::karyawan.karyawan', ({ strapi }) => 
       }
 
       // Check if Karyawan exists
-      const karyawan = await strapi.entityService.findOne('api::karyawan.karyawan', id);
+      // Try to find by Document ID first (v5 standard), if not found, try regular ID just in case
+      let karyawan = await strapi.entityService.findOne('api::karyawan.karyawan', id);
+      
       if (!karyawan) {
-        return ctx.notFound('Karyawan not found');
+        // Fallback: Try finding by documentId explicitly if the default findOne expects an integer ID
+        const karyawans = await strapi.entityService.findMany('api::karyawan.karyawan', {
+            filters: { documentId: id },
+            limit: 1
+        });
+        if (karyawans && karyawans.length > 0) {
+            karyawan = karyawans[0];
+        }
+      }
+
+      if (!karyawan) {
+        return ctx.notFound(`Karyawan not found with ID: ${id}`);
       }
 
       // Check if Karyawan already has a user
@@ -76,19 +89,35 @@ module.exports = createCoreController('api::karyawan.karyawan', ({ strapi }) => 
       });
 
       // Link to Karyawan
-      await strapi.entityService.update('api::karyawan.karyawan', id, {
+      // Use documentId from the found entity to ensure correct targeting in v5
+      const targetDocumentId = karyawan.documentId;
+      console.log('DEBUG: Attempting update with documentId:', targetDocumentId);
+      console.log('DEBUG: Linking to Admin User ID:', newAdmin.id);
+
+      // Switch to strapi.db.query to bypass potential entityService filtering issues
+      const updatedKaryawan = await strapi.db.query('api::karyawan.karyawan').update({
+        where: { documentId: targetDocumentId },
         data: {
           user: newAdmin.id
-        }
+        },
+        populate: ['user']
       });
+
+      console.log('DEBUG: updatedKaryawan result:', updatedKaryawan ? 'Found' : 'NULL');
+
+      if (!updatedKaryawan) {
+          // Fallback debug if update returns null
+          console.log('DEBUG: Update returned null. Checking if document exists with documentId...');
+      }
 
       return ctx.send({
         message: 'Admin account created and linked successfully',
         data: {
-          karyawanId: id,
+          karyawanId: targetDocumentId,
           adminUserId: newAdmin.id,
           email: newAdmin.email,
-          role: role.name
+          role: role.name,
+          linked: updatedKaryawan ? !!updatedKaryawan.user : false
         }
       });
 
