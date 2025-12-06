@@ -35,5 +35,6 @@
   },
   "strapi": {
     "uuid": "2265062d-4c30-4bcb-8779-2ab5abd14939"
-  }
+  },
+  "packageManager": "npm@10.9.2"
 }
