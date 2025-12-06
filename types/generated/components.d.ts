@@ -1,5 +1,29 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface DistribusiItemDistribusi extends Struct.ComponentSchema {
+  collectionName: 'components_distribusi_item_distribusis';
+  info: {
+    description: 'Item detail untuk distribusi material';
+    displayName: 'Item Distribusi';
+    icon: 'box';
+  };
+  attributes: {
+    jumlah: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    keterangan: Schema.Attribute.Text;
+    material_gudang: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::material-gudang.material-gudang'
+    >;
+  };
+}
+
 export interface KomponenAlamat extends Struct.ComponentSchema {
   collectionName: 'components_komponen_alamats';
   info: {
@@ -50,8 +74,94 @@ export interface KomponenKontak extends Struct.ComponentSchema {
     displayName: 'Kontak';
   };
   attributes: {
-    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    email: Schema.Attribute.Email;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    position: Schema.Attribute.String;
+  };
+}
+
+export interface KomponenKontakSubkontraktor extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_kontak_subkontraktors';
+  info: {
+    description: 'Komponen kontak khusus untuk subkontraktor dengan PIC';
+    displayName: 'Kontak Subkontraktor';
+  };
+  attributes: {
+    email: Schema.Attribute.Email;
+    pic_name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 2;
+      }>;
     telepon: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface KomponenPaymentHistory extends Struct.ComponentSchema {
+  collectionName: 'components_payment_histories';
+  info: {
+    description: 'Payment history records for consumer receivables';
+    displayName: 'Payment History';
+    pluralName: 'payment-histories';
+    singularName: 'payment-history';
+  };
+  attributes: {
+    amount: Schema.Attribute.BigInteger &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: '1000';
+        },
+        string
+      >;
+    bankReference: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    date: Schema.Attribute.Date & Schema.Attribute.Required;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    paymentMethod: Schema.Attribute.Enumeration<
+      ['cash', 'transfer', 'check', 'giro', 'kpr-disbursement']
+    >;
+    status: Schema.Attribute.Enumeration<['paid', 'pending', 'failed']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'paid'>;
+    type: Schema.Attribute.Enumeration<
+      ['booking-fee', 'dp', 'termin', 'kpr', 'pelunasan']
+    > &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface KomponenPembayaran extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_pembayarans';
+  info: {
+    description: 'Komponen untuk data pembayaran subkontraktor';
+    displayName: 'Pembayaran';
+  };
+  attributes: {
+    jadwal_pembayaran: Schema.Attribute.JSON;
+    outstanding: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    total_dibayar: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -186,17 +296,207 @@ export interface KomponenTransaksi extends Struct.ComponentSchema {
   };
 }
 
+export interface PenerimaanMaterialItem extends Struct.ComponentSchema {
+  collectionName: 'components_penerimaan_material_items';
+  info: {
+    description: 'Item material dalam penerimaan';
+    displayName: 'Material Item';
+  };
+  attributes: {
+    condition: Schema.Attribute.Enumeration<['Baik', 'Rusak', 'Kurang']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Baik'>;
+    harga_satuan: Schema.Attribute.BigInteger;
+    material: Schema.Attribute.Relation<'oneToOne', 'api::material.material'>;
+    nama_material_baru: Schema.Attribute.String;
+    quantity: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0.01;
+        },
+        number
+      >;
+    total_harga: Schema.Attribute.BigInteger;
+    unit: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface PengeluaranItemPengeluaran extends Struct.ComponentSchema {
+  collectionName: 'components_pengeluaran_item_pengeluarans';
+  info: {
+    description: 'Item pengeluaran material (stok atau beli langsung)';
+    displayName: 'Item Pengeluaran';
+    icon: 'box';
+  };
+  attributes: {
+    condition: Schema.Attribute.Enumeration<['Baik', 'Rusak', 'Kurang']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Baik'>;
+    harga_satuan: Schema.Attribute.BigInteger;
+    keterangan: Schema.Attribute.Text;
+    material: Schema.Attribute.Relation<'oneToOne', 'api::material.material'>;
+    material_gudang: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::material-gudang.material-gudang'
+    >;
+    nota: Schema.Attribute.Media<'images' | 'files', true>;
+    quantity: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    sumber: Schema.Attribute.Enumeration<['stok', 'langsung_beli']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'stok'>;
+    total_harga: Schema.Attribute.BigInteger;
+    unit: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedLaborRequirement extends Struct.ComponentSchema {
+  collectionName: 'components_shared_labor_requirements';
+  info: {
+    description: 'Component untuk kebutuhan tenaga kerja';
+    displayName: 'Labor Requirement';
+  };
+  attributes: {
+    estimated_hours: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    hourly_rate: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    quantity: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    role: Schema.Attribute.Enumeration<['mandor', 'tukang', 'helper']> &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface SharedMaterial extends Struct.ComponentSchema {
+  collectionName: 'components_shared_materials';
+  info: {
+    description: 'Component for materials supplied by vendors';
+    displayName: 'Material';
+  };
+  attributes: {
+    category: Schema.Attribute.String;
+    description: Schema.Attribute.Text;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    specifications: Schema.Attribute.Text;
+    unit: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedMaterialItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_material_items';
+  info: {
+    description: 'Component untuk item material dalam PO, PR, atau penggunaan';
+    displayName: 'Material Item';
+  };
+  attributes: {
+    material: Schema.Attribute.Relation<'manyToOne', 'api::material.material'> &
+      Schema.Attribute.Required;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    quantity: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    total_price: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    unit_price: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+  };
+}
+
+export interface StockOpnameItemOpname extends Struct.ComponentSchema {
+  collectionName: 'components_stock_opname_item_opnames';
+  info: {
+    description: 'Detail item stock opname';
+    displayName: 'Item Opname';
+  };
+  attributes: {
+    difference: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    material_gudang: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::material-gudang.material-gudang'
+    >;
+    notes: Schema.Attribute.Text;
+    physical_stock: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    reason: Schema.Attribute.Enumeration<
+      [
+        'Rusak/Tidak Layak Pakai',
+        'Hilang/Pencurian',
+        'Kesalahan Input Sistem',
+        'Expired Date',
+        'Transfer Antar Lokasi',
+        'Retur Supplier',
+        'Sample/Display',
+        'Lainnya',
+      ]
+    >;
+    system_stock: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'distribusi.item-distribusi': DistribusiItemDistribusi;
       'komponen.alamat': KomponenAlamat;
       'komponen.dokumen': KomponenDokumen;
       'komponen.harga': KomponenHarga;
       'komponen.kontak': KomponenKontak;
+      'komponen.kontak-subkontraktor': KomponenKontakSubkontraktor;
+      'komponen.payment-history': KomponenPaymentHistory;
+      'komponen.pembayaran': KomponenPembayaran;
       'komponen.penggajian': KomponenPenggajian;
       'komponen.progres-proyek': KomponenProgresProyek;
       'komponen.status-proyek': KomponenStatusProyek;
       'komponen.transaksi': KomponenTransaksi;
+      'penerimaan.material-item': PenerimaanMaterialItem;
+      'pengeluaran.item-pengeluaran': PengeluaranItemPengeluaran;
+      'shared.labor-requirement': SharedLaborRequirement;
+      'shared.material': SharedMaterial;
+      'shared.material-item': SharedMaterialItem;
+      'stock-opname.item-opname': StockOpnameItemOpname;
     }
   }
 }
