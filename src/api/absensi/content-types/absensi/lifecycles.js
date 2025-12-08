@@ -83,7 +83,7 @@ module.exports = {
                             { expiry_date: { $null: true } }
                         ]
                     },
-                    populate: ['employee']
+                    populate: ['employee', 'locations']
                 }
             );
 
@@ -94,33 +94,78 @@ module.exports = {
             const schedule = attendanceSchedule[0];
             data.attendance_schedule = schedule.id;
 
-            // Hitung jarak dari lokasi target
-            const targetLocation = schedule.attendance_location;
-            const distance = calculateDistance(
-                lat,
-                lng,
-                targetLocation.lat,
-                targetLocation.lng
-            );
+            // Hitung jarak dari lokasi target (support multiple locations)
+            let minDistance = Infinity;
+            let matchedLocationName = '';
 
-            data.distance_from_target = distance;
-            data.is_within_radius = distance <= schedule.radius_meters;
+            if (schedule.locations && Array.isArray(schedule.locations) && schedule.locations.length > 0) {
+                for (const loc of schedule.locations) {
+                    // Pastikan latitude/longitude ada dan valid
+                    if (loc.latitude && loc.longitude) {
+                        const dist = calculateDistance(
+                            lat,
+                            lng,
+                            parseFloat(loc.latitude),
+                            parseFloat(loc.longitude)
+                        );
+                        if (dist < minDistance) {
+                            minDistance = dist;
+                            matchedLocationName = loc.nama_lokasi;
+                        }
+                    }
+                }
+            } else {
+                throw new Error('Jadwal absensi tidak memiliki konfigurasi lokasi yang valid');
+            }
+            
+            // Set distance to the closest location
+            data.distance_from_target = minDistance;
+            data.is_within_radius = minDistance <= schedule.radius_meters;
 
             // Set status absensi default ke 'hadir' karena hanya perlu verifikasi lokasi
             if (!data.status_absensi) {
                 data.status_absensi = 'hadir';
             }
 
+            // Hitung keterlambatan
+            let timeNote = '';
+            if (data.jam_masuk && schedule.jam_masuk) {
+                const attendanceDate = new Date(data.jam_masuk);
+                const [scheduleHour, scheduleMinute, scheduleSecond] = schedule.jam_masuk.split(':').map(Number);
+                
+                // Buat object date untuk waktu jadwal pada hari yang sama dengan absensi
+                const scheduledTime = new Date(attendanceDate);
+                scheduledTime.setHours(scheduleHour, scheduleMinute, scheduleSecond || 0, 0);
+                
+                const diffMs = attendanceDate - scheduledTime;
+                const diffMinutes = Math.floor(diffMs / 60000);
+                
+                if (diffMinutes <= 0) {
+                    timeNote = 'Tepat Waktu';
+                } else {
+                    timeNote = `Terlambat ${diffMinutes} menit`;
+                }
+            }
+
+            // Construct keterangan notes
+            const locationNote = data.is_within_radius 
+                ? `Lokasi: ${matchedLocationName} (${minDistance.toFixed(2)}m)`
+                : `Lokasi di luar radius (Terdekat: ${matchedLocationName}, Jarak: ${minDistance.toFixed(2)}m, Max: ${schedule.radius_meters}m)`;
+            
+            const autoNote = timeNote ? `${timeNote}. ${locationNote}` : locationNote;
+            
+            // Append to existing notes if any, or set new
+            data.keterangan = data.keterangan ? `${data.keterangan}. ${autoNote}` : autoNote;
+
             // Set approval status berdasarkan lokasi
             if (!data.is_within_radius) {
                 data.approval_status = 'pending';
-                data.keterangan = `Lokasi di luar radius yang diizinkan. Jarak: ${distance.toFixed(2)}m, Radius maksimal: ${schedule.radius_meters}m`;
             } else {
                 data.approval_status = 'approved';
             }
 
             // Log verifikasi lokasi
-            strapi.log.info(`Verifikasi lokasi absensi - Karyawan: ${data.karyawan}, Jarak: ${distance.toFixed(2)}m, Dalam radius: ${data.is_within_radius}`);
+            strapi.log.info(`Verifikasi lokasi absensi - Karyawan: ${data.karyawan}, Jarak: ${minDistance.toFixed(2)}m, Dalam radius: ${data.is_within_radius}, Note: ${autoNote}`);
 
         } catch (error) {
             strapi.log.error('Error dalam validasi absensi:', error.message);

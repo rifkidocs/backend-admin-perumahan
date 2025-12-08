@@ -592,7 +592,6 @@ export interface ApiAttendanceScheduleAttendanceSchedule
     draftAndPublish: false;
   };
   attributes: {
-    attendance_location: Schema.Attribute.JSON & Schema.Attribute.Required;
     attendance_records: Schema.Attribute.Relation<
       'oneToMany',
       'api::absensi.absensi'
@@ -608,12 +607,16 @@ export interface ApiAttendanceScheduleAttendanceSchedule
     employee: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     expiry_date: Schema.Attribute.Date;
     is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    jam_masuk: Schema.Attribute.Time & Schema.Attribute.Required;
+    jam_pulang: Schema.Attribute.Time & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::attendance-schedule.attendance-schedule'
     > &
       Schema.Attribute.Private;
+    locations: Schema.Attribute.Component<'komponen.lokasi-absensi', true> &
+      Schema.Attribute.Required;
     notes: Schema.Attribute.Text &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;

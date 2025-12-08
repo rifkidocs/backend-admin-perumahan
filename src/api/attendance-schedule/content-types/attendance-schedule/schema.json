@@ -12,19 +12,29 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "schedule_name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
     "employee": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
       "inversedBy": "attendance_schedules"
     },
-    "schedule_name": {
-      "type": "string",
-      "required": true,
-      "maxLength": 100
+    "locations": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.lokasi-absensi",
+      "required": true
     },
-    "attendance_location": {
-      "type": "json",
+    "jam_masuk": {
+      "type": "time",
+      "required": true
+    },
+    "jam_pulang": {
+      "type": "time",
       "required": true
     },
     "radius_meters": {
@@ -33,10 +43,6 @@
       "min": 10,
       "max": 5000
     },
-    "is_active": {
-      "type": "boolean",
-      "default": true
-    },
     "effective_date": {
       "type": "date",
       "required": true
@@ -44,9 +50,19 @@
     "expiry_date": {
       "type": "date"
     },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
     "notes": {
       "type": "text",
       "maxLength": 500
+    },
+    "attendance_records": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::absensi.absensi",
+      "mappedBy": "attendance_schedule"
     },
     "created_by": {
       "type": "relation",
@@ -57,12 +73,6 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user"
-    },
-    "attendance_records": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::absensi.absensi",
-      "mappedBy": "attendance_schedule"
     }
   }
 }

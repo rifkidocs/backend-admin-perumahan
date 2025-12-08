@@ -75,8 +75,8 @@ export interface KomponenKontak extends Struct.ComponentSchema {
   };
   attributes: {
     email: Schema.Attribute.Email;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
-    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    name: Schema.Attribute.String;
+    phone: Schema.Attribute.String;
     position: Schema.Attribute.String;
   };
 }
@@ -96,6 +96,20 @@ export interface KomponenKontakSubkontraktor extends Struct.ComponentSchema {
         minLength: 2;
       }>;
     telepon: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface KomponenLokasiAbsensi extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_lokasi_absensis';
+  info: {
+    description: 'Titik lokasi untuk absensi';
+    displayName: 'Lokasi Absensi';
+  };
+  attributes: {
+    alamat: Schema.Attribute.Text;
+    latitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    longitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    nama_lokasi: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -485,6 +499,7 @@ declare module '@strapi/strapi' {
       'komponen.harga': KomponenHarga;
       'komponen.kontak': KomponenKontak;
       'komponen.kontak-subkontraktor': KomponenKontakSubkontraktor;
+      'komponen.lokasi-absensi': KomponenLokasiAbsensi;
       'komponen.payment-history': KomponenPaymentHistory;
       'komponen.pembayaran': KomponenPembayaran;
       'komponen.penggajian': KomponenPenggajian;
