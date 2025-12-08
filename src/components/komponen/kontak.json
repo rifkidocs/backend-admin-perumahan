@@ -7,7 +7,7 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "position": {
       "type": "string",
@@ -15,7 +15,7 @@
     },
     "phone": {
       "type": "string",
-      "required": true,
+      "required": false,
       "regex": "^08[0-9]{8,11}$"
     },
     "email": {
