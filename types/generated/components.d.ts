@@ -107,8 +107,8 @@ export interface KomponenLokasiAbsensi extends Struct.ComponentSchema {
   };
   attributes: {
     alamat: Schema.Attribute.Text;
-    latitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
-    longitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    latitude: Schema.Attribute.Float & Schema.Attribute.Required;
+    longitude: Schema.Attribute.Float & Schema.Attribute.Required;
     nama_lokasi: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
