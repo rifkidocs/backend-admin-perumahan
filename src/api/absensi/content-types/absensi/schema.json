@@ -33,24 +33,7 @@
         "sakit",
         "lembur"
       ],
-      "required": true,
-      "default": "hadir"
-    },
-    "overtime_hours": {
-      "type": "decimal",
-      "min": 0,
-      "default": 0
-    },
-    "keterangan": {
-      "type": "text",
-      "maxLength": 500
-    },
-    "foto_absensi": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ],
+      "default": "hadir",
       "required": true
     },
     "lokasi_absensi": {
@@ -71,21 +54,47 @@
         }
       }
     },
+    "foto_absensi": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "foto_keluar_absensi": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "karyawan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "absensi"
+    },
     "is_within_radius": {
       "type": "boolean",
-      "required": true,
-      "default": false
+      "default": false,
+      "required": true
     },
     "distance_from_target": {
       "type": "decimal",
-      "required": true,
-      "min": 0
+      "min": 0,
+      "required": true
     },
-    "attendance_schedule": {
+    "overtime_hours": {
+      "type": "decimal",
+      "min": 0,
+      "default": 0
+    },
+    "approved_by": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::attendance-schedule.attendance-schedule",
-      "inversedBy": "attendance_records"
+      "target": "plugin::users-permissions.user"
     },
     "approval_status": {
       "type": "enumeration",
@@ -96,20 +105,19 @@
       ],
       "default": "pending"
     },
-    "approved_by": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user"
-    },
     "rejection_reason": {
       "type": "text",
       "maxLength": 200
     },
-    "karyawan": {
+    "keterangan": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "attendance_schedule": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::karyawan.karyawan",
-      "inversedBy": "absensi"
+      "target": "api::attendance-schedule.attendance-schedule",
+      "inversedBy": "attendance_records"
     }
   }
 }

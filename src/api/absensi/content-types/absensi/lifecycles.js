@@ -176,7 +176,7 @@ module.exports = {
     async beforeUpdate(event) {
         await cleanupMediaOnUpdate(event);
 
-        const { data } = event.params;
+        const { data, where } = event.params;
 
         try {
             // Jika ada update lokasi check-out
@@ -184,6 +184,68 @@ module.exports = {
                 const { lat, lng } = data.lokasi_absensi.check_out_location;
                 if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
                     throw new Error('Koordinat check-out tidak valid');
+                }
+
+                // Ambil data absensi yang sedang diupdate beserta jadwalnya
+                const existingRecord = await strapi.entityService.findOne('api::absensi.absensi', where.id, {
+                    populate: {
+                        attendance_schedule: {
+                            populate: ['locations']
+                        }
+                    }
+                });
+
+                if (existingRecord && existingRecord.attendance_schedule) {
+                    const schedule = existingRecord.attendance_schedule;
+                    
+                    // Hitung jarak check-out
+                    let minDistance = Infinity;
+                    let matchedLocationName = '';
+        
+                    if (schedule.locations && Array.isArray(schedule.locations) && schedule.locations.length > 0) {
+                        for (const loc of schedule.locations) {
+                            if (loc.latitude && loc.longitude) {
+                                const dist = calculateDistance(
+                                    lat,
+                                    lng,
+                                    parseFloat(loc.latitude),
+                                    parseFloat(loc.longitude)
+                                );
+                                if (dist < minDistance) {
+                                    minDistance = dist;
+                                    matchedLocationName = loc.nama_lokasi;
+                                }
+                            }
+                        }
+                    }
+
+                    const isWithinRadius = minDistance <= schedule.radius_meters;
+                    
+                    // Buat catatan lokasi check-out
+                    const locationNote = isWithinRadius 
+                        ? `Check-out: ${matchedLocationName} (${minDistance.toFixed(2)}m)`
+                        : `Check-out di luar radius (Terdekat: ${matchedLocationName}, Jarak: ${minDistance.toFixed(2)}m)`;
+
+                    // Update keterangan (append ke yang lama)
+                    const currentKeterangan = data.keterangan || existingRecord.keterangan || '';
+                    // Hindari duplikasi note jika update dilakukan berkali-kali (simple check)
+                    if (!currentKeterangan.includes('Check-out:')) {
+                        data.keterangan = currentKeterangan ? `${currentKeterangan}. ${locationNote}` : locationNote;
+                    } else {
+                        // Jika sudah ada note check-out, mungkin kita replace atau biarkan. 
+                        // Untuk aman, kita append saja line baru atau biarkan user edit manual jika perlu.
+                        // Opsi: Append saja untuk history audit trail sederhana
+                         data.keterangan = `${currentKeterangan} | Update: ${locationNote}`;
+                    }
+
+                    // Log verifikasi
+                    strapi.log.info(`Verifikasi check-out - ID: ${where.id}, Jarak: ${minDistance.toFixed(2)}m, Dalam radius: ${isWithinRadius}`);
+
+                    // Update approval status jika check-out di luar radius
+                    // Kita ubah jadi pending agar admin cek
+                    if (!isWithinRadius) {
+                        data.approval_status = 'pending';
+                    }
                 }
             }
 

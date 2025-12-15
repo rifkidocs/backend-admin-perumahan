@@ -466,6 +466,7 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
         number
       >;
     foto_absensi: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    foto_keluar_absensi: Schema.Attribute.Media<'images'>;
     is_within_radius: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
