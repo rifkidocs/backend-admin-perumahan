@@ -1,5 +1,6 @@
 // @ts-nocheck
 "use strict";
+const jwt = require("jsonwebtoken");
 
 /**
  * karyawan controller
@@ -28,9 +29,80 @@ module.exports = createCoreController(
 
     async createAdminAccount(ctx) {
       try {
+        // Validation: Verify Admin Token manually since we disabled default auth
+        const authHeader = ctx.request.header.authorization;
+        if (!authHeader) {
+          return ctx.unauthorized("No authorization header");
+        }
+
+        const token = authHeader.replace("Bearer ", "");
+        let payload;
+
+        try {
+          const adminVerify = (token) => {
+            const adminAuth = strapi.config.get("admin.auth");
+            const secret =
+              adminAuth && adminAuth.secret
+                ? adminAuth.secret
+                : strapi.config.get("admin.auth.secret");
+
+            if (!secret) {
+              throw new Error("Admin auth secret not found in config");
+            }
+
+            if (Array.isArray(secret)) {
+              let lastError;
+              for (const s of secret) {
+                try {
+                  return jwt.verify(token, s);
+                } catch (err) {
+                  lastError = err;
+                  if (err.message === "invalid signature") continue;
+                  throw err;
+                }
+              }
+              throw lastError || new Error("Invalid signature");
+            }
+            return jwt.verify(token, secret);
+          };
+
+          payload = adminVerify(token);
+        } catch (err) {
+          return ctx.unauthorized("Invalid token");
+        }
+
+        const adminId = payload.id || payload.userId;
+
+        if (!adminId) {
+          return ctx.unauthorized("Invalid token payload");
+        }
+
+        // Fetch Admin User with roles to check for Super Admin
+        const adminUser = await strapi.db.query("admin::user").findOne({
+          where: { id: adminId },
+          populate: ["roles"],
+        });
+
+        if (!adminUser) {
+          return ctx.unauthorized("Admin user not found");
+        }
+
+        // Check if user is Super Admin
+        const isSuperAdmin = adminUser.roles.some(
+          (r) => r.code === "strapi-super-admin"
+        );
+
+        if (!isSuperAdmin) {
+          return ctx.forbidden(
+            "Access denied: Only Super Admin can create admin accounts"
+          );
+        }
+
         const { id } = ctx.params;
         const { email, firstname, lastname, password, username, roleName } =
           ctx.request.body;
+
+        // ... (rest of the createAdminAccount function continues below)
 
         if (!email || !password || !firstname || !lastname || !roleName) {
           return ctx.badRequest(
@@ -87,9 +159,6 @@ module.exports = createCoreController(
         }
 
         // Create Admin User
-        // Note: strapi.admin.services.user.create automatically hashes password in some versions,
-        // but to be safe we use the standard approach.
-        // In v4/v5, strapi.admin.services.user.create handles hashing if password is provided.
         const newAdmin = await strapi.admin.services.user.create({
           email,
           firstname,
@@ -101,7 +170,6 @@ module.exports = createCoreController(
         });
 
         // Link to Karyawan
-        // Use documentId from the found entity to ensure correct targeting in v5
         const targetDocumentId = karyawan.documentId;
         console.log(
           "DEBUG: Attempting update with documentId:",
@@ -152,6 +220,75 @@ module.exports = createCoreController(
 
     async resetAdminPassword(ctx) {
       try {
+        // Validation: Verify Admin Token manually since we disabled default auth
+        const authHeader = ctx.request.header.authorization;
+        if (!authHeader) {
+          return ctx.unauthorized("No authorization header");
+        }
+
+        const token = authHeader.replace("Bearer ", "");
+        let payload;
+
+        try {
+          const adminVerify = (token) => {
+            const adminAuth = strapi.config.get("admin.auth");
+            const secret =
+              adminAuth && adminAuth.secret
+                ? adminAuth.secret
+                : strapi.config.get("admin.auth.secret");
+
+            if (!secret) {
+              throw new Error("Admin auth secret not found in config");
+            }
+
+            if (Array.isArray(secret)) {
+              let lastError;
+              for (const s of secret) {
+                try {
+                  return jwt.verify(token, s);
+                } catch (err) {
+                  lastError = err;
+                  if (err.message === "invalid signature") continue;
+                  throw err;
+                }
+              }
+              throw lastError || new Error("Invalid signature");
+            }
+            return jwt.verify(token, secret);
+          };
+
+          payload = adminVerify(token);
+        } catch (err) {
+          return ctx.unauthorized("Invalid token");
+        }
+
+        const adminId = payload.id || payload.userId;
+
+        if (!adminId) {
+          return ctx.unauthorized("Invalid token payload");
+        }
+
+        // Fetch Admin User with roles to check for Super Admin
+        const adminUser = await strapi.db.query("admin::user").findOne({
+          where: { id: adminId },
+          populate: ["roles"],
+        });
+
+        if (!adminUser) {
+          return ctx.unauthorized("Admin user not found");
+        }
+
+        // Check if user is Super Admin
+        const isSuperAdmin = adminUser.roles.some(
+          (r) => r.code === "strapi-super-admin"
+        );
+
+        if (!isSuperAdmin) {
+          return ctx.forbidden(
+            "Access denied: Only Super Admin can reset passwords"
+          );
+        }
+
         const { id } = ctx.params;
         const { password } = ctx.request.body;
 
