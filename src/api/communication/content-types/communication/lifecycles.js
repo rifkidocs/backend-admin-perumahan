@@ -6,19 +6,10 @@ const {
 } = require("../../../../utils/mediaHelper");
 
 /**
- * lead-marketing lifecycle callbacks
+ * communication lifecycle callbacks
  */
 
 module.exports = {
-  async beforeCreate(event) {
-    const { data } = event.params;
-
-    // Auto-generate date if not provided
-    if (!data.date) {
-      data.date = new Date().toISOString().split("T")[0];
-    }
-  },
-
   async beforeUpdate(event) {
     // Cleanup old media files when updating
     await cleanupMediaOnUpdate(event);

@@ -50,20 +50,12 @@
     },
     "rencana_pembelian": {
       "type": "enumeration",
-      "enum": [
-        "cash",
-        "cash_bertahap",
-        "kpr"
-      ],
+      "enum": ["cash", "cash_bertahap", "kpr"],
       "required": false
     },
     "status_lead": {
       "type": "enumeration",
-      "enum": [
-        "ragu_ragu",
-        "berminat",
-        "prioritas"
-      ],
+      "enum": ["ragu_ragu", "berminat", "prioritas"],
       "required": true,
       "default": "ragu_ragu"
     },
@@ -93,6 +85,16 @@
       "relation": "oneToMany",
       "target": "api::reminder.reminder",
       "mappedBy": "lead"
+    },
+    "foto_selfie": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "lokasi_koordinat": {
+      "type": "json",
+      "required": false
     }
   }
 }

@@ -31,6 +31,16 @@
       "relation": "manyToOne",
       "target": "api::lead-marketing.lead-marketing",
       "inversedBy": "communications"
+    },
+    "foto_selfie": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "lokasi_koordinat": {
+      "type": "json",
+      "required": false
     }
   }
 }

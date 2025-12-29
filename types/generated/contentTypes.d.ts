@@ -1275,6 +1275,7 @@ export interface ApiCommunicationCommunication
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     date: Schema.Attribute.Date & Schema.Attribute.Required;
+    foto_selfie: Schema.Attribute.Media<'images'>;
     lead: Schema.Attribute.Relation<
       'manyToOne',
       'api::lead-marketing.lead-marketing'
@@ -1285,6 +1286,7 @@ export interface ApiCommunicationCommunication
       'api::communication.communication'
     > &
       Schema.Attribute.Private;
+    lokasi_koordinat: Schema.Attribute.JSON;
     notes: Schema.Attribute.Text &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -2948,6 +2950,7 @@ export interface ApiLeadMarketingLeadMarketing
       Schema.Attribute.Private;
     date: Schema.Attribute.Date & Schema.Attribute.Required;
     email: Schema.Attribute.Email;
+    foto_selfie: Schema.Attribute.Media<'images'>;
     interest: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
@@ -2958,6 +2961,7 @@ export interface ApiLeadMarketingLeadMarketing
       'api::lead-marketing.lead-marketing'
     > &
       Schema.Attribute.Private;
+    lokasi_koordinat: Schema.Attribute.JSON;
     marketing: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     name: Schema.Attribute.String &
       Schema.Attribute.Required &
