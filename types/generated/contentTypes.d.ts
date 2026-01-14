@@ -5131,6 +5131,10 @@ export interface ApiProyekPerumahanProyekPerumahan
         },
         number
       >;
+    unit_material_requirements: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::unit-material-requirement.unit-material-requirement'
+    >;
     unit_pricings: Schema.Attribute.Relation<
       'oneToMany',
       'api::unit-pricing.unit-pricing'
@@ -6652,7 +6656,7 @@ export interface ApiUnitMaterialRequirementUnitMaterialRequirement
   extends Struct.CollectionTypeSchema {
   collectionName: 'unit_material_requirements';
   info: {
-    description: 'Kebutuhan material per unit rumah';
+    description: 'Kebutuhan material per unit rumah berdasarkan tipe unit';
     displayName: 'Unit Material Requirement';
     pluralName: 'unit-material-requirements';
     singularName: 'unit-material-requirement';
@@ -6680,17 +6684,17 @@ export interface ApiUnitMaterialRequirementUnitMaterialRequirement
       Schema.Attribute.Private;
     material: Schema.Attribute.Relation<'manyToOne', 'api::material.material'> &
       Schema.Attribute.Required;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     status_ketersediaan: Schema.Attribute.Enumeration<
       ['Tersedia', 'Segera Habis', 'Tidak Tersedia']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Tersedia'>;
-    tipe_unit: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
+    tipe_unit: Schema.Attribute.String;
     total_kebutuhan: Schema.Attribute.Integer &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<

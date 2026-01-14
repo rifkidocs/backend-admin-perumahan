@@ -1,8 +1,0 @@
-{
-  "track_id": "auth_setup_20260114",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-14T11:43:00Z",
-  "updated_at": "2026-01-14T11:43:00Z",
-  "description": "Establish a robust User Authentication and Authorization system using Strapi's built-in User & Permissions plugin, including role definitions for Admin, Finance, HR, and Sales."
-}

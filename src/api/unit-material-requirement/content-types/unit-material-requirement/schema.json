@@ -5,16 +5,20 @@
     "singularName": "unit-material-requirement",
     "pluralName": "unit-material-requirements",
     "displayName": "Unit Material Requirement",
-    "description": "Kebutuhan material per unit rumah"
+    "description": "Kebutuhan material per unit rumah berdasarkan tipe unit"
   },
   "options": {
     "draftAndPublish": false
   },
   "attributes": {
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "unit_material_requirements"
+    },
     "tipe_unit": {
-      "type": "string",
-      "required": true,
-      "maxLength": 100
+      "type": "string"
     },
     "material": {
       "type": "relation",
@@ -39,7 +43,11 @@
     },
     "status_ketersediaan": {
       "type": "enumeration",
-      "enum": ["Tersedia", "Segera Habis", "Tidak Tersedia"],
+      "enum": [
+        "Tersedia",
+        "Segera Habis",
+        "Tidak Tersedia"
+      ],
       "required": true,
       "default": "Tersedia"
     }

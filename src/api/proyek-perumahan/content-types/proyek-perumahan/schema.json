@@ -390,6 +390,12 @@
       "relation": "oneToMany",
       "target": "api::gudang.gudang",
       "mappedBy": "proyek_perumahan"
+    },
+    "unit_material_requirements": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unit-material-requirement.unit-material-requirement",
+      "mappedBy": "proyek_perumahan"
     }
   }
 }
