@@ -1,5 +1,24 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface AttendancePatrolReport extends Struct.ComponentSchema {
+  collectionName: 'components_attendance_patrol_reports';
+  info: {
+    description: 'Laporan patroli security';
+    displayName: 'Patrol Report';
+  };
+  attributes: {
+    foto: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    keterangan: Schema.Attribute.Text;
+    lokasi: Schema.Attribute.JSON & Schema.Attribute.Required;
+    status_keamanan: Schema.Attribute.Enumeration<
+      ['Aman', 'Mencurigakan', 'Kejadian']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Aman'>;
+    waktu_laporan: Schema.Attribute.DateTime & Schema.Attribute.Required;
+  };
+}
+
 export interface DistribusiItemDistribusi extends Struct.ComponentSchema {
   collectionName: 'components_distribusi_item_distribusis';
   info: {
@@ -493,6 +512,7 @@ export interface StockOpnameItemOpname extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'attendance.patrol-report': AttendancePatrolReport;
       'distribusi.item-distribusi': DistribusiItemDistribusi;
       'komponen.alamat': KomponenAlamat;
       'komponen.dokumen': KomponenDokumen;

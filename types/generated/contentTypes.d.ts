@@ -477,6 +477,10 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;
       }>;
+    laporan_patroli: Schema.Attribute.Component<
+      'attendance.patrol-report',
+      true
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -497,6 +501,7 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 200;
       }>;
+    shift: Schema.Attribute.Relation<'manyToOne', 'api::shift.shift'>;
     status_absensi: Schema.Attribute.Enumeration<
       ['hadir', 'terlambat', 'absen', 'izin', 'sakit', 'lembur']
     > &
