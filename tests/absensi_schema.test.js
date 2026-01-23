@@ -16,5 +16,9 @@ describe('Absensi Collection', () => {
     // Check for shift relation
     expect(content.attributes).toHaveProperty('shift');
     expect(content.attributes.shift.type).toBe('relation');
+
+    // Check for keterangan_tugas
+    expect(content.attributes).toHaveProperty('keterangan_tugas');
+    expect(content.attributes.keterangan_tugas.type).toBe('string');
   });
 });

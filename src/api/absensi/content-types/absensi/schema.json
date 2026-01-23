@@ -128,6 +128,10 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::shift.shift"
+    },
+    "keterangan_tugas": {
+      "type": "string",
+      "maxLength": 100
     }
   }
 }
