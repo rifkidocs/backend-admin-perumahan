@@ -646,6 +646,7 @@ export interface ApiAttendanceScheduleAttendanceSchedule
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100;
       }>;
+    shift: Schema.Attribute.Relation<'manyToOne', 'api::shift.shift'>;
     updated_by: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.user'
