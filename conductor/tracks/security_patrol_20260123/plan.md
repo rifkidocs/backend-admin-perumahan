@@ -17,7 +17,7 @@
 - [x] Task: Conductor - User Manual Verification 'Patrol Reporting Implementation' (Protocol in workflow.md)
 
 ## Phase 4: Special Scheduling (Pak Eko)
-- [ ] Task: Implement/Configure Special Shift Logic
+- [x] Task: Implement/Configure Special Shift Logic [961cac8]
     - [ ] Verify if `attendance-schedule` can handle "Location" or "Note" for the "Rumah Pak Eko" assignment.
     - [ ] If not, add necessary field to `attendance-schedule` or `penugasan` to designate the location.
 - [ ] Task: Conductor - User Manual Verification 'Special Scheduling (Pak Eko)' (Protocol in workflow.md)
