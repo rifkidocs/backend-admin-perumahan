@@ -1,12 +1,10 @@
 # Implementation Plan - Security Guard Attendance & Patrol System
 
-## Phase 1: Data Modeling & Schema Updates
+## Phase 1: Data Modeling & Schema Updates [checkpoint: 3ed7c29]
 - [x] Task: Create `patrol_report` Component [36b382e]
-    - [ ] Create a new component `attendance.patrol_report`.
-    - [ ] Add attributes: `foto` (media), `lokasi` (json), `keterangan` (text), `status_keamanan` (enum: Aman, Mencurigakan, Kejadian), `waktu_laporan` (datetime).
 - [x] Task: Update `Absensi` Collection [af41b17]
 - [x] Task: Create `Shift` Collection & Link to `Absensi` [23eff3f]
-- [ ] Task: Conductor - User Manual Verification 'Data Modeling & Schema Updates' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Data Modeling & Schema Updates' (Protocol in workflow.md)
 
 ## Phase 2: Logic & Validation (12-Hour Shifts)
 - [ ] Task: Update Absensi Service for Night Shifts
