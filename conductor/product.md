@@ -28,5 +28,6 @@ To provide a comprehensive backend management system for housing development pro
 
 ### 3. HR & Operational Management
 - **Workforce Management:** Tracking employee attendance, managing shifts, and handling leave requests.
+- **Security Operations:** Specialized support for security guard attendance including 12-hour/overnight shifts and flexible patrol reporting with multi-entry logs (photos and location verification).
 - **Performance Evaluation:** Systematized KPI tracking, performance reviews, and employee ratings.
 - **Supply Chain & Logistics:** Managing warehouse inventory, material requests, supplier evaluations, and procurement workflows.
