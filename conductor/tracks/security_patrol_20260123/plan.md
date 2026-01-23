@@ -7,7 +7,7 @@
 - [x] Task: Conductor - User Manual Verification 'Data Modeling & Schema Updates' (Protocol in workflow.md)
 
 ## Phase 2: Logic & Validation (12-Hour Shifts)
-- [ ] Task: Update Absensi Service for Night Shifts
+- [x] Task: Update Absensi Service for Night Shifts [33e353c]
     - [ ] Modify `check-out` logic to handle dates crossing midnight (e.g., check-in 19:00, check-out 07:00 next day).
     - [ ] Ensure validation logic respects the 12-hour duration.
 - [ ] Task: Conductor - User Manual Verification 'Logic & Validation (12-Hour Shifts)' (Protocol in workflow.md)
