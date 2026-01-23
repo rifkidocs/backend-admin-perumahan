@@ -124,13 +124,10 @@
       "repeatable": true,
       "component": "attendance.patrol-report"
     },
-    "shift_type": {
-      "type": "enumeration",
-      "enum": [
-        "Regular Day",
-        "Regular Night",
-        "Special Pak Eko"
-      ]
+    "shift": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::shift.shift"
     }
   }
 }
