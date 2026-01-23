@@ -477,6 +477,10 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;
       }>;
+    keterangan_tugas: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
     laporan_patroli: Schema.Attribute.Component<
       'attendance.patrol-report',
       true
