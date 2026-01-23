@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_attendance_patrol_reports",
+  "info": {
+    "displayName": "Patrol Report",
+    "description": "Laporan patroli security"
+  },
+  "options": {},
+  "attributes": {
+    "foto": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "lokasi": {
+      "type": "json",
+      "required": true
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "status_keamanan": {
+      "type": "enumeration",
+      "enum": [
+        "Aman",
+        "Mencurigakan",
+        "Kejadian"
+      ],
+      "default": "Aman",
+      "required": true
+    },
+    "waktu_laporan": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}
