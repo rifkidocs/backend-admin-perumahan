@@ -118,6 +118,19 @@
       "relation": "manyToOne",
       "target": "api::attendance-schedule.attendance-schedule",
       "inversedBy": "attendance_records"
+    },
+    "laporan_patroli": {
+      "type": "component",
+      "repeatable": true,
+      "component": "attendance.patrol-report"
+    },
+    "shift_type": {
+      "type": "enumeration",
+      "enum": [
+        "Regular Day",
+        "Regular Night",
+        "Special Pak Eko"
+      ]
     }
   }
 }
