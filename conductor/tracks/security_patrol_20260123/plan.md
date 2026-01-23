@@ -4,7 +4,7 @@
 - [x] Task: Create `patrol_report` Component [36b382e]
     - [ ] Create a new component `attendance.patrol_report`.
     - [ ] Add attributes: `foto` (media), `lokasi` (json), `keterangan` (text), `status_keamanan` (enum: Aman, Mencurigakan, Kejadian), `waktu_laporan` (datetime).
-- [ ] Task: Update `Absensi` Collection
+- [x] Task: Update `Absensi` Collection [af41b17]
     - [ ] Add a dynamic zone or repeatable component field `laporan_patroli` using `attendance.patrol_report`.
     - [ ] Add `shift_type` (enum: Regular Day, Regular Night, Special Pak Eko) or link to a Schedule relation.
 - [ ] Task: Conductor - User Manual Verification 'Data Modeling & Schema Updates' (Protocol in workflow.md)
