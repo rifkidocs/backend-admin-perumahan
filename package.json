@@ -19,6 +19,7 @@
     "@strapi/plugin-cloud": "5.31.3",
     "@strapi/plugin-users-permissions": "5.31.3",
     "@strapi/strapi": "5.31.3",
+    "dayjs": "^1.11.19",
     "fs-extra": "^10.0.0",
     "mime-types": "^2.1.27",
     "mysql2": "3.9.8",

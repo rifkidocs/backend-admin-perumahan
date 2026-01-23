@@ -1,6 +1,7 @@
 "use strict";
 
 const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
+const dayjs = require('dayjs');
 
 // Fungsi untuk menghitung jarak menggunakan Haversine formula
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -17,15 +18,29 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return R * c * 1000; // Convert to meters
 }
 
-
+/**
+ * Helper to extract ID from relation input
+ */
+const getRelationId = (relation) => {
+    if (!relation) return null;
+    if (typeof relation === 'number' || typeof relation === 'string') return relation;
+    if (relation.connect && Array.isArray(relation.connect) && relation.connect.length > 0) {
+        const first = relation.connect[0];
+        return typeof first === 'object' ? first.id : first;
+    }
+    if (relation.set && Array.isArray(relation.set) && relation.set.length > 0) {
+        const first = relation.set[0];
+        return typeof first === 'object' ? first.id : first;
+    }
+    if (relation.id) return relation.id;
+    return null;
+};
 
 module.exports = {
     async beforeCreate(event) {
         const { data } = event.params;
 
         try {
-            console.log('[DEBUG LIFECYCLE] Incoming Data:', JSON.stringify(data, null, 2));
-
             // Validasi data lokasi
             if (!data.lokasi_absensi || !data.lokasi_absensi.check_in_location) {
                 throw new Error('Data lokasi check-in diperlukan');
@@ -36,50 +51,22 @@ module.exports = {
                 throw new Error('Koordinat tidak valid');
             }
 
-            // Helper to extract ID from relation input
-            const getRelationId = (relation) => {
-                if (!relation) return null;
-                
-                // Case: Simple ID (number or string)
-                if (typeof relation === 'number' || typeof relation === 'string') return relation;
-                
-                // Case: Document Service "connect" syntax: { connect: [{ id: 1 }] } or { connect: [1] }
-                if (relation.connect && Array.isArray(relation.connect) && relation.connect.length > 0) {
-                    const first = relation.connect[0];
-                    return typeof first === 'object' ? first.id : first;
-                }
-
-                // Case: Document Service "set" syntax: { set: [{ id: 1 }] } or { set: [1] }
-                if (relation.set && Array.isArray(relation.set) && relation.set.length > 0) {
-                    const first = relation.set[0];
-                    return typeof first === 'object' ? first.id : first;
-                }
-                
-                // Case: Direct object with ID: { id: 1 }
-                if (relation.id) return relation.id;
-                
-                return null;
-            };
-
             const karyawanId = getRelationId(data.karyawan);
-
             if (!karyawanId) {
-                 // Maybe throw error or skip if not present (though schema says required)
-                 // For now, let's assume it's required
                  throw new Error('Karyawan is required');
             }
 
             // Cari jadwal absensi aktif untuk karyawan
-            const today = new Date().toISOString().split('T')[0];
+            const todayStr = dayjs().format('YYYY-MM-DD');
             const attendanceSchedule = await strapi.entityService.findMany(
                 'api::attendance-schedule.attendance-schedule',
                 {
                     filters: {
                         employee: karyawanId,
                         is_active: true,
-                        effective_date: { $lte: today },
+                        effective_date: { $lte: todayStr },
                         $or: [
-                            { expiry_date: { $gte: today } },
+                            { expiry_date: { $gte: todayStr } },
                             { expiry_date: { $null: true } }
                         ]
                     },
@@ -100,7 +87,6 @@ module.exports = {
 
             if (schedule.locations && Array.isArray(schedule.locations) && schedule.locations.length > 0) {
                 for (const loc of schedule.locations) {
-                    // Pastikan latitude/longitude ada dan valid
                     if (loc.latitude && loc.longitude) {
                         const dist = calculateDistance(
                             lat,
@@ -118,57 +104,79 @@ module.exports = {
                 throw new Error('Jadwal absensi tidak memiliki konfigurasi lokasi yang valid');
             }
             
-            // Set distance to the closest location
             data.distance_from_target = minDistance;
             data.is_within_radius = minDistance <= schedule.radius_meters;
 
-            // Set status absensi default ke 'hadir' karena hanya perlu verifikasi lokasi
             if (!data.status_absensi) {
                 data.status_absensi = 'hadir';
             }
 
-            // Hitung keterlambatan
+            // --- Logic Waktu (Delay Calculation) ---
             let timeNote = '';
-            if (data.jam_masuk && schedule.jam_masuk) {
-                const attendanceDate = new Date(data.jam_masuk);
-                const [scheduleHour, scheduleMinute, scheduleSecond] = schedule.jam_masuk.split(':').map(Number);
-                
-                // Buat object date untuk waktu jadwal pada hari yang sama dengan absensi
-                const scheduledTime = new Date(attendanceDate);
-                scheduledTime.setHours(scheduleHour, scheduleMinute, scheduleSecond || 0, 0);
-                
-                const diffMs = attendanceDate - scheduledTime;
-                const diffMinutes = Math.floor(diffMs / 60000);
-                
-                if (diffMinutes <= 0) {
-                    timeNote = 'Tepat Waktu';
-                } else {
-                    timeNote = `Terlambat ${diffMinutes} menit`;
+            let jamMasukJadwal = schedule.jam_masuk;
+
+            // Prioritaskan relation shift jika ada
+            const shiftId = getRelationId(data.shift);
+            if (shiftId) {
+                const shiftData = await strapi.entityService.findOne('api::shift.shift', shiftId);
+                if (shiftData && shiftData.jam_mulai) {
+                    jamMasukJadwal = shiftData.jam_mulai;
                 }
             }
 
-            // Construct keterangan notes
+            if (data.jam_masuk && jamMasukJadwal) {
+                const attendanceTime = dayjs(data.jam_masuk);
+                
+                // Menentukan waktu jadwal yang paling relevan (Today, Yesterday, or Tomorrow)
+                // Terutama penting untuk night shifts yang mungkin check-in setelah midnight
+                const [h, m, s] = jamMasukJadwal.split(':').map(Number);
+                
+                const scheduledToday = attendanceTime.hour(h).minute(m).second(s || 0);
+                const scheduledYesterday = scheduledToday.subtract(1, 'day');
+                const scheduledTomorrow = scheduledToday.add(1, 'day');
+
+                // Cari yang selisihnya paling kecil (absolut)
+                const diffs = [
+                    { date: scheduledYesterday, diff: attendanceTime.diff(scheduledYesterday, 'minute') },
+                    { date: scheduledToday, diff: attendanceTime.diff(scheduledToday, 'minute') },
+                    { date: scheduledTomorrow, diff: attendanceTime.diff(scheduledTomorrow, 'minute') }
+                ];
+
+                // Filter diffs yang masuk akal (misal check-in dalam rentang +/- 12 jam dari jadwal)
+                const reasonableDiffs = diffs.filter(d => Math.abs(d.diff) <= 720); // 12 hours
+                
+                if (reasonableDiffs.length > 0) {
+                    // Ambil yang paling mendekati 0 atau paling kecil positif jika ada
+                    const bestMatch = reasonableDiffs.reduce((prev, curr) => 
+                        Math.abs(curr.diff) < Math.abs(prev.diff) ? curr : prev
+                    );
+
+                    const diffMinutes = bestMatch.diff;
+                    if (diffMinutes <= 5) { // 5 minutes grace period
+                        timeNote = 'Tepat Waktu';
+                    } else {
+                        timeNote = `Terlambat ${diffMinutes} menit`;
+                    }
+                }
+            }
+
             const locationNote = data.is_within_radius 
                 ? `Lokasi: ${matchedLocationName} (${minDistance.toFixed(2)}m)`
                 : `Lokasi di luar radius (Terdekat: ${matchedLocationName}, Jarak: ${minDistance.toFixed(2)}m, Max: ${schedule.radius_meters}m)`;
             
             const autoNote = timeNote ? `${timeNote}. ${locationNote}` : locationNote;
-            
-            // Append to existing notes if any, or set new
             data.keterangan = data.keterangan ? `${data.keterangan}. ${autoNote}` : autoNote;
 
-            // Set approval status berdasarkan lokasi
             if (!data.is_within_radius) {
                 data.approval_status = 'pending';
             } else {
                 data.approval_status = 'approved';
             }
 
-            // Log verifikasi lokasi
-            strapi.log.info(`Verifikasi lokasi absensi - Karyawan: ${data.karyawan}, Jarak: ${minDistance.toFixed(2)}m, Dalam radius: ${data.is_within_radius}, Note: ${autoNote}`);
+            strapi.log.info(`Absensi Check-in - Karyawan: ${karyawanId}, Jarak: ${minDistance.toFixed(2)}m, Note: ${autoNote}`);
 
         } catch (error) {
-            strapi.log.error('Error dalam validasi absensi:', error.message);
+            strapi.log.error('Error dalam validasi absensi (beforeCreate):', error.message);
             throw error;
         }
     },
@@ -186,19 +194,16 @@ module.exports = {
                     throw new Error('Koordinat check-out tidak valid');
                 }
 
-                // Ambil data absensi yang sedang diupdate beserta jadwalnya
                 const existingRecord = await strapi.entityService.findOne('api::absensi.absensi', where.id, {
                     populate: {
-                        attendance_schedule: {
-                            populate: ['locations']
-                        }
+                        attendance_schedule: { populate: ['locations'] },
+                        shift: true
                     }
                 });
 
                 if (existingRecord && existingRecord.attendance_schedule) {
                     const schedule = existingRecord.attendance_schedule;
                     
-                    // Hitung jarak check-out
                     let minDistance = Infinity;
                     let matchedLocationName = '';
         
@@ -220,58 +225,56 @@ module.exports = {
                     }
 
                     const isWithinRadius = minDistance <= schedule.radius_meters;
-                    
-                    // Buat catatan lokasi check-out
                     const locationNote = isWithinRadius 
                         ? `Check-out: ${matchedLocationName} (${minDistance.toFixed(2)}m)`
                         : `Check-out di luar radius (Terdekat: ${matchedLocationName}, Jarak: ${minDistance.toFixed(2)}m)`;
 
-                    // Update keterangan (append ke yang lama)
                     const currentKeterangan = data.keterangan || existingRecord.keterangan || '';
-                    // Hindari duplikasi note jika update dilakukan berkali-kali (simple check)
                     if (!currentKeterangan.includes('Check-out:')) {
                         data.keterangan = currentKeterangan ? `${currentKeterangan}. ${locationNote}` : locationNote;
                     } else {
-                        // Jika sudah ada note check-out, mungkin kita replace atau biarkan. 
-                        // Untuk aman, kita append saja line baru atau biarkan user edit manual jika perlu.
-                        // Opsi: Append saja untuk history audit trail sederhana
                          data.keterangan = `${currentKeterangan} | Update: ${locationNote}`;
                     }
 
-                    // Log verifikasi
-                    strapi.log.info(`Verifikasi check-out - ID: ${where.id}, Jarak: ${minDistance.toFixed(2)}m, Dalam radius: ${isWithinRadius}`);
-
-                    // Update approval status jika check-out di luar radius
-                    // Kita ubah jadi pending agar admin cek
                     if (!isWithinRadius) {
                         data.approval_status = 'pending';
+                    }
+
+                    // --- Hitung Durasi Kerja / Overtime jika diperlukan ---
+                    if (data.jam_keluar && existingRecord.jam_masuk) {
+                        const start = dayjs(existingRecord.jam_masuk);
+                        const end = dayjs(data.jam_keluar);
+                        const durationHours = end.diff(start, 'hour', true);
+                        
+                        // Misal shift 12 jam, jika > 12 jam hitung overtime
+                        // Ambil jam_selesai dari shift jika ada
+                        let jamSelesaiJadwal = schedule.jam_pulang;
+                        if (existingRecord.shift && existingRecord.shift.jam_selesai) {
+                            jamSelesaiJadwal = existingRecord.shift.jam_selesai;
+                        }
+
+                        // ... logic overtime bisa ditambahkan di sini jika diperlukan ...
                     }
                 }
             }
 
         } catch (error) {
-            strapi.log.error('Error dalam update absensi:', error.message);
+            strapi.log.error('Error dalam update absensi (beforeUpdate):', error.message);
             throw error;
         }
     },
 
     async afterCreate(event) {
         const { result } = event;
-
-        // Log pembuatan record absensi
-        strapi.log.info(`Record absensi dibuat - ID: ${result.id}, Karyawan: ${result.karyawan}, Status: ${result.status_absensi}, Dalam radius: ${result.is_within_radius}`);
-
-        // Jika lokasi di luar radius, kirim notifikasi (opsional)
+        strapi.log.info(`Record absensi dibuat - ID: ${result.id}`);
         if (!result.is_within_radius) {
-            strapi.log.warn(`PERHATIAN: Absensi karyawan ${result.karyawan} di luar radius yang diizinkan`);
+            strapi.log.warn(`PERHATIAN: Absensi karyawan ${result.karyawan} di luar radius`);
         }
     },
 
     async afterUpdate(event) {
         const { result } = event;
-
-        // Log update record absensi
-        strapi.log.info(`Record absensi diupdate - ID: ${result.id}, Status: ${result.status_absensi}`);
+        strapi.log.info(`Record absensi diupdate - ID: ${result.id}`);
     },
 
     async beforeDelete(event) {
