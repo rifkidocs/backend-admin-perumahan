@@ -16,8 +16,6 @@
 - [x] Task: Implement Patrol Report Endpoint (Optional/Alternative) [8c69d1c]
 - [x] Task: Conductor - User Manual Verification 'Patrol Reporting Implementation' (Protocol in workflow.md)
 
-## Phase 4: Special Scheduling (Pak Eko)
+## Phase 4: Special Scheduling (Pak Eko) [checkpoint: 44ead97]
 - [x] Task: Implement/Configure Special Shift Logic [961cac8]
-    - [ ] Verify if `attendance-schedule` can handle "Location" or "Note" for the "Rumah Pak Eko" assignment.
-    - [ ] If not, add necessary field to `attendance-schedule` or `penugasan` to designate the location.
-- [ ] Task: Conductor - User Manual Verification 'Special Scheduling (Pak Eko)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Special Scheduling (Pak Eko)' (Protocol in workflow.md)
