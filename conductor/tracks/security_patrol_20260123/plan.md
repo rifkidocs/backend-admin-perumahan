@@ -13,7 +13,7 @@
 - [ ] Task: Conductor - User Manual Verification 'Logic & Validation (12-Hour Shifts)' (Protocol in workflow.md)
 
 ## Phase 3: Patrol Reporting Implementation
-- [ ] Task: Implement Patrol Report Endpoint (Optional/Alternative)
+- [x] Task: Implement Patrol Report Endpoint (Optional/Alternative) [8c69d1c]
     - [ ] *Note: Since we are using a component on the main type, standard update routes might suffice, but a dedicated endpoint for appending a report might be safer/easier for clients.*
     - [ ] Create custom route/controller `POST /api/absensi/:id/patrol` to push a single report item to the array without resending the whole object.
     - [ ] Write tests to verify adding multiple reports.
