@@ -194,26 +194,36 @@ module.exports = {
         const { where } = event.params;
 
         try {
+            console.log(`[Booking Lifecycle] beforeDelete triggered for booking id: ${where.id}`);
+
             const booking = await strapi.entityService.findOne(
                 "api::booking.booking",
                 where.id,
-                { fields: ['id', 'unit', 'booking_status'] }
+                { 
+                    populate: ['unit'] 
+                }
             );
 
             // Reset unit status if booking is being deleted
             if (booking && booking.unit) {
+                const unitId = booking.unit.id;
+                console.log(`[Booking Lifecycle] Resetting unit status for unit id: ${unitId}`);
+
                 await strapi.entityService.update(
                     "api::unit-rumah.unit-rumah",
-                    typeof booking.unit === 'object' ? booking.unit.id : booking.unit,
+                    unitId,
                     {
                         data: {
                             status_unit: 'tersedia'
                         }
                     }
                 );
+                console.log(`[Booking Lifecycle] Unit ${unitId} status set to 'tersedia'`);
+            } else {
+                console.log('[Booking Lifecycle] No linked unit found for this booking.');
             }
         } catch (error) {
-            console.error('Error handling booking deletion:', error);
+            console.error('[Booking Lifecycle] Error handling booking deletion:', error);
         }
     }
 };
