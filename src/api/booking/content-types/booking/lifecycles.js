@@ -81,18 +81,52 @@ module.exports = {
         // Update unit status if unit is provided
         if (result.unit) {
             try {
+                const statusToSet = result.booking_status === 'dibatalkan' ? 'tersedia' : 'dipesan';
+                
+                // If the unit object has an ID (populated) use it, otherwise use the value directly
+                const unitId = typeof result.unit === 'object' ? result.unit.id : result.unit;
+
                 await strapi.entityService.update(
                     "api::unit-rumah.unit-rumah",
-                    result.unit.id,
+                    unitId,
                     {
                         data: {
-                            status_unit: 'dipesan'
+                            status_unit: statusToSet
                         }
                     }
                 );
             } catch (error) {
                 console.error('Error updating unit status:', error);
             }
+        }
+    },
+
+    async afterUpdate(event) {
+        const { result } = event;
+
+        try {
+            // Fetch the booking with unit populated to ensure we have the relationship
+            const booking = await strapi.entityService.findOne(
+                "api::booking.booking",
+                result.id,
+                { populate: ['unit'] }
+            );
+
+            if (booking && booking.unit) {
+                const statusToSet = booking.booking_status === 'dibatalkan' ? 'tersedia' : 'dipesan';
+
+                await strapi.entityService.update(
+                    "api::unit-rumah.unit-rumah",
+                    booking.unit.id,
+                    {
+                        data: {
+                            status_unit: statusToSet
+                        }
+                    }
+                );
+            }
+        } catch (error) {
+            console.error('Error updating unit status in afterUpdate:', error);
         }
     },
 
