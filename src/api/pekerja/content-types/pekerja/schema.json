@@ -20,7 +20,6 @@
     },
     "nik": {
       "type": "string",
-      "required": true,
       "unique": true,
       "regex": "^[0-9]{16}$"
     },
@@ -53,11 +52,7 @@
       "type": "enumeration",
       "required": true,
       "default": "Aktif",
-      "enum": [
-        "Aktif",
-        "Nonaktif",
-        "Cuti"
-      ]
+      "enum": ["Aktif", "Nonaktif", "Cuti"]
     },
     "alamat": {
       "type": "text",
@@ -79,26 +74,19 @@
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "ktp": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     },
     "kontrak": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "files"
-      ]
+      "allowedTypes": ["files"]
     },
     "jadwal_kerjas": {
       "type": "relation",

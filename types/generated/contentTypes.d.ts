@@ -3564,9 +3564,7 @@ export interface ApiPekerjaPekerja extends Struct.CollectionTypeSchema {
         maxLength: 100;
         minLength: 2;
       }>;
-    nik: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
+    nik: Schema.Attribute.String & Schema.Attribute.Unique;
     nomor_hp: Schema.Attribute.String;
     penugasans: Schema.Attribute.Relation<
       'manyToMany',
