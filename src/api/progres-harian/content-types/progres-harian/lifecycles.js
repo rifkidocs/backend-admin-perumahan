@@ -154,10 +154,12 @@ module.exports = {
         // result.list_materials might have partial data or counts, and params.data.list_materials might be incomplete/dirty
         const fullProgres = await strapi.entityService.findOne("api::progres-harian.progres-harian", result.id, {
           populate: {
+            foto_dokumentasi: true,
             list_materials: {
               populate: {
                 material_gudang: true,
-                material: true
+                material: true,
+                nota: true
               }
             }
           }
@@ -167,7 +169,8 @@ module.exports = {
            ...item,
            id: undefined, // Clear ID to create new component instances
            material_gudang: getRelationId(item.material_gudang),
-           material: getRelationId(item.material)
+           material: getRelationId(item.material),
+           nota: item.nota ? (Array.isArray(item.nota) ? item.nota.map(n => n.id) : [item.nota.id]) : []
         }));
 
         // Robustly get project and unit IDs
@@ -185,6 +188,7 @@ module.exports = {
           status_issuance: "Selesai", // Auto-complete
           notes: `Auto-generated from Progres Harian ID: ${result.id}`,
           progres_harian: result.id,
+          documents: fullProgres.foto_dokumentasi ? fullProgres.foto_dokumentasi.map(f => f.id) : []
         };
 
         await strapi.entityService.create(
@@ -293,20 +297,36 @@ module.exports = {
       const projectId = getRelationId(params?.data?.proyek_perumahan) || getRelationId(result.proyek_perumahan);
       const unitId = getRelationId(params?.data?.unit_rumah) || getRelationId(result.unit_rumah);
 
+      // Fetch full progress data to ensure we have all material details and media
+      const fullProgres = await strapi.entityService.findOne("api::progres-harian.progres-harian", result.id, {
+        populate: {
+          foto_dokumentasi: true,
+          list_materials: {
+            populate: {
+              material_gudang: true,
+              material: true,
+              nota: true
+            }
+          }
+        }
+      });
+
+      const mappedMaterials = (fullProgres.list_materials || []).map(item => ({
+        ...item,
+        id: undefined,
+        material_gudang: getRelationId(item.material_gudang),
+        material: getRelationId(item.material),
+        nota: item.nota ? (Array.isArray(item.nota) ? item.nota.map(n => n.id) : [item.nota.id]) : []
+      }));
+
       const pengeluaranData = {
         date: result.update_date,
         project: projectId,
         unit_rumah: unitId,
         requester: requesterName,
+        list_materials: mappedMaterials,
+        documents: fullProgres.foto_dokumentasi ? fullProgres.foto_dokumentasi.map(f => f.id) : []
       };
-      
-      // Only update materials if they were part of the change set
-      if (params.data.list_materials !== undefined) {
-         pengeluaranData.list_materials = params.data.list_materials;
-      } else if (!linkedPengeluaran) {
-         // If creating new but no materials in params (rare case), fallback to result
-         pengeluaranData.list_materials = result.list_materials;
-      }
 
       if (linkedPengeluaran) {
         // Update existing
