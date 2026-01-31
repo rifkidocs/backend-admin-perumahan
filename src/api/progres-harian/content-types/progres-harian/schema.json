@@ -165,11 +165,6 @@
     "detail_foto": {
       "type": "json"
     },
-    "list_materials": {
-      "type": "component",
-      "repeatable": true,
-      "component": "pengeluaran.item-pengeluaran"
-    },
     "pelapor": {
       "type": "relation",
       "relation": "manyToOne",
@@ -178,18 +173,6 @@
     },
     "persentase_progres": {
       "type": "decimal"
-    },
-    "pengeluaran_material": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::pengeluaran-material.pengeluaran-material",
-      "inversedBy": "progres_harian"
-    },
-    "gudang": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::gudang.gudang",
-      "inversedBy": "progres_harians"
     }
   }
 }

@@ -4268,7 +4268,6 @@ export interface ApiProgresHarianProgresHarian
         number
       >;
     foto_dokumentasi: Schema.Attribute.Media<'images', true>;
-    gudang: Schema.Attribute.Relation<'manyToOne', 'api::gudang.gudang'>;
     kernet: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
@@ -4296,10 +4295,6 @@ export interface ApiProgresHarianProgresHarian
         },
         number
       >;
-    list_materials: Schema.Attribute.Component<
-      'pengeluaran.item-pengeluaran',
-      true
-    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -4312,10 +4307,6 @@ export interface ApiProgresHarianProgresHarian
         maxLength: 200;
       }>;
     pelapor: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
-    pengeluaran_material: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::pengeluaran-material.pengeluaran-material'
-    >;
     persentase_kehadiran: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
         {
