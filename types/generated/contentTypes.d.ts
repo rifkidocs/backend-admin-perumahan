@@ -6949,20 +6949,16 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
       'komponen.progres-proyek',
       true
     >;
-    status_unit: Schema.Attribute.Enumeration<
-      [
-        'belum-dibangun',
-        'tersedia',
-        'dipesan',
-        'progres',
-        'selesai',
-        'terjual',
-        'serah-terima',
-        'handed_over',
-      ]
+    status_pembangunan_fisik: Schema.Attribute.Enumeration<
+      ['belum_mulai', 'progres', 'selesai', 'retensi']
     > &
       Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'belum-dibangun'>;
+      Schema.Attribute.DefaultTo<'belum_mulai'>;
+    status_transaksi: Schema.Attribute.Enumeration<
+      ['tersedia', 'booking', 'terjual', 'serah_terima']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'tersedia'>;
     unit_id: Schema.Attribute.String & Schema.Attribute.Unique;
     unit_pricings: Schema.Attribute.Relation<
       'oneToMany',

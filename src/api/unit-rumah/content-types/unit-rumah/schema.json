@@ -64,19 +64,26 @@
       "type": "string",
       "maxLength": 100
     },
-    "status_unit": {
+    "status_pembangunan_fisik": {
       "type": "enumeration",
       "required": true,
-      "default": "belum-dibangun",
+      "default": "belum_mulai",
       "enum": [
-        "belum-dibangun",
-        "tersedia",
-        "dipesan",
+        "belum_mulai",
         "progres",
         "selesai",
+        "retensi"
+      ]
+    },
+    "status_transaksi": {
+      "type": "enumeration",
+      "required": true,
+      "default": "tersedia",
+      "enum": [
+        "tersedia",
+        "booking",
         "terjual",
-        "serah-terima",
-        "handed_over"
+        "serah_terima"
       ]
     },
     "progress": {

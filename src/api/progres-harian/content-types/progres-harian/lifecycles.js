@@ -24,6 +24,38 @@ function getRelationId(relationData) {
   return null;
 }
 
+async function syncUnitProgress(result, params) {
+  try {
+    const unitId = getRelationId(params.data?.unit_rumah) || getRelationId(result?.unit_rumah);
+    const progressAfter = result?.progress_after ?? params.data?.progress_after;
+
+    if (unitId && progressAfter !== undefined) {
+      const updateData = { progress: progressAfter };
+      
+      if (progressAfter >= 100) {
+        updateData.status_pembangunan_fisik = "selesai";
+      } else if (progressAfter > 0) {
+        // Jika ada progres tapi belum 100, pastikan statusnya 'progres'
+        const unit = await strapi.entityService.findOne("api::unit-rumah.unit-rumah", unitId, {
+          fields: ["status_pembangunan_fisik"]
+        });
+        
+        if (unit && unit.status_pembangunan_fisik === "belum_mulai") {
+          updateData.status_pembangunan_fisik = "progres";
+        }
+      }
+
+      await strapi.entityService.update("api::unit-rumah.unit-rumah", unitId, {
+        data: updateData,
+      });
+      
+      console.log(`Successfully synced unit ${unitId} progress to ${progressAfter}%`);
+    }
+  } catch (e) {
+    strapi.log.warn(`Failed to sync unit_rumah progress: ${e.message}`);
+  }
+}
+
 module.exports = {
   async beforeCreate(event) {
     const { data } = event.params;
@@ -47,18 +79,6 @@ module.exports = {
     if (event.state.user && !data.created_by) {
       data.created_by =
         event.state.user.username || event.state.user.email || "System";
-    }
-
-    // Update unit progress automatically
-    const unitId = getRelationId(data.unit_rumah);
-    if (unitId && data.progress_after !== undefined) {
-      await strapi.entityService.update(
-        "api::unit-rumah.unit-rumah",
-        unitId,
-        {
-          data: { progress: data.progress_after },
-        }
-      );
     }
   },
 
@@ -117,7 +137,11 @@ module.exports = {
       );
     }
 
+    // 2. Sync unit progress
+    await syncUnitProgress(result, params);
+
     // Log aktivitas
+
     try {
       // Check if service exists before calling
       const activityLogService = strapi.service("api::activity-log.activity-log");
@@ -172,6 +196,9 @@ module.exports = {
         `Failed to resolve proyek_perumahan for progress update: ${e.message}`
       );
     }
+
+    // 2. Sync unit progress
+    await syncUnitProgress(result, params);
 
     // Log aktivitas
     try {

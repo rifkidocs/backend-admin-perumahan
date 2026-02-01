@@ -6,6 +6,35 @@ const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../util
  * Lifecycle callbacks for the `booking` model.
  */
 
+async function syncUnitTransactionStatus(unitId, bookingStatus) {
+    if (!unitId) return;
+
+    try {
+        let statusToSet = 'tersedia';
+        
+        if (bookingStatus === 'aktif' || bookingStatus === 'menunggu-pembayaran') {
+            statusToSet = 'booking';
+        } else if (bookingStatus === 'selesai') {
+            statusToSet = 'terjual';
+        } else if (bookingStatus === 'dibatalkan') {
+            statusToSet = 'tersedia';
+        }
+
+        await strapi.entityService.update(
+            "api::unit-rumah.unit-rumah",
+            unitId,
+            {
+                data: {
+                    status_transaksi: statusToSet
+                }
+            }
+        );
+        console.log(`[Booking Lifecycle] Unit ${unitId} transaction status updated to: ${statusToSet}`);
+    } catch (error) {
+        console.error('[Booking Lifecycle] Error updating unit transaction status:', error);
+    }
+}
+
 module.exports = {
     async beforeCreate(event) {
         const { data } = event.params;
@@ -78,26 +107,10 @@ module.exports = {
     async afterCreate(event) {
         const { result } = event;
 
-        // Update unit status if unit is provided
+        // Update unit transaction status if unit is provided
         if (result.unit) {
-            try {
-                const statusToSet = result.booking_status === 'dibatalkan' ? 'tersedia' : 'dipesan';
-                
-                // If the unit object has an ID (populated) use it, otherwise use the value directly
-                const unitId = typeof result.unit === 'object' ? result.unit.id : result.unit;
-
-                await strapi.entityService.update(
-                    "api::unit-rumah.unit-rumah",
-                    unitId,
-                    {
-                        data: {
-                            status_unit: statusToSet
-                        }
-                    }
-                );
-            } catch (error) {
-                console.error('Error updating unit status:', error);
-            }
+            const unitId = typeof result.unit === 'object' ? result.unit.id : result.unit;
+            await syncUnitTransactionStatus(unitId, result.booking_status);
         }
     },
 
@@ -113,20 +126,10 @@ module.exports = {
             );
 
             if (booking && booking.unit) {
-                const statusToSet = booking.booking_status === 'dibatalkan' ? 'tersedia' : 'dipesan';
-
-                await strapi.entityService.update(
-                    "api::unit-rumah.unit-rumah",
-                    booking.unit.id,
-                    {
-                        data: {
-                            status_unit: statusToSet
-                        }
-                    }
-                );
+                await syncUnitTransactionStatus(booking.unit.id, booking.booking_status);
             }
         } catch (error) {
-            console.error('Error updating unit status in afterUpdate:', error);
+            console.error('Error updating unit transaction status in afterUpdate:', error);
         }
     },
 
@@ -204,21 +207,21 @@ module.exports = {
                 }
             );
 
-            // Reset unit status if booking is being deleted
+            // Reset unit transaction status if booking is being deleted
             if (booking && booking.unit) {
                 const unitId = booking.unit.id;
-                console.log(`[Booking Lifecycle] Resetting unit status for unit id: ${unitId}`);
+                console.log(`[Booking Lifecycle] Resetting unit transaction status for unit id: ${unitId}`);
 
                 await strapi.entityService.update(
                     "api::unit-rumah.unit-rumah",
                     unitId,
                     {
                         data: {
-                            status_unit: 'tersedia'
+                            status_transaksi: 'tersedia'
                         }
                     }
                 );
-                console.log(`[Booking Lifecycle] Unit ${unitId} status set to 'tersedia'`);
+                console.log(`[Booking Lifecycle] Unit ${unitId} transaction status reset to 'tersedia'`);
             } else {
                 console.log('[Booking Lifecycle] No linked unit found for this booking.');
             }
