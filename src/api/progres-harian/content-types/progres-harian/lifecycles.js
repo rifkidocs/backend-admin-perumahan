@@ -56,6 +56,38 @@ async function syncUnitProgress(result, params) {
   }
 }
 
+async function syncFasilitasProyekProgress(result, params) {
+  try {
+    const fasilitasId = getRelationId(params.data?.fasilitas_proyek) || getRelationId(result?.fasilitas_proyek);
+    const progressAfter = result?.progress_after ?? params.data?.progress_after;
+
+    if (fasilitasId && progressAfter !== undefined) {
+      const updateData = { progress: progressAfter };
+      
+      if (progressAfter >= 100) {
+        updateData.status_pembangunan = "selesai";
+      } else if (progressAfter > 0) {
+        // Jika ada progres tapi belum 100, pastikan statusnya 'pembangunan'
+        const fasilitas = await strapi.entityService.findOne("api::fasilitas-proyek.fasilitas-proyek", fasilitasId, {
+          fields: ["status_pembangunan"]
+        });
+        
+        if (fasilitas && fasilitas.status_pembangunan === "perencanaan") {
+          updateData.status_pembangunan = "pembangunan";
+        }
+      }
+
+      await strapi.entityService.update("api::fasilitas-proyek.fasilitas-proyek", fasilitasId, {
+        data: updateData,
+      });
+      
+      console.log(`Successfully synced fasilitas-proyek ${fasilitasId} progress to ${progressAfter}%`);
+    }
+  } catch (e) {
+    strapi.log.warn(`Failed to sync fasilitas-proyek progress: ${e.message}`);
+  }
+}
+
 module.exports = {
   async beforeCreate(event) {
     const { data } = event.params;
@@ -140,6 +172,9 @@ module.exports = {
     // 2. Sync unit progress
     await syncUnitProgress(result, params);
 
+    // 3. Sync fasilitas proyek progress
+    await syncFasilitasProyekProgress(result, params);
+
     // Log aktivitas
 
     try {
@@ -199,6 +234,9 @@ module.exports = {
 
     // 2. Sync unit progress
     await syncUnitProgress(result, params);
+
+    // 3. Sync fasilitas proyek progress
+    await syncFasilitasProyekProgress(result, params);
 
     // Log aktivitas
     try {
