@@ -1681,6 +1681,72 @@ export interface ApiDistribusiMaterialDistribusiMaterial
   };
 }
 
+export interface ApiFasilitasProyekFasilitasProyek
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'fasilitas_proyeks';
+  info: {
+    description: 'Master data for project facilities (Fasum/Fasos) and infrastructure';
+    displayName: 'Fasilitas Proyek';
+    pluralName: 'fasilitas-proyeks';
+    singularName: 'fasilitas-proyek';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deskripsi: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    foto: Schema.Attribute.Media<'images', true>;
+    kategori: Schema.Attribute.Enumeration<
+      ['Fasum', 'Fasos', 'Infrastruktur']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Infrastruktur'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fasilitas-proyek.fasilitas-proyek'
+    > &
+      Schema.Attribute.Private;
+    nama: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+        minLength: 3;
+      }>;
+    progres_harians: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::progres-harian.progres-harian'
+    >;
+    progress: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    proyek_perumahan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    status_pembangunan: Schema.Attribute.Enumeration<
+      ['perencanaan', 'pembangunan', 'selesai']
+    > &
+      Schema.Attribute.DefaultTo<'perencanaan'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGudangGudang extends Struct.CollectionTypeSchema {
   collectionName: 'gudangs';
   info: {
@@ -4267,6 +4333,10 @@ export interface ApiProgresHarianProgresHarian
         },
         number
       >;
+    fasilitas_proyek: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::fasilitas-proyek.fasilitas-proyek'
+    >;
     foto_dokumentasi: Schema.Attribute.Media<'images', true>;
     kernet: Schema.Attribute.Integer &
       Schema.Attribute.SetMinMax<
@@ -4979,6 +5049,10 @@ export interface ApiProyekPerumahanProyekPerumahan
     dokumen_legal: Schema.Attribute.Component<'komponen.dokumen', true>;
     environment_permits: Schema.Attribute.JSON;
     estimated_completion: Schema.Attribute.Date & Schema.Attribute.Required;
+    fasilitas_proyeks: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fasilitas-proyek.fasilitas-proyek'
+    >;
     foto_utama: Schema.Attribute.Media<'images'>;
     galeri_foto: Schema.Attribute.Media<'images', true>;
     gudangs: Schema.Attribute.Relation<'oneToMany', 'api::gudang.gudang'>;
@@ -7634,6 +7708,7 @@ declare module '@strapi/strapi' {
       'api::departemen.departemen': ApiDepartemenDepartemen;
       'api::developer.developer': ApiDeveloperDeveloper;
       'api::distribusi-material.distribusi-material': ApiDistribusiMaterialDistribusiMaterial;
+      'api::fasilitas-proyek.fasilitas-proyek': ApiFasilitasProyekFasilitasProyek;
       'api::gudang.gudang': ApiGudangGudang;
       'api::handover-document.handover-document': ApiHandoverDocumentHandoverDocument;
       'api::jabatan.jabatan': ApiJabatanJabatan;

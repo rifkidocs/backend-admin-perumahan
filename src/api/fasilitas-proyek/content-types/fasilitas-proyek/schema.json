@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fasilitas_proyeks",
+  "info": {
+    "singularName": "fasilitas-proyek",
+    "pluralName": "fasilitas-proyeks",
+    "displayName": "Fasilitas Proyek",
+    "description": "Master data for project facilities (Fasum/Fasos) and infrastructure"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama": {
+      "type": "string",
+      "required": true,
+      "minLength": 3,
+      "maxLength": 100
+    },
+    "kategori": {
+      "type": "enumeration",
+      "enum": [
+        "Fasum",
+        "Fasos",
+        "Infrastruktur"
+      ],
+      "default": "Infrastruktur",
+      "required": true
+    },
+    "proyek_perumahan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::proyek-perumahan.proyek-perumahan",
+      "inversedBy": "fasilitas_proyeks"
+    },
+    "status_pembangunan": {
+      "type": "enumeration",
+      "enum": [
+        "perencanaan",
+        "pembangunan",
+        "selesai"
+      ],
+      "default": "perencanaan"
+    },
+    "progress": {
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "deskripsi": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "foto": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "progres_harians": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::progres-harian.progres-harian",
+      "mappedBy": "fasilitas_proyek"
+    }
+  }
+}

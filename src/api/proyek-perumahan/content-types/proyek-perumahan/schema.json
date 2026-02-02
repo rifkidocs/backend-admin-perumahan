@@ -175,6 +175,12 @@
       "target": "api::unit-rumah.unit-rumah",
       "mappedBy": "proyek_perumahan"
     },
+    "fasilitas_proyeks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::fasilitas-proyek.fasilitas-proyek",
+      "mappedBy": "proyek_perumahan"
+    },
     "manager_proyek": {
       "type": "relation",
       "relation": "manyToOne",

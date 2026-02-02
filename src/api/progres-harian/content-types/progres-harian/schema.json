@@ -24,6 +24,12 @@
       "target": "api::unit-rumah.unit-rumah",
       "inversedBy": "progres_harians"
     },
+    "fasilitas_proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::fasilitas-proyek.fasilitas-proyek",
+      "inversedBy": "progres_harians"
+    },
     "update_date": {
       "type": "date",
       "required": true
