@@ -4737,14 +4737,6 @@ export interface ApiProjectPhaseProjectPhase
         maxLength: 100;
         minLength: 2;
       }>;
-    phase_order: Schema.Attribute.Integer &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
     phase_status: Schema.Attribute.Enumeration<
       ['planning', 'ongoing', 'completed', 'delayed']
     > &

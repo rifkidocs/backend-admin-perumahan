@@ -10,17 +10,13 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "phase_name": {
       "type": "string",
-      "required": true,
       "minLength": 2,
-      "maxLength": 100
-    },
-    "phase_order": {
-      "type": "integer",
-      "required": true,
-      "min": 1
+      "maxLength": 100,
+      "required": true
     },
     "start_date": {
       "type": "date",
@@ -35,20 +31,20 @@
     },
     "phase_status": {
       "type": "enumeration",
+      "required": true,
+      "default": "planning",
       "enum": [
         "planning",
         "ongoing",
         "completed",
         "delayed"
-      ],
-      "required": true,
-      "default": "planning"
+      ]
     },
     "progress_percentage": {
       "type": "decimal",
+      "default": 0,
       "min": 0,
-      "max": 100,
-      "default": 0
+      "max": 100
     },
     "budget_allocation": {
       "type": "decimal",
