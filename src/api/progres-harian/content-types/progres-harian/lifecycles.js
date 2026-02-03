@@ -170,10 +170,14 @@ module.exports = {
     }
 
     // 2. Sync unit progress
-    await syncUnitProgress(result, params);
+    if (result.publishedAt) {
+      await syncUnitProgress(result, params);
+    }
 
     // 3. Sync fasilitas proyek progress
-    await syncFasilitasProyekProgress(result, params);
+    if (result.publishedAt) {
+      await syncFasilitasProyekProgress(result, params);
+    }
 
     // Log aktivitas
 
@@ -233,10 +237,14 @@ module.exports = {
     }
 
     // 2. Sync unit progress
-    await syncUnitProgress(result, params);
+    if (result.publishedAt) {
+      await syncUnitProgress(result, params);
+    }
 
     // 3. Sync fasilitas proyek progress
-    await syncFasilitasProyekProgress(result, params);
+    if (result.publishedAt) {
+      await syncFasilitasProyekProgress(result, params);
+    }
 
     // Log aktivitas
     try {

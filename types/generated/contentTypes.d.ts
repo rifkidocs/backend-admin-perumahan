@@ -4301,7 +4301,7 @@ export interface ApiProgresHarianProgresHarian
     singularName: 'progres-harian';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
     aktivitas: Schema.Attribute.String &

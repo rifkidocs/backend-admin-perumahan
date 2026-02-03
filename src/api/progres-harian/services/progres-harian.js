@@ -16,7 +16,10 @@ module.exports = createCoreService(
       const reports = await strapi.entityService.findMany(
         "api::progres-harian.progres-harian",
         {
-          filters: { proyek_perumahan: projectId },
+          filters: { 
+            proyek_perumahan: projectId,
+            publishedAt: { $ne: null }
+          },
           sort: { update_date: "desc" },
           populate: ["proyek_perumahan"],
         }
@@ -51,6 +54,7 @@ module.exports = createCoreService(
         {
           filters: {
             proyek_perumahan: projectId,
+            publishedAt: { $ne: null },
             update_date: {
               $gte: startDate,
               $lte: endDate,

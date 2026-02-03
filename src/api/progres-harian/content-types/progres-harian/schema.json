@@ -8,7 +8,7 @@
     "description": "Progress tracking for construction units"
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
