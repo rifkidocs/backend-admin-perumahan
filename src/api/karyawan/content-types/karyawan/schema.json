@@ -304,6 +304,12 @@
       "target": "api::shift.shift",
       "inversedBy": "employees"
     },
+    "jadwal_securities": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jadwal-security.jadwal-security",
+      "mappedBy": "karyawan"
+    },
     "payment_invoices_paid": {
       "type": "relation",
       "relation": "oneToMany",

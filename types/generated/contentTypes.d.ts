@@ -2220,6 +2220,43 @@ export interface ApiJadwalProyekJadwalProyek
   };
 }
 
+export interface ApiJadwalSecurityJadwalSecurity
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'jadwal_securities';
+  info: {
+    description: 'Jadwal kerja harian untuk security';
+    displayName: 'Jadwal Security';
+    pluralName: 'jadwal-securities';
+    singularName: 'jadwal-security';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    karyawan: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::jadwal-security.jadwal-security'
+    > &
+      Schema.Attribute.Private;
+    lokasi: Schema.Attribute.Relation<'manyToOne', 'api::lokasi.lokasi'>;
+    publishedAt: Schema.Attribute.DateTime;
+    shift: Schema.Attribute.Relation<'manyToOne', 'api::shift.shift'>;
+    status: Schema.Attribute.Enumeration<
+      ['scheduled', 'attended', 'absent', 'leave', 'off']
+    > &
+      Schema.Attribute.DefaultTo<'scheduled'>;
+    tanggal: Schema.Attribute.Date & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
   collectionName: 'karyawans';
   info: {
@@ -2289,6 +2326,10 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     is_security_personnel: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     jabatan: Schema.Attribute.Relation<'manyToOne', 'api::jabatan.jabatan'>;
+    jadwal_securities: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::jadwal-security.jadwal-security'
+    >;
     jenis_kelamin: Schema.Attribute.Enumeration<['Laki-laki', 'Perempuan']> &
       Schema.Attribute.Required;
     kas_keluars_approved: Schema.Attribute.Relation<
@@ -3254,6 +3295,72 @@ export interface ApiLeaveQuotaLeaveQuota extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiLokasiLokasi extends Struct.CollectionTypeSchema {
+  collectionName: 'lokasis';
+  info: {
+    description: 'Master lokasi untuk absensi dan jadwal security';
+    displayName: 'Lokasi Absensi';
+    pluralName: 'lokasis';
+    singularName: 'lokasi';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    alamat: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    latitude: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 90;
+          min: -90;
+        },
+        number
+      >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lokasi.lokasi'
+    > &
+      Schema.Attribute.Private;
+    longitude: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 180;
+          min: -180;
+        },
+        number
+      >;
+    nama_lokasi: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    radius_meters: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 10;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<50>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiMarketingVideoMarketingVideo
   extends Struct.CollectionTypeSchema {
   collectionName: 'marketing_videos';
@@ -4142,6 +4249,67 @@ export interface ApiPermitDocumentPermitDocument
       ['active', 'expired', 'pending', 'draft']
     > &
       Schema.Attribute.DefaultTo<'pending'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPertukaranJadwalPertukaranJadwal
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'pertukaran_jadwals';
+  info: {
+    description: 'Pengajuan tukar jadwal shift security';
+    displayName: 'Pertukaran Jadwal';
+    pluralName: 'pertukaran-jadwals';
+    singularName: 'pertukaran-jadwal';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    approval_date: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pertukaran-jadwal.pertukaran-jadwal'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    reason: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    requester: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    requesting_schedule: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::jadwal-security.jadwal-security'
+    >;
+    response_note: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    status: Schema.Attribute.Enumeration<
+      [
+        'pending',
+        'approved_by_target',
+        'approved_by_admin',
+        'rejected',
+        'cancelled',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'pending'>;
+    target_schedule: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::jadwal-security.jadwal-security'
+    >;
+    target_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -7707,6 +7875,7 @@ declare module '@strapi/strapi' {
       'api::jadwal-kerja.jadwal-kerja': ApiJadwalKerjaJadwalKerja;
       'api::jadwal-marketing.jadwal-marketing': ApiJadwalMarketingJadwalMarketing;
       'api::jadwal-proyek.jadwal-proyek': ApiJadwalProyekJadwalProyek;
+      'api::jadwal-security.jadwal-security': ApiJadwalSecurityJadwalSecurity;
       'api::karyawan.karyawan': ApiKaryawanKaryawan;
       'api::kas-keluar.kas-keluar': ApiKasKeluarKasKeluar;
       'api::kas-masuk.kas-masuk': ApiKasMasukKasMasuk;
@@ -7717,6 +7886,7 @@ declare module '@strapi/strapi' {
       'api::lead-marketing.lead-marketing': ApiLeadMarketingLeadMarketing;
       'api::leave-policy.leave-policy': ApiLeavePolicyLeavePolicy;
       'api::leave-quota.leave-quota': ApiLeaveQuotaLeaveQuota;
+      'api::lokasi.lokasi': ApiLokasiLokasi;
       'api::marketing-video.marketing-video': ApiMarketingVideoMarketingVideo;
       'api::material-gudang.material-gudang': ApiMaterialGudangMaterialGudang;
       'api::material.material': ApiMaterialMaterial;
@@ -7727,6 +7897,7 @@ declare module '@strapi/strapi' {
       'api::penugasan.penugasan': ApiPenugasanPenugasan;
       'api::performance-review.performance-review': ApiPerformanceReviewPerformanceReview;
       'api::permit-document.permit-document': ApiPermitDocumentPermitDocument;
+      'api::pertukaran-jadwal.pertukaran-jadwal': ApiPertukaranJadwalPertukaranJadwal;
       'api::piutang-konsumen.piutang-konsumen': ApiPiutangKonsumenPiutangKonsumen;
       'api::placement.placement': ApiPlacementPlacement;
       'api::progres-harian.progres-harian': ApiProgresHarianProgresHarian;

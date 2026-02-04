@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lokasis",
+  "info": {
+    "singularName": "lokasi",
+    "pluralName": "lokasis",
+    "displayName": "Lokasi Absensi",
+    "description": "Master lokasi untuk absensi dan jadwal security"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama_lokasi": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 100
+    },
+    "latitude": {
+      "type": "decimal",
+      "required": true,
+      "min": -90,
+      "max": 90
+    },
+    "longitude": {
+      "type": "decimal",
+      "required": true,
+      "min": -180,
+      "max": 180
+    },
+    "radius_meters": {
+      "type": "integer",
+      "required": true,
+      "default": 50,
+      "min": 10
+    },
+    "alamat": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "is_active": {
+        "type": "boolean",
+        "default": true
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jadwal_securities",
+  "info": {
+    "singularName": "jadwal-security",
+    "pluralName": "jadwal-securities",
+    "displayName": "Jadwal Security",
+    "description": "Jadwal kerja harian untuk security"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tanggal": {
+      "type": "date",
+      "required": true
+    },
+    "shift": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::shift.shift"
+    },
+    "lokasi": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lokasi.lokasi"
+    },
+    "karyawan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "jadwal_securities"
+    },
+    "status": {
+        "type": "enumeration",
+        "enum": ["scheduled", "attended", "absent", "leave", "off"],
+        "default": "scheduled"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pertukaran_jadwals",
+  "info": {
+    "singularName": "pertukaran-jadwal",
+    "pluralName": "pertukaran-jadwals",
+    "displayName": "Pertukaran Jadwal",
+    "description": "Pengajuan tukar jadwal shift security"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "requester": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "target_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "requesting_schedule": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::jadwal-security.jadwal-security"
+    },
+    "target_schedule": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::jadwal-security.jadwal-security"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "approved_by_target", "approved_by_admin", "rejected", "cancelled"],
+      "default": "pending"
+    },
+    "reason": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "response_note": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "approval_date": {
+        "type": "datetime"
+    }
+  }
+}
