@@ -5,8 +5,8 @@ module.exports = {
     const { result, params } = event;
 
     // Check if the status was updated to 'approved_by_target'
-    // We check params.data.status to ensure this specific update triggered the change
-    if (params.data && params.data.status === 'approved_by_target') {
+    // We check params.data.status_pertukaran to ensure this specific update triggered the change
+    if (params.data && params.data.status_pertukaran === 'approved_by_target') {
       try {
         // Fetch the full relation details needed for the swap
         const exchangeRequest = await strapi.entityService.findOne(

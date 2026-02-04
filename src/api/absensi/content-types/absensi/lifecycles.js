@@ -26,12 +26,17 @@ const getRelationId = (relation) => {
     if (typeof relation === 'number' || typeof relation === 'string') return relation;
     if (relation.connect && Array.isArray(relation.connect) && relation.connect.length > 0) {
         const first = relation.connect[0];
-        return typeof first === 'object' ? first.id : first;
+        return typeof first === 'object' ? (first.documentId || first.id) : first;
     }
     if (relation.set && Array.isArray(relation.set) && relation.set.length > 0) {
         const first = relation.set[0];
-        return typeof first === 'object' ? first.id : first;
+        return typeof first === 'object' ? (first.documentId || first.id) : first;
     }
+    if (Array.isArray(relation) && relation.length > 0) {
+        const first = relation[0];
+        return typeof first === 'object' ? (first.documentId || first.id) : first;
+    }
+    if (relation.documentId) return relation.documentId;
     if (relation.id) return relation.id;
     return null;
 };
@@ -66,11 +71,15 @@ module.exports = {
                 schedule = await strapi.entityService.findOne('api::jadwal-security.jadwal-security', inputJadwalSecurityId, {
                     populate: ['lokasi', 'shift']
                 });
-                if (schedule) isSecurity = true;
+                if (schedule) {
+                    isSecurity = true;
+                    // Normalize to numeric ID to avoid "Incorrect integer value" in link table
+                    data.jadwal_security = schedule.id;
+                    strapi.log.debug(`beforeCreate: found inputJadwalSecurityId ${inputJadwalSecurityId}, normalized to numeric ID ${schedule.id}`);
+                }
             }
 
             // 1b. Search for Security Schedule for today if not provided or not found yet
-            // This prioritizes security role/schedule over regular schedule
             if (!schedule) {
                 const securitySchedules = await strapi.entityService.findMany('api::jadwal-security.jadwal-security', {
                     filters: {
@@ -84,8 +93,9 @@ module.exports = {
                 if (securitySchedules && securitySchedules.length > 0) {
                     schedule = securitySchedules[0];
                     isSecurity = true;
-                    // Auto-link to the found security schedule
+                    // Auto-link using numeric ID for database compatibility
                     data.jadwal_security = schedule.id;
+                    strapi.log.debug(`beforeCreate: Auto-linked to security schedule numeric ID: ${data.jadwal_security}`);
                 }
             }
 
@@ -282,17 +292,69 @@ module.exports = {
     },
 
     async afterCreate(event) {
-        const { result } = event;
+        const { result, params } = event;
+        strapi.log.debug(`afterCreate Absensi ID: ${result.id}, Result: ${JSON.stringify(result)}`);
         
-        // If this is a security attendance, update the schedule status
-        const jadwalSecurityId = getRelationId(result.jadwal_security);
-        if (jadwalSecurityId) {
-            await strapi.entityService.update('api::jadwal-security.jadwal-security', jadwalSecurityId, {
-                data: { status_jadwal: 'attended' }
-            });
+        try {
+            // Determine if this is security attendance
+            let jadwalSecurityId = getRelationId(result.jadwal_security);
+            if (!jadwalSecurityId && params.data) {
+                jadwalSecurityId = getRelationId(params.data.jadwal_security);
+            }
+
+            if (jadwalSecurityId) {
+                strapi.log.debug(`Detected security attendance. Schedule ID: ${jadwalSecurityId}`);
+
+                // 1. Fetch current schedule with karyawan info
+                const currentSchedule = await strapi.db.query('api::jadwal-security.jadwal-security').findOne({
+                    where: {
+                        $or: [
+                            { id: typeof jadwalSecurityId === 'number' ? jadwalSecurityId : -1 },
+                            { documentId: typeof jadwalSecurityId === 'string' ? jadwalSecurityId : '' }
+                        ]
+                    },
+                    populate: ['karyawan']
+                });
+
+                if (currentSchedule) {
+                    // 2. Update current schedule to attended
+                    await strapi.db.query('api::jadwal-security.jadwal-security').update({
+                        where: { id: currentSchedule.id },
+                        data: { status_jadwal: 'attended' }
+                    });
+                    strapi.log.info(`Jadwal Security ID ${currentSchedule.id} updated to attended`);
+
+                    // 3. Handle previous missed schedules for the same employee
+                    if (currentSchedule.karyawan) {
+                        const previousSchedules = await strapi.db.query('api::jadwal-security.jadwal-security').findMany({
+                            where: {
+                                karyawan: currentSchedule.karyawan.id,
+                                tanggal: { $lt: currentSchedule.tanggal },
+                                status_jadwal: 'scheduled'
+                            }
+                        });
+
+                        if (previousSchedules && previousSchedules.length > 0) {
+                            for (const schedule of previousSchedules) {
+                                await strapi.db.query('api::jadwal-security.jadwal-security').update({
+                                    where: { id: schedule.id },
+                                    data: { status_jadwal: 'absent' }
+                                });
+                            }
+                            strapi.log.info(`Marked ${previousSchedules.length} previous scheduled items as absent for karyawan ID: ${currentSchedule.karyawan.id}`);
+                        }
+                    }
+                } else {
+                    strapi.log.warn(`Schedule not found in database for ID/documentId: ${jadwalSecurityId}`);
+                }
+            } else {
+                strapi.log.debug('No security schedule relation found for this attendance record.');
+            }
+        } catch (error) {
+            strapi.log.error('Error in afterCreate absensi lifecycle updating security schedule:', error);
         }
 
-        strapi.log.info(`Record absensi dibuat - ID: ${result.id}`);
+        strapi.log.info(`Record absensi created/processed - ID: ${result.id}`);
     },
 
     async afterUpdate(event) {

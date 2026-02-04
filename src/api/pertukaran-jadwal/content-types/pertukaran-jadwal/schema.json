@@ -32,7 +32,7 @@
       "relation": "oneToOne",
       "target": "api::jadwal-security.jadwal-security"
     },
-    "status": {
+    "status_pertukaran": {
       "type": "enumeration",
       "enum": ["pending", "approved_by_target", "approved_by_admin", "rejected", "cancelled"],
       "default": "pending"

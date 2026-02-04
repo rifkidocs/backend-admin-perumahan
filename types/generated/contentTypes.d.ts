@@ -4296,7 +4296,7 @@ export interface ApiPertukaranJadwalPertukaranJadwal
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;
       }>;
-    status: Schema.Attribute.Enumeration<
+    status_pertukaran: Schema.Attribute.Enumeration<
       [
         'pending',
         'approved_by_target',
