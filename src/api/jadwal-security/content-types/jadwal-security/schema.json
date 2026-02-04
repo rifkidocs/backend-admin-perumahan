@@ -32,7 +32,7 @@
       "target": "api::karyawan.karyawan",
       "inversedBy": "jadwal_securities"
     },
-    "status": {
+    "status_jadwal": {
         "type": "enumeration",
         "enum": ["scheduled", "attended", "absent", "leave", "off"],
         "default": "scheduled"

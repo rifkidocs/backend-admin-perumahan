@@ -64,11 +64,6 @@
       "target": "api::absensi.absensi",
       "mappedBy": "attendance_schedule"
     },
-    "shift": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::shift.shift"
-    },
     "created_by": {
       "type": "relation",
       "relation": "manyToOne",

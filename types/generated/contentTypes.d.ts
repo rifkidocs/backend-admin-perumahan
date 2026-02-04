@@ -646,7 +646,6 @@ export interface ApiAttendanceScheduleAttendanceSchedule
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100;
       }>;
-    shift: Schema.Attribute.Relation<'manyToOne', 'api::shift.shift'>;
     updated_by: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.user'
@@ -2246,7 +2245,7 @@ export interface ApiJadwalSecurityJadwalSecurity
     lokasi: Schema.Attribute.Relation<'manyToOne', 'api::lokasi.lokasi'>;
     publishedAt: Schema.Attribute.DateTime;
     shift: Schema.Attribute.Relation<'manyToOne', 'api::shift.shift'>;
-    status: Schema.Attribute.Enumeration<
+    status_jadwal: Schema.Attribute.Enumeration<
       ['scheduled', 'attended', 'absent', 'leave', 'off']
     > &
       Schema.Attribute.DefaultTo<'scheduled'>;
@@ -3315,7 +3314,7 @@ export interface ApiLokasiLokasi extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    latitude: Schema.Attribute.Decimal &
+    latitude: Schema.Attribute.Float &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
@@ -3330,7 +3329,7 @@ export interface ApiLokasiLokasi extends Struct.CollectionTypeSchema {
       'api::lokasi.lokasi'
     > &
       Schema.Attribute.Private;
-    longitude: Schema.Attribute.Decimal &
+    longitude: Schema.Attribute.Float &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
