@@ -36,6 +36,12 @@
         "type": "enumeration",
         "enum": ["scheduled", "attended", "absent", "leave", "off"],
         "default": "scheduled"
+    },
+    "absensis": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::absensi.absensi",
+      "mappedBy": "jadwal_security"
     }
   }
 }

@@ -119,6 +119,12 @@
       "target": "api::attendance-schedule.attendance-schedule",
       "inversedBy": "attendance_records"
     },
+    "jadwal_security": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::jadwal-security.jadwal-security",
+      "inversedBy": "absensis"
+    },
     "laporan_patroli": {
       "type": "component",
       "repeatable": true,

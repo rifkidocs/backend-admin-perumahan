@@ -470,6 +470,10 @@ export interface ApiAbsensiAbsensi extends Struct.CollectionTypeSchema {
     is_within_radius: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
+    jadwal_security: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::jadwal-security.jadwal-security'
+    >;
     jam_keluar: Schema.Attribute.DateTime;
     jam_masuk: Schema.Attribute.DateTime & Schema.Attribute.Required;
     karyawan: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
@@ -2232,6 +2236,7 @@ export interface ApiJadwalSecurityJadwalSecurity
     draftAndPublish: false;
   };
   attributes: {
+    absensis: Schema.Attribute.Relation<'oneToMany', 'api::absensi.absensi'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

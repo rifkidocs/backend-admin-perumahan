@@ -56,56 +56,100 @@ module.exports = {
                  throw new Error('Karyawan is required');
             }
 
-            // Cari jadwal absensi aktif untuk karyawan
             const todayStr = dayjs().format('YYYY-MM-DD');
-            const attendanceSchedule = await strapi.entityService.findMany(
-                'api::attendance-schedule.attendance-schedule',
-                {
-                    filters: {
-                        employee: karyawanId,
-                        is_active: true,
-                        effective_date: { $lte: todayStr },
-                        $or: [
-                            { expiry_date: { $gte: todayStr } },
-                            { expiry_date: { $null: true } }
-                        ]
-                    },
-                    populate: ['employee', 'locations']
-                }
-            );
+            let schedule = null;
+            let isSecurity = false;
 
-            if (!attendanceSchedule || attendanceSchedule.length === 0) {
-                throw new Error('Tidak ada jadwal absensi aktif untuk karyawan ini');
+            // 1. Check for Security Schedule first
+            const inputJadwalSecurityId = getRelationId(data.jadwal_security);
+            if (inputJadwalSecurityId) {
+                schedule = await strapi.entityService.findOne('api::jadwal-security.jadwal-security', inputJadwalSecurityId, {
+                    populate: ['lokasi', 'shift']
+                });
+                if (schedule) isSecurity = true;
             }
 
-            const schedule = attendanceSchedule[0];
-            data.attendance_schedule = schedule.id;
+            // 1b. Search for Security Schedule for today if not provided or not found yet
+            // This prioritizes security role/schedule over regular schedule
+            if (!schedule) {
+                const securitySchedules = await strapi.entityService.findMany('api::jadwal-security.jadwal-security', {
+                    filters: {
+                        karyawan: karyawanId,
+                        tanggal: todayStr,
+                        status_jadwal: { $in: ['scheduled', 'attended'] }
+                    },
+                    populate: ['lokasi', 'shift']
+                });
 
-            // Hitung jarak dari lokasi target (support multiple locations)
+                if (securitySchedules && securitySchedules.length > 0) {
+                    schedule = securitySchedules[0];
+                    isSecurity = true;
+                    // Auto-link to the found security schedule
+                    data.jadwal_security = schedule.id;
+                }
+            }
+
+            // 2. If not a security schedule, search for regular attendance schedule
+            if (!schedule) {
+                const attendanceSchedules = await strapi.entityService.findMany(
+                    'api::attendance-schedule.attendance-schedule',
+                    {
+                        filters: {
+                            employee: karyawanId,
+                            is_active: true,
+                            effective_date: { $lte: todayStr },
+                            $or: [
+                                { expiry_date: { $gte: todayStr } },
+                                { expiry_date: { $null: true } }
+                            ]
+                        },
+                        populate: ['employee', 'locations']
+                    }
+                );
+                if (attendanceSchedules && attendanceSchedules.length > 0) {
+                    schedule = attendanceSchedules[0];
+                    data.attendance_schedule = schedule.id;
+                }
+            }
+
+            if (!schedule) {
+                throw new Error('Tidak ada jadwal (Regular/Security) aktif untuk karyawan ini');
+            }
+
+            // Hitung jarak dari lokasi target
             let minDistance = Infinity;
             let matchedLocationName = '';
+            let targetRadius = 50;
 
-            if (schedule.locations && Array.isArray(schedule.locations) && schedule.locations.length > 0) {
-                for (const loc of schedule.locations) {
-                    if (loc.latitude && loc.longitude) {
-                        const dist = calculateDistance(
-                            lat,
-                            lng,
-                            parseFloat(loc.latitude),
-                            parseFloat(loc.longitude)
-                        );
-                        if (dist < minDistance) {
-                            minDistance = dist;
-                            matchedLocationName = loc.nama_lokasi;
-                        }
-                    }
+            if (isSecurity) {
+                // Security logic: location is a single relation 'lokasi'
+                if (schedule.lokasi) {
+                    minDistance = calculateDistance(lat, lng, schedule.lokasi.latitude, schedule.lokasi.longitude);
+                    matchedLocationName = schedule.lokasi.nama_lokasi;
+                    targetRadius = schedule.lokasi.radius_meters || 50;
+                } else {
+                    throw new Error('Jadwal security tidak memiliki konfigurasi lokasi');
                 }
             } else {
-                throw new Error('Jadwal absensi tidak memiliki konfigurasi lokasi yang valid');
+                // Regular logic: locations is a repeatable component
+                if (schedule.locations && Array.isArray(schedule.locations) && schedule.locations.length > 0) {
+                    for (const loc of schedule.locations) {
+                        if (loc.latitude && loc.longitude) {
+                            const dist = calculateDistance(lat, lng, parseFloat(loc.latitude), parseFloat(loc.longitude));
+                            if (dist < minDistance) {
+                                minDistance = dist;
+                                matchedLocationName = loc.nama_lokasi;
+                            }
+                        }
+                    }
+                    targetRadius = schedule.radius_meters || 50;
+                } else {
+                    throw new Error('Jadwal absensi tidak memiliki konfigurasi lokasi yang valid');
+                }
             }
             
             data.distance_from_target = minDistance;
-            data.is_within_radius = minDistance <= schedule.radius_meters;
+            data.is_within_radius = minDistance <= targetRadius;
 
             if (!data.status_absensi) {
                 data.status_absensi = 'hadir';
@@ -113,12 +157,12 @@ module.exports = {
 
             // --- Logic Waktu (Delay Calculation) ---
             let timeNote = '';
-            let jamMasukJadwal = schedule.jam_masuk;
+            let jamMasukJadwal = isSecurity ? (schedule.shift?.jam_mulai) : schedule.jam_masuk;
 
-            // Prioritaskan relation shift jika ada
-            const shiftId = getRelationId(data.shift);
-            if (shiftId) {
-                const shiftData = await strapi.entityService.findOne('api::shift.shift', shiftId);
+            // Overwrite jamMasukJadwal if explicit shift relation is provided in data
+            const explicitShiftId = getRelationId(data.shift);
+            if (explicitShiftId) {
+                const shiftData = await strapi.entityService.findOne('api::shift.shift', explicitShiftId);
                 if (shiftData && shiftData.jam_mulai) {
                     jamMasukJadwal = shiftData.jam_mulai;
                 }
@@ -126,27 +170,19 @@ module.exports = {
 
             if (data.jam_masuk && jamMasukJadwal) {
                 const attendanceTime = dayjs(data.jam_masuk);
-                
-                // Menentukan waktu jadwal yang paling relevan (Today, Yesterday, or Tomorrow)
-                // Terutama penting untuk night shifts yang mungkin check-in setelah midnight
                 const [h, m, s] = jamMasukJadwal.split(':').map(Number);
-                
                 const scheduledToday = attendanceTime.hour(h).minute(m).second(s || 0);
                 const scheduledYesterday = scheduledToday.subtract(1, 'day');
                 const scheduledTomorrow = scheduledToday.add(1, 'day');
 
-                // Cari yang selisihnya paling kecil (absolut)
                 const diffs = [
                     { date: scheduledYesterday, diff: attendanceTime.diff(scheduledYesterday, 'minute') },
                     { date: scheduledToday, diff: attendanceTime.diff(scheduledToday, 'minute') },
                     { date: scheduledTomorrow, diff: attendanceTime.diff(scheduledTomorrow, 'minute') }
                 ];
 
-                // Filter diffs yang masuk akal (misal check-in dalam rentang +/- 12 jam dari jadwal)
                 const reasonableDiffs = diffs.filter(d => Math.abs(d.diff) <= 720); // 12 hours
-                
                 if (reasonableDiffs.length > 0) {
-                    // Ambil yang paling mendekati 0 atau paling kecil positif jika ada
                     const bestMatch = reasonableDiffs.reduce((prev, curr) => 
                         Math.abs(curr.diff) < Math.abs(prev.diff) ? curr : prev
                     );
@@ -162,18 +198,12 @@ module.exports = {
 
             const locationNote = data.is_within_radius 
                 ? `Lokasi: ${matchedLocationName} (${minDistance.toFixed(2)}m)`
-                : `Lokasi di luar radius (Terdekat: ${matchedLocationName}, Jarak: ${minDistance.toFixed(2)}m, Max: ${schedule.radius_meters}m)`;
+                : `Lokasi di luar radius (Terdekat: ${matchedLocationName}, Jarak: ${minDistance.toFixed(2)}m, Max: ${targetRadius}m)`;
             
             const autoNote = timeNote ? `${timeNote}. ${locationNote}` : locationNote;
             data.keterangan = data.keterangan ? `${data.keterangan}. ${autoNote}` : autoNote;
 
-            if (!data.is_within_radius) {
-                data.approval_status = 'pending';
-            } else {
-                data.approval_status = 'approved';
-            }
-
-            strapi.log.info(`Absensi Check-in - Karyawan: ${karyawanId}, Jarak: ${minDistance.toFixed(2)}m, Note: ${autoNote}`);
+            data.approval_status = data.is_within_radius ? 'approved' : 'pending';
 
         } catch (error) {
             strapi.log.error('Error dalam validasi absensi (beforeCreate):', error.message);
@@ -183,48 +213,52 @@ module.exports = {
 
     async beforeUpdate(event) {
         await cleanupMediaOnUpdate(event);
-
         const { data, where } = event.params;
 
         try {
-            // Jika ada update lokasi check-out
             if (data.lokasi_absensi && data.lokasi_absensi.check_out_location) {
                 const { lat, lng } = data.lokasi_absensi.check_out_location;
-                if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-                    throw new Error('Koordinat check-out tidak valid');
-                }
-
+                
                 const existingRecord = await strapi.entityService.findOne('api::absensi.absensi', where.id, {
                     populate: {
                         attendance_schedule: { populate: ['locations'] },
+                        jadwal_security: { populate: ['lokasi', 'shift'] },
                         shift: true
                     }
                 });
 
-                if (existingRecord && existingRecord.attendance_schedule) {
-                    const schedule = existingRecord.attendance_schedule;
+                if (existingRecord) {
+                    const isSecurity = !!existingRecord.jadwal_security;
+                    const schedule = isSecurity ? existingRecord.jadwal_security : existingRecord.attendance_schedule;
                     
+                    if (!schedule) return;
+
                     let minDistance = Infinity;
                     let matchedLocationName = '';
+                    let targetRadius = 50;
         
-                    if (schedule.locations && Array.isArray(schedule.locations) && schedule.locations.length > 0) {
-                        for (const loc of schedule.locations) {
-                            if (loc.latitude && loc.longitude) {
-                                const dist = calculateDistance(
-                                    lat,
-                                    lng,
-                                    parseFloat(loc.latitude),
-                                    parseFloat(loc.longitude)
-                                );
-                                if (dist < minDistance) {
-                                    minDistance = dist;
-                                    matchedLocationName = loc.nama_lokasi;
+                    if (isSecurity) {
+                        if (schedule.lokasi) {
+                            minDistance = calculateDistance(lat, lng, schedule.lokasi.latitude, schedule.lokasi.longitude);
+                            matchedLocationName = schedule.lokasi.nama_lokasi;
+                            targetRadius = schedule.lokasi.radius_meters || 50;
+                        }
+                    } else {
+                        if (schedule.locations && Array.isArray(schedule.locations)) {
+                            for (const loc of schedule.locations) {
+                                if (loc.latitude && loc.longitude) {
+                                    const dist = calculateDistance(lat, lng, parseFloat(loc.latitude), parseFloat(loc.longitude));
+                                    if (dist < minDistance) {
+                                        minDistance = dist;
+                                        matchedLocationName = loc.nama_lokasi;
+                                    }
                                 }
                             }
+                            targetRadius = schedule.radius_meters || 50;
                         }
                     }
 
-                    const isWithinRadius = minDistance <= schedule.radius_meters;
+                    const isWithinRadius = minDistance <= targetRadius;
                     const locationNote = isWithinRadius 
                         ? `Check-out: ${matchedLocationName} (${minDistance.toFixed(2)}m)`
                         : `Check-out di luar radius (Terdekat: ${matchedLocationName}, Jarak: ${minDistance.toFixed(2)}m)`;
@@ -239,25 +273,8 @@ module.exports = {
                     if (!isWithinRadius) {
                         data.approval_status = 'pending';
                     }
-
-                    // --- Hitung Durasi Kerja / Overtime jika diperlukan ---
-                    if (data.jam_keluar && existingRecord.jam_masuk) {
-                        const start = dayjs(existingRecord.jam_masuk);
-                        const end = dayjs(data.jam_keluar);
-                        const durationHours = end.diff(start, 'hour', true);
-                        
-                        // Misal shift 12 jam, jika > 12 jam hitung overtime
-                        // Ambil jam_selesai dari shift jika ada
-                        let jamSelesaiJadwal = schedule.jam_pulang;
-                        if (existingRecord.shift && existingRecord.shift.jam_selesai) {
-                            jamSelesaiJadwal = existingRecord.shift.jam_selesai;
-                        }
-
-                        // ... logic overtime bisa ditambahkan di sini jika diperlukan ...
-                    }
                 }
             }
-
         } catch (error) {
             strapi.log.error('Error dalam update absensi (beforeUpdate):', error.message);
             throw error;
@@ -266,10 +283,16 @@ module.exports = {
 
     async afterCreate(event) {
         const { result } = event;
-        strapi.log.info(`Record absensi dibuat - ID: ${result.id}`);
-        if (!result.is_within_radius) {
-            strapi.log.warn(`PERHATIAN: Absensi karyawan ${result.karyawan} di luar radius`);
+        
+        // If this is a security attendance, update the schedule status
+        const jadwalSecurityId = getRelationId(result.jadwal_security);
+        if (jadwalSecurityId) {
+            await strapi.entityService.update('api::jadwal-security.jadwal-security', jadwalSecurityId, {
+                data: { status_jadwal: 'attended' }
+            });
         }
+
+        strapi.log.info(`Record absensi dibuat - ID: ${result.id}`);
     },
 
     async afterUpdate(event) {
