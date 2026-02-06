@@ -4473,7 +4473,7 @@ export interface ApiProgresHarianProgresHarian
     singularName: 'progres-harian';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     aktivitas: Schema.Attribute.String &
@@ -4583,6 +4583,8 @@ export interface ApiProgresHarianProgresHarian
       'api::proyek-perumahan.proyek-perumahan'
     >;
     publishedAt: Schema.Attribute.DateTime;
+    status_dokumen: Schema.Attribute.Enumeration<['draft', 'published']> &
+      Schema.Attribute.DefaultTo<'draft'>;
     status_harian: Schema.Attribute.Enumeration<
       ['sesuai_jadwal', 'terlambat', 'maju_jadwal']
     > &

@@ -18,7 +18,7 @@ module.exports = createCoreService(
         {
           filters: { 
             proyek_perumahan: projectId,
-            publishedAt: { $ne: null }
+            status_dokumen: "published"
           },
           sort: { update_date: "desc" },
           populate: ["proyek_perumahan"],
@@ -54,7 +54,7 @@ module.exports = createCoreService(
         {
           filters: {
             proyek_perumahan: projectId,
-            publishedAt: { $ne: null },
+            status_dokumen: "published",
             update_date: {
               $gte: startDate,
               $lte: endDate,

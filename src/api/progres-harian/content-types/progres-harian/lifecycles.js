@@ -170,12 +170,12 @@ module.exports = {
     }
 
     // 2. Sync unit progress
-    if (result.publishedAt) {
+    if (result.status_dokumen === "published") {
       await syncUnitProgress(result, params);
     }
 
     // 3. Sync fasilitas proyek progress
-    if (result.publishedAt) {
+    if (result.status_dokumen === "published") {
       await syncFasilitasProyekProgress(result, params);
     }
 
@@ -237,12 +237,12 @@ module.exports = {
     }
 
     // 2. Sync unit progress
-    if (result.publishedAt) {
+    if (result.status_dokumen === "published") {
       await syncUnitProgress(result, params);
     }
 
     // 3. Sync fasilitas proyek progress
-    if (result.publishedAt) {
+    if (result.status_dokumen === "published") {
       await syncFasilitasProyekProgress(result, params);
     }
 

@@ -8,10 +8,18 @@
     "description": "Progress tracking for construction units"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
+    "status_dokumen": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "draft"
+    },
     "proyek_perumahan": {
       "type": "relation",
       "relation": "manyToOne",
