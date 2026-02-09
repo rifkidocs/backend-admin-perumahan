@@ -65,6 +65,12 @@
       "relation": "oneToMany",
       "target": "api::progres-harian.progres-harian",
       "mappedBy": "fasilitas_proyek"
+    },
+    "pengeluaran_materials": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pengeluaran-material.pengeluaran-material",
+      "mappedBy": "fasilitas_proyek"
     }
   }
 }

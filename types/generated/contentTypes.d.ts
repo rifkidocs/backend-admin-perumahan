@@ -1722,6 +1722,10 @@ export interface ApiFasilitasProyekFasilitasProyek
         maxLength: 100;
         minLength: 3;
       }>;
+    pengeluaran_materials: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pengeluaran-material.pengeluaran-material'
+    >;
     progres_harians: Schema.Attribute.Relation<
       'oneToMany',
       'api::progres-harian.progres-harian'
@@ -3928,6 +3932,10 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
         maxLength: 255;
       }>;
     estimatedArrival: Schema.Attribute.DateTime;
+    fasilitas_proyek: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::fasilitas-proyek.fasilitas-proyek'
+    >;
     list_materials: Schema.Attribute.Component<
       'pengeluaran.item-pengeluaran',
       true

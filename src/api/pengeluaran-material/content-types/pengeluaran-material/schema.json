@@ -171,6 +171,12 @@
       "target": "api::unit-rumah.unit-rumah",
       "inversedBy": "pengeluaran_materials"
     },
+    "fasilitas_proyek": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::fasilitas-proyek.fasilitas-proyek",
+      "inversedBy": "pengeluaran_materials"
+    },
     "penyetuju": {
       "type": "relation",
       "relation": "manyToOne",

@@ -90,6 +90,7 @@ module.exports = createCoreService('api::pengeluaran-material.pengeluaran-materi
         escort: true,
         supervisor: true,
         unit_rumah: true,
+        fasilitas_proyek: true,
         approver: true,
         warehouseSupervisor: true,
       },
@@ -113,6 +114,7 @@ module.exports = createCoreService('api::pengeluaran-material.pengeluaran-materi
         escort: true,
         supervisor: true,
         unit_rumah: true,
+        fasilitas_proyek: true,
       },
       sort: [{ date: 'desc' }, { time: 'desc' }],
     });
@@ -194,6 +196,7 @@ module.exports = createCoreService('api::pengeluaran-material.pengeluaran-materi
         escort: true,
         supervisor: true,
         unit_rumah: true,
+        fasilitas_proyek: true,
         approver: true,
         warehouseSupervisor: true,
       },
@@ -219,6 +222,7 @@ module.exports = createCoreService('api::pengeluaran-material.pengeluaran-materi
         escort: true,
         supervisor: true,
         unit_rumah: true,
+        fasilitas_proyek: true,
       },
       sort: [{ date: 'desc' }, { time: 'desc' }],
     });
@@ -247,6 +251,7 @@ module.exports = createCoreService('api::pengeluaran-material.pengeluaran-materi
         escort: true,
         supervisor: true,
         unit_rumah: true,
+        fasilitas_proyek: true,
       },
       sort: [{ date: 'desc' }, { time: 'desc' }],
     });
