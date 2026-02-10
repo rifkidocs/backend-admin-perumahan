@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "transfer_danas",
+  "info": {
+    "singularName": "transfer-dana",
+    "pluralName": "transfer-danas",
+    "displayName": "Transfer Dana",
+    "description": "Perpindahan dana antar pos keuangan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tanggal": {
+      "type": "date",
+      "required": true
+    },
+    "nominal": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "pos_asal": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pos-keuangan.pos-keuangan"
+    },
+    "pos_tujuan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pos-keuangan.pos-keuangan"
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "status_transfer": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "required": true
+    }
+  }
+}

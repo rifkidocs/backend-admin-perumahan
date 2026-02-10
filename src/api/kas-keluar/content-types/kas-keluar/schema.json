@@ -119,13 +119,13 @@
       ],
       "description": "Dokumen pendukung (invoice, kwitansi, dll)"
     },
-    "bankAccount": {
+    "pos_keuangan": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::bank-account.bank-account",
+      "target": "api::pos-keuangan.pos-keuangan",
       "inversedBy": "kas_keluars",
       "nullable": true,
-      "description": "Rekening bank yang digunakan untuk pembayaran"
+      "description": "Pos keuangan yang digunakan untuk pembayaran"
     },
     "department": {
       "type": "enumeration",

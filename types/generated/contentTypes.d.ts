@@ -702,70 +702,6 @@ export interface ApiAuditLogAuditLog extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiBankAccountBankAccount extends Struct.CollectionTypeSchema {
-  collectionName: 'bank_accounts';
-  info: {
-    description: 'Bank account management for payment processing';
-    displayName: 'Bank Account';
-    pluralName: 'bank-accounts';
-    singularName: 'bank-account';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    cabang: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    deskripsi: Schema.Attribute.Text &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 500;
-      }>;
-    jenis_rekening: Schema.Attribute.Enumeration<
-      ['giro', 'tabungan', 'deposito', 'elektronik']
-    > &
-      Schema.Attribute.DefaultTo<'tabungan'>;
-    kas_keluars: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::kas-keluar.kas-keluar'
-    >;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::bank-account.bank-account'
-    > &
-      Schema.Attribute.Private;
-    mata_uang: Schema.Attribute.Enumeration<['IDR', 'USD', 'EUR']> &
-      Schema.Attribute.DefaultTo<'IDR'>;
-    nama_bank: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
-    nama_pemilik: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 200;
-      }>;
-    nomor_rekening: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 50;
-      }>;
-    publishedAt: Schema.Attribute.DateTime;
-    saldo_minimum: Schema.Attribute.Decimal;
-    status_aktif: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiBankBank extends Struct.CollectionTypeSchema {
   collectionName: 'banks';
   info: {
@@ -2512,10 +2448,6 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
       'api::karyawan.karyawan'
     >;
     attachment: Schema.Attribute.Media<'images' | 'files'>;
-    bankAccount: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::bank-account.bank-account'
-    >;
     bankInfo: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 200;
@@ -2566,6 +2498,10 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required;
     penerima: Schema.Attribute.String;
+    pos_keuangan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pos-keuangan.pos-keuangan'
+    >;
     project: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
@@ -2653,6 +2589,10 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
       'images' | 'files' | 'videos' | 'audios'
     >;
     penerima: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    pos_keuangan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pos-keuangan.pos-keuangan'
+    >;
     project: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
@@ -4465,6 +4405,71 @@ export interface ApiPlacementPlacement extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'aktif'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPosKeuanganPosKeuangan extends Struct.CollectionTypeSchema {
+  collectionName: 'pos_keuangans';
+  info: {
+    description: 'Manajemen pos keuangan (Kas, Bank, Cek/Giro)';
+    displayName: 'Pos Keuangan';
+    pluralName: 'pos-keuangans';
+    singularName: 'pos-keuangan';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deskripsi: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    jenis_rekening: Schema.Attribute.Enumeration<
+      ['tunai', 'tabungan', 'giro', 'cek', 'deposito', 'elektronik']
+    > &
+      Schema.Attribute.DefaultTo<'tabungan'>;
+    kas_keluars: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-keluar.kas-keluar'
+    >;
+    kas_masuks: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::kas-masuk.kas-masuk'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pos-keuangan.pos-keuangan'
+    > &
+      Schema.Attribute.Private;
+    mata_uang: Schema.Attribute.Enumeration<['IDR', 'USD', 'EUR']> &
+      Schema.Attribute.DefaultTo<'IDR'>;
+    nama_pemilik: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    nama_pos: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    nomor_rekening: Schema.Attribute.String &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    saldo: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
+    saldo_minimum: Schema.Attribute.Decimal;
+    status_aktif: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -6899,6 +6904,58 @@ export interface ApiTechnicalDrawingTechnicalDrawing
   };
 }
 
+export interface ApiTransferDanaTransferDana
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'transfer_danas';
+  info: {
+    description: 'Perpindahan dana antar pos keuangan';
+    displayName: 'Transfer Dana';
+    pluralName: 'transfer-danas';
+    singularName: 'transfer-dana';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    keterangan: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::transfer-dana.transfer-dana'
+    > &
+      Schema.Attribute.Private;
+    nominal: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    pos_asal: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pos-keuangan.pos-keuangan'
+    >;
+    pos_tujuan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pos-keuangan.pos-keuangan'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    status_transfer: Schema.Attribute.Enumeration<
+      ['pending', 'completed', 'cancelled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    tanggal: Schema.Attribute.Date & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiUnitMaterialRequirementUnitMaterialRequirement
   extends Struct.CollectionTypeSchema {
   collectionName: 'unit_material_requirements';
@@ -7866,7 +7923,6 @@ declare module '@strapi/strapi' {
       'api::achievement-update.achievement-update': ApiAchievementUpdateAchievementUpdate;
       'api::attendance-schedule.attendance-schedule': ApiAttendanceScheduleAttendanceSchedule;
       'api::audit-log.audit-log': ApiAuditLogAuditLog;
-      'api::bank-account.bank-account': ApiBankAccountBankAccount;
       'api::bank.bank': ApiBankBank;
       'api::booking-document.booking-document': ApiBookingDocumentBookingDocument;
       'api::booking.booking': ApiBookingBooking;
@@ -7914,6 +7970,7 @@ declare module '@strapi/strapi' {
       'api::pertukaran-jadwal.pertukaran-jadwal': ApiPertukaranJadwalPertukaranJadwal;
       'api::piutang-konsumen.piutang-konsumen': ApiPiutangKonsumenPiutangKonsumen;
       'api::placement.placement': ApiPlacementPlacement;
+      'api::pos-keuangan.pos-keuangan': ApiPosKeuanganPosKeuangan;
       'api::progres-harian.progres-harian': ApiProgresHarianProgresHarian;
       'api::project-document.project-document': ApiProjectDocumentProjectDocument;
       'api::project-material.project-material': ApiProjectMaterialProjectMaterial;
@@ -7941,6 +7998,7 @@ declare module '@strapi/strapi' {
       'api::supplier.supplier': ApiSupplierSupplier;
       'api::target-marketing.target-marketing': ApiTargetMarketingTargetMarketing;
       'api::technical-drawing.technical-drawing': ApiTechnicalDrawingTechnicalDrawing;
+      'api::transfer-dana.transfer-dana': ApiTransferDanaTransferDana;
       'api::unit-material-requirement.unit-material-requirement': ApiUnitMaterialRequirementUnitMaterialRequirement;
       'api::unit-pricing.unit-pricing': ApiUnitPricingUnitPricing;
       'api::unit-rumah.unit-rumah': ApiUnitRumahUnitRumah;

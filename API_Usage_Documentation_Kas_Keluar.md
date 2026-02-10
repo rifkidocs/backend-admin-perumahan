@@ -248,7 +248,7 @@ Content-Type: application/json
     "bankAccount": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::bank-account.bank-account",
+      "target": "api::pos-keuangan.pos-keuangan",
       "inversedBy": "kas_keluars",
       "nullable": true,
       "description": "Rekening bank yang digunakan untuk pembayaran"
@@ -281,8 +281,8 @@ Content-Type: application/json
   "kind": "collectionType",
   "collectionName": "bank_accounts",
   "info": {
-    "singularName": "bank-account",
-    "pluralName": "bank-accounts",
+    "singularName": "pos-keuangan",
+    "pluralName": "pos-keuangans",
     "displayName": "Bank Account",
     "description": "Bank account management for payment processing"
   },

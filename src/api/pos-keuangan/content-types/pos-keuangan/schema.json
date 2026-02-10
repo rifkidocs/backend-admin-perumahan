@@ -1,46 +1,54 @@
 {
   "kind": "collectionType",
-  "collectionName": "bank_accounts",
+  "collectionName": "pos_keuangans",
   "info": {
-    "singularName": "bank-account",
-    "pluralName": "bank-accounts",
-    "displayName": "Bank Account",
-    "description": "Bank account management for payment processing"
+    "singularName": "pos-keuangan",
+    "pluralName": "pos-keuangans",
+    "displayName": "Pos Keuangan",
+    "description": "Manajemen pos keuangan (Kas, Bank, Cek/Giro)"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "nama_bank": {
+    "nama_pos": {
       "type": "string",
       "required": true,
       "maxLength": 100,
-      "description": "Nama bank"
+      "description": "Nama pos keuangan (misal: BRI, Kas Tunai, Cek Mandiri)"
     },
     "nomor_rekening": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true,
       "maxLength": 50,
-      "description": "Nomor rekening bank"
+      "description": "Nomor rekening atau nomor referensi"
     },
     "nama_pemilik": {
       "type": "string",
-      "required": true,
+      "required": false,
       "maxLength": 200,
-      "description": "Nama pemilik rekening"
+      "description": "Nama pemilik rekening (jika ada)"
     },
-    "cabang": {
-      "type": "string",
-      "maxLength": 100,
-      "description": "Nama cabang bank"
+    "saldo": {
+      "type": "decimal",
+      "required": true,
+      "default": 0,
+      "description": "Saldo berjalan saat ini"
     },
     "jenis_rekening": {
       "type": "enumeration",
-      "enum": ["giro", "tabungan", "deposito", "elektronik"],
+      "enum": [
+        "tunai",
+        "tabungan",
+        "giro",
+        "cek",
+        "deposito",
+        "elektronik"
+      ],
       "default": "tabungan",
-      "description": "Jenis rekening"
+      "description": "Jenis pos keuangan"
     },
     "mata_uang": {
       "type": "enumeration",
@@ -66,7 +74,13 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::kas-keluar.kas-keluar",
-      "mappedBy": "bankAccount"
+      "mappedBy": "pos_keuangan"
+    },
+    "kas_masuks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::kas-masuk.kas-masuk",
+      "mappedBy": "pos_keuangan"
     }
   }
 }

@@ -2,18 +2,27 @@
 
 const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
 
-/**
- * kas-keluar lifecycles
- */
+const cleanNumber = (val) => {
+  if (typeof val === 'string' && val.trim() !== '') {
+    const cleaned = val.replace(/\./g, '').replace(/,/g, '.');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+  return (val === '' || val === null) ? 0 : val;
+};
 
 module.exports = {
-  beforeCreate: async (data) => {
-    // Set default values
+  async beforeCreate(event) {
+    const { data } = event.params;
+
+    if (data.amount !== undefined) {
+      data.amount = cleanNumber(data.amount);
+    }
+
     if (!data.approval_status) {
       data.approval_status = 'pending';
     }
 
-    // Auto-generate invoice number if not provided
     if (!data.invoiceNumber && data.category && data.date) {
       const date = new Date(data.date);
       const year = date.getFullYear();
@@ -22,117 +31,71 @@ module.exports = {
       data.invoiceNumber = `KK-${year}${month}-${random}`;
     }
 
-    // Validate amount minimum
     if (data.amount && data.amount < 1000) {
       throw new Error('Amount minimal 1.000');
     }
-
-    // Validate category
-    if (data.category && !['material', 'gaji', 'operasional', 'legal', 'lainnya'].includes(data.category)) {
-      throw new Error('Invalid category');
-    }
-
-    // Validate payment method
-    if (data.paymentMethod && !['transfer', 'cash', 'cek', 'giro'].includes(data.paymentMethod)) {
-      throw new Error('Invalid payment method');
-    }
-
-    // Validate department
-    if (data.department && !['keuangan', 'gudang', 'hrm', 'project', 'marketing'].includes(data.department)) {
-      throw new Error('Invalid department');
-    }
   },
 
-  beforeUpdate: async (params) => {
-    await cleanupMediaOnUpdate({
-      model: strapi.contentTypes['api::kas-keluar.kas-keluar'],
-      params: params.params
+  async beforeUpdate(event) {
+    await cleanupMediaOnUpdate(event);
+    const { data, where } = event.params;
+
+    if (data.amount !== undefined) {
+      data.amount = cleanNumber(data.amount);
+    }
+
+    const previousData = await strapi.db.query('api::kas-keluar.kas-keluar').findOne({
+      where: where,
+      populate: ['pos_keuangan']
     });
 
-    // Extract data and where from the actual structure
-    const data = params.params?.data || {};
-    const where = params.params?.where || {};
-
-    // Check if status is being changed to approved
-    if (data.approval_status === 'approved') {
-      // Set approval timestamp if not provided
+    if (data.approval_status === 'approved' && previousData?.approval_status !== 'approved') {
       if (!data.approvedAt) {
         data.approvedAt = new Date();
       }
-
-      // Require approvedBy for approval
-      if (!data.approvedBy) {
-        throw new Error('Approval requires approver');
-      }
     }
 
-    // Prevent status change from approved to pending
-    const existing = await strapi.db.query('api::kas-keluar.kas-keluar').findOne({
-      where: { id: where.id }
-    });
-
-    if (existing && existing.approval_status === 'approved' && data.approval_status === 'pending') {
+    if (previousData?.approval_status === 'approved' && data.approval_status === 'pending') {
       throw new Error('Cannot change approved transaction back to pending');
     }
 
-    // Validate amount minimum
-    if (data.amount && data.amount < 1000) {
-      throw new Error('Amount minimal 1.000');
-    }
+    event.state = { previousData };
+  },
 
-    // Check for duplicate invoice number
-    if (data.invoiceNumber) {
-      const duplicate = await strapi.db.query('api::kas-keluar.kas-keluar').findOne({
-        where: {
-          invoiceNumber: data.invoiceNumber,
-          id: { $ne: where.id }
+  async afterUpdate(event) {
+    const { result, state } = event;
+    const { previousData } = state;
+
+    if (result.approval_status === 'approved' && previousData?.approval_status !== 'approved') {
+      const pos = previousData.pos_keuangan;
+      const amount = parseFloat(result.amount || previousData.amount);
+
+      if (pos && amount) {
+        const currentPos = await strapi.db.query('api::pos-keuangan.pos-keuangan').findOne({ 
+          where: { id: pos.id } 
+        });
+        
+        if (currentPos) {
+          await strapi.db.query('api::pos-keuangan.pos-keuangan').update({
+            where: { id: currentPos.id },
+            data: {
+              saldo: parseFloat(currentPos.saldo || 0) - amount
+            }
+          });
         }
-      });
-
-      if (duplicate) {
-        throw new Error('Nomor invoice sudah terdaftar dalam sistem');
       }
     }
-  },
 
-  afterCreate: async (result) => {
-    // Get userId from the populated createdBy relationship
-    let userId = null;
-    if (result.createdBy && result.createdBy.id) {
-      userId = result.createdBy.id;
-    }
-
-    // Log creation for audit trail
-    await strapi.db.query('api::audit-log.audit-log').create({
-      data: {
-        action: 'create',
-        entity: 'kas-keluar',
-        entityId: result.id,
-        changes: result.params.data, // Use the actual data that was submitted
-        timestamp: new Date(),
-        userId: userId
-      }
-    });
-  },
-
-  afterUpdate: async (result) => {
     // Log status changes for audit trail
-    const data = result.params.data;
-    if (data && data.approval_status) {
-      // Get userId from the appropriate user relationship
-      let userId = null;
-      if (result.approvedBy && result.approvedBy.id) {
-        userId = result.approvedBy.id;
-      } else if (result.updatedBy && result.updatedBy.id) {
-        userId = result.updatedBy.id;
-      }
+    if (result.approval_status && result.approval_status !== previousData?.approval_status) {
+      let userId = result.approvedBy?.id || result.updatedBy?.id || null;
 
       await strapi.db.query('api::audit-log.audit-log').create({
         data: {
           action: 'status_change',
           entity: 'kas-keluar',
           entityId: result.id,
-          changes: { status: data.approval_status },
+          changes: { status: result.approval_status },
           timestamp: new Date(),
           userId: userId
         }
@@ -140,7 +103,7 @@ module.exports = {
     }
   },
 
-  beforeDelete: async (event) => {
+  async beforeDelete(event) {
     await cleanupMediaOnDelete(event);
   }
 };
