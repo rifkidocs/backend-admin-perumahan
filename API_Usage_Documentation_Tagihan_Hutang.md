@@ -75,7 +75,7 @@ Content-Type: application/json
 
 {
   "paymentData": {
-    "paidAmount": 15000000,
+    "paid_amount": 15000000,
     "paymentMethod": "transfer",
     "paymentEntry": {
       "date": "2024-11-10",
@@ -84,7 +84,8 @@ Content-Type: application/json
       "reference": "TRF001",
       "bankAccount": "BCA 1234567890",
       "paidBy": "employee_document_id",
-      "notes": "Pembayaran termin pertama"
+      "notes": "Pembayaran termin pertama",
+      "receiptDocument": 97
     }
   }
 }
@@ -186,20 +187,21 @@ Content-Type: application/json
       "default": "pending",
       "enum": ["pending", "partial", "paid", "overdue", "cancelled"]
     },
-    "paidAmount": {
+    "paid_amount": {
       "type": "decimal",
       "required": true,
       "default": 0,
       "min": 0
     },
-    "remainingAmount": {
+    "remaining_amount": {
       "type": "decimal",
       "required": true,
       "min": 0
     },
-    "paymentHistory": {
-      "type": "json",
-      "default": []
+    "payment_history": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.invoice-payment-record"
     },
     "invoiceDocument": {
       "type": "media",
@@ -288,7 +290,7 @@ Content-Type: application/json
 
 ### Payment History Schema
 
-The `paymentHistory` field contains an array of payment objects:
+The `payment_history` field contains an array of `komponen.invoice-payment-record` components:
 
 ```json
 {
@@ -299,7 +301,8 @@ The `paymentHistory` field contains an array of payment objects:
   "bankAccount": "BCA 1234567890",
   "paidBy": "employee_document_id",
   "notes": "Pembayaran termin pertama",
-  "receiptDocument": "media_document_id"
+  "receiptDocument": 97,
+  "processedAt": "2024-11-10T06:36:09.320Z"
 }
 ```
 
@@ -359,6 +362,8 @@ The `paymentHistory` field contains an array of payment objects:
 ?populate=*
 ?populate[0]=supplier&populate[1]=project
 ?populate[0]=supplier&populate[1]=project&populate[2]=approvedBy
+?populate[3]=payment_history.paidBy
+?populate[4]=payment_history.receiptDocument
 ```
 
 ## Usage Examples
@@ -386,7 +391,7 @@ const response = await api.get('/api/payment-invoices/summary', { params });
 ```javascript
 const paymentData = {
   paymentData: {
-    paidAmount: 15000000,
+    paid_amount: 15000000,
     paymentMethod: "transfer",
     paymentEntry: {
       date: new Date().toISOString().split('T')[0],
@@ -395,7 +400,8 @@ const paymentData = {
       reference: "TRF001",
       bankAccount: "BCA 1234567890",
       paidBy: "employee_document_id",
-      notes: "Pembayaran termin pertama"
+      notes: "Pembayaran termin pertama",
+      receiptDocument: 97
     }
   }
 };

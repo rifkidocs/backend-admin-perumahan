@@ -1,0 +1,56 @@
+{
+  "collectionName": "components_komponen_invoice_payment_records",
+  "info": {
+    "displayName": "Invoice Payment Record",
+    "description": "Record of a single payment for an invoice",
+    "icon": "hand-holding-usd"
+  },
+  "options": {},
+  "attributes": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "amount": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "method": {
+      "type": "enumeration",
+      "enum": [
+        "transfer",
+        "cash",
+        "check",
+        "giro",
+        "others"
+      ],
+      "default": "transfer"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "bankAccount": {
+      "type": "string"
+    },
+    "paidBy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "receiptDocument": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "processedAt": {
+      "type": "datetime"
+    }
+  }
+}

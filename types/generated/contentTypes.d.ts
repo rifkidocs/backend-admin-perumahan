@@ -3556,7 +3556,7 @@ export interface ApiPaymentInvoicePaymentInvoice
       }>;
     overdueNotified: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
-    paidAmount: Schema.Attribute.Decimal &
+    paid_amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
@@ -3566,7 +3566,10 @@ export interface ApiPaymentInvoicePaymentInvoice
       > &
       Schema.Attribute.DefaultTo<0>;
     paidBy: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
-    paymentHistory: Schema.Attribute.JSON & Schema.Attribute.DefaultTo<[]>;
+    payment_history: Schema.Attribute.Component<
+      'komponen.invoice-payment-record',
+      true
+    >;
     paymentMethod: Schema.Attribute.Enumeration<
       ['transfer', 'cash', 'check', 'giro', 'others']
     >;
@@ -3603,7 +3606,7 @@ export interface ApiPaymentInvoicePaymentInvoice
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 50;
       }>;
-    remainingAmount: Schema.Attribute.Decimal &
+    remaining_amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {

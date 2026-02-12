@@ -14,7 +14,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     const { query } = ctx;
     const today = new Date().toISOString().split('T')[0];
 
-    const overdueInvoices = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const overdueInvoices = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: {
         $and: [
           { status_pembayaran: { $ne: 'paid' } },
@@ -42,52 +42,55 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
 
     try {
       // Get current invoice
-      const currentInvoice = await strapi.entityService.findOne('api::payment-invoice.payment-invoice', id, {
-        populate: ['paymentHistory']
+      const currentInvoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
+        documentId: id,
+        populate: ['payment_history']
       });
 
       if (!currentInvoice) {
-        return ctx.notFound('Invoice not found');
+        return ctx.notFound('Invoice found');
       }
 
       // Validate payment amount
-      if (paymentData.paidAmount > currentInvoice.amount) {
+      if (paymentData.paid_amount > currentInvoice.amount) {
         return ctx.badRequest('Payment amount exceeds invoice total');
       }
 
       // Update payment history
-      const updatedPaymentHistory = [...(currentInvoice.paymentHistory || [])];
+      const updatedPaymentHistory = [...(currentInvoice.payment_history || [])];
       if (paymentData.paymentEntry) {
         updatedPaymentHistory.push({
-          date: new Date().toISOString().split('T')[0],
+          date: paymentData.paymentEntry.date || new Date().toISOString().split('T')[0],
           amount: paymentData.paymentEntry.amount,
           method: paymentData.paymentEntry.method,
           reference: paymentData.paymentEntry.reference,
           bankAccount: paymentData.paymentEntry.bankAccount,
           paidBy: paymentData.paymentEntry.paidBy,
           notes: paymentData.paymentEntry.notes,
-          receiptDocument: paymentData.paymentEntry.receiptDocument
+          receiptDocument: paymentData.paymentEntry.receiptDocument,
+          processedAt: new Date().toISOString()
         });
       }
 
       // Calculate remaining amount
-      const remainingAmount = currentInvoice.amount - paymentData.paidAmount;
+      const remaining_amount = currentInvoice.amount - paymentData.paid_amount;
 
       // Determine status pembayaran
       let status_pembayaran = 'partial';
-      if (paymentData.paidAmount === 0) {
+      if (paymentData.paid_amount === 0) {
         status_pembayaran = 'pending';
-      } else if (remainingAmount <= 0) {
+      } else if (remaining_amount <= 0) {
         status_pembayaran = 'paid';
       }
 
-      const updatedInvoice = await strapi.entityService.update('api::payment-invoice.payment-invoice', id, {
+      const updatedInvoice = await strapi.documents('api::payment-invoice.payment-invoice').update({
+        documentId: id,
         data: {
           status_pembayaran,
-          paidAmount: paymentData.paidAmount,
-          remainingAmount: Math.max(0, remainingAmount),
-          paymentHistory: updatedPaymentHistory,
-          lastPaymentDate: paymentData.paidAmount > 0 ? new Date().toISOString() : currentInvoice.lastPaymentDate,
+          paid_amount: paymentData.paid_amount,
+          remaining_amount: Math.max(0, remaining_amount),
+          payment_history: updatedPaymentHistory,
+          lastPaymentDate: paymentData.paid_amount > 0 ? new Date().toISOString() : currentInvoice.lastPaymentDate,
           fullyPaidDate: status_pembayaran === 'paid' ? new Date().toISOString() : currentInvoice.fullyPaidDate,
           paymentMethod: paymentData.paymentMethod,
           ...paymentData.additionalData
@@ -109,7 +112,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     const { supplierId } = ctx.params;
     const { query } = ctx;
 
-    const invoices = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const invoices = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: {
         supplier: {
           documentId: supplierId
@@ -134,7 +137,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     const { projectId } = ctx.params;
     const { query } = ctx;
 
-    const invoices = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const invoices = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: {
         project: {
           documentId: projectId
@@ -159,7 +162,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     const { status } = ctx.params;
     const { query } = ctx;
 
-    const invoices = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const invoices = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: {
         status_pembayaran: status
       },
@@ -201,7 +204,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
       };
     }
 
-    const invoices = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const invoices = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters,
       populate: ['supplier', 'project']
     });
@@ -210,14 +213,14 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     const summary = {
       totalInvoices: invoices.length,
       totalAmount: invoices.reduce((sum, inv) => sum + inv.amount, 0),
-      totalPaid: invoices.reduce((sum, inv) => sum + inv.paidAmount, 0),
-      totalRemaining: invoices.reduce((sum, inv) => sum + inv.remainingAmount, 0),
+      totalPaid: invoices.reduce((sum, inv) => sum + inv.paid_amount, 0),
+      totalRemaining: invoices.reduce((sum, inv) => sum + inv.remaining_amount, 0),
       statusBreakdown: {
-        pending: invoices.filter(inv => inv.status === 'pending').length,
-        partial: invoices.filter(inv => inv.status === 'partial').length,
-        paid: invoices.filter(inv => inv.status === 'paid').length,
-        overdue: invoices.filter(inv => inv.status === 'overdue').length,
-        cancelled: invoices.filter(inv => inv.status === 'cancelled').length
+        pending: invoices.filter(inv => inv.status_pembayaran === 'pending').length,
+        partial: invoices.filter(inv => inv.status_pembayaran === 'partial').length,
+        paid: invoices.filter(inv => inv.status_pembayaran === 'paid').length,
+        overdue: invoices.filter(inv => inv.status_pembayaran === 'overdue').length,
+        cancelled: invoices.filter(inv => inv.status_pembayaran === 'cancelled').length
       },
       categoryBreakdown: {}
     };
@@ -243,7 +246,8 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     const { approvedBy } = ctx.request.body;
 
     try {
-      const updatedInvoice = await strapi.entityService.update('api::payment-invoice.payment-invoice', id, {
+      const updatedInvoice = await strapi.documents('api::payment-invoice.payment-invoice').update({
+        documentId: id,
         data: {
           statusInvoice: 'verified',
           approvedBy,
@@ -267,7 +271,8 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     const { reason } = ctx.request.body;
 
     try {
-      const updatedInvoice = await strapi.entityService.update('api::payment-invoice.payment-invoice', id, {
+      const updatedInvoice = await strapi.documents('api::payment-invoice.payment-invoice').update({
+        documentId: id,
         data: {
           status_pembayaran: 'cancelled',
           statusInvoice: 'cancelled',

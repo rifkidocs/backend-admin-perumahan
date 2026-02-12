@@ -16,7 +16,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     const month = String(today.getMonth() + 1).padStart(2, '0');
 
     // Find the latest invoice for this month
-    const latestInvoice = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const latestInvoice = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: {
         invoiceNumber: {
           $startsWith: `INV-${year}-${month}`
@@ -37,10 +37,12 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
   },
 
   // Calculate overdue penalties
-  async calculatePenalty(invoiceId) {
-    const invoice = await strapi.entityService.findOne('api::payment-invoice.payment-invoice', invoiceId);
+  async calculatePenalty(documentId) {
+    const invoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
+      documentId: documentId
+    });
 
-    if (!invoice || invoice.status === 'paid' || invoice.status === 'cancelled') {
+    if (!invoice || invoice.status_pembayaran === 'paid' || invoice.status_pembayaran === 'cancelled') {
       return 0;
     }
 
@@ -57,7 +59,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     // Penalty calculation: 1% per month overdue of the remaining amount
     const monthlyPenaltyRate = 0.01;
     const monthsOverdue = daysOverdue / 30;
-    const penaltyAmount = invoice.remainingAmount * monthlyPenaltyRate * monthsOverdue;
+    const penaltyAmount = invoice.remaining_amount * monthlyPenaltyRate * monthsOverdue;
 
     return Math.round(penaltyAmount);
   },
@@ -67,7 +69,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     const today = new Date().toISOString().split('T')[0];
 
     // Find all pending or partial invoices that are overdue
-    const overdueInvoices = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const overdueInvoices = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: {
         $and: [
           { status_pembayaran: { $in: ['pending', 'partial'] } },
@@ -79,7 +81,8 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     // Update each overdue invoice
     for (const invoice of overdueInvoices) {
-      await strapi.entityService.update('api::payment-invoice.payment-invoice', invoice.id, {
+      await strapi.documents('api::payment-invoice.payment-invoice').update({
+        documentId: invoice.documentId,
         data: {
           status_pembayaran: 'overdue',
           overdueNotified: true
@@ -99,7 +102,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     const futureDate = new Date(today);
     futureDate.setDate(today.getDate() + days);
 
-    const upcomingPayments = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const upcomingPayments = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: {
         $and: [
           { status_pembayaran: { $ne: 'paid' } },
@@ -122,19 +125,19 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
           invoices: []
         };
       }
-      cashFlowByDate[dueDate].totalAmount += payment.remainingAmount;
+      cashFlowByDate[dueDate].totalAmount += payment.remaining_amount;
       cashFlowByDate[dueDate].invoices.push({
-        id: payment.id,
+        documentId: payment.documentId,
         invoiceNumber: payment.invoiceNumber,
         supplier: payment.supplier?.name,
-        remainingAmount: payment.remainingAmount,
+        remaining_amount: payment.remaining_amount,
         category: payment.category
       });
     });
 
     return {
       period: `${days} days`,
-      totalAmountDue: upcomingPayments.reduce((sum, p) => sum + p.remainingAmount, 0),
+      totalAmountDue: upcomingPayments.reduce((sum, p) => sum + p.remaining_amount, 0),
       cashFlowByDate: Object.values(cashFlowByDate),
       generatedAt: today.toISOString()
     };
@@ -146,7 +149,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     // Check if invoice number already exists
     if (invoiceData.invoiceNumber) {
-      const existingInvoice = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+      const existingInvoice = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
         filters: {
           invoiceNumber: invoiceData.invoiceNumber
         },
@@ -209,7 +212,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
       ...filters
     };
 
-    const allInvoices = await strapi.entityService.findMany('api::payment-invoice.payment-invoice', {
+    const allInvoices = await strapi.documents('api::payment-invoice.payment-invoice').findMany({
       filters: baseFilters,
       populate: ['supplier', 'project']
     });
@@ -217,8 +220,8 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     const statistics = {
       total: allInvoices.length,
       totalAmount: allInvoices.reduce((sum, inv) => sum + inv.amount, 0),
-      paidAmount: allInvoices.reduce((sum, inv) => sum + inv.paidAmount, 0),
-      outstandingAmount: allInvoices.reduce((sum, inv) => sum + inv.remainingAmount, 0),
+      paid_amount: allInvoices.reduce((sum, inv) => sum + inv.paid_amount, 0),
+      outstandingAmount: allInvoices.reduce((sum, inv) => sum + inv.remaining_amount, 0),
       statusDistribution: {},
       categoryDistribution: {},
       departmentDistribution: {},
@@ -253,7 +256,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
       // Overdue calculation
       if (invoice.status_pembayaran === 'overdue') {
         statistics.overdueCount += 1;
-        statistics.overdueAmount += invoice.remainingAmount;
+        statistics.overdueAmount += invoice.remaining_amount;
       }
     });
 

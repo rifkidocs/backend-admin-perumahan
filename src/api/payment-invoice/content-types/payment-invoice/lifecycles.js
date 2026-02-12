@@ -32,14 +32,14 @@ module.exports = {
     if (!data.statusInvoice) {
       data.statusInvoice = 'received';
     }
-    if (data.paidAmount === undefined) {
-      data.paidAmount = 0;
+    if (data.paid_amount === undefined) {
+      data.paid_amount = 0;
     }
-    if (data.remainingAmount === undefined) {
-      data.remainingAmount = data.amount;
+    if (data.remaining_amount === undefined) {
+      data.remaining_amount = data.amount;
     }
-    if (!data.paymentHistory) {
-      data.paymentHistory = [];
+    if (!data.payment_history) {
+      data.payment_history = [];
     }
     if (data.overdueNotified === undefined) {
       data.overdueNotified = false;
@@ -55,7 +55,7 @@ module.exports = {
     }
 
     // Calculate remaining amount
-    data.remainingAmount = data.amount - (data.paidAmount || 0);
+    data.remaining_amount = data.amount - (data.paid_amount || 0);
 
     // Add creation timestamp in notes if not provided
     if (!data.notes) {
@@ -70,9 +70,12 @@ module.exports = {
     // Update supplier total purchases if applicable
     if (result.supplier) {
       try {
-        const supplier = await strapi.entityService.findOne('api::supplier.supplier', result.supplier);
+        const supplier = await strapi.documents('api::supplier.supplier').findOne({
+          documentId: result.supplier.documentId || result.supplier
+        });
         if (supplier) {
-          await strapi.entityService.update('api::supplier.supplier', result.supplier, {
+          await strapi.documents('api::supplier.supplier').update({
+            documentId: supplier.documentId,
             data: {
               totalPurchases: (supplier.totalPurchases || 0) + result.amount,
               lastOrderDate: new Date().toISOString().split('T')[0]
@@ -93,10 +96,14 @@ module.exports = {
     await cleanupMediaOnUpdate(event);
 
     const { data, where } = event.params;
+    const documentId = where.documentId || where.id;
 
-    // Get current invoice for comparison
-    const currentInvoice = await strapi.entityService.findOne('api::payment-invoice.payment-invoice', where.id, {
-      populate: ['paymentHistory']
+    if (!documentId) return;
+
+    // Get current invoice for comparison using Document Service
+    const currentInvoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
+      documentId: documentId,
+      populate: ['payment_history']
     });
 
     if (!currentInvoice) {
@@ -119,14 +126,15 @@ module.exports = {
     }
 
     // Auto-calculate remaining amount if paid amount is updated
-    if (data.paidAmount !== undefined && data.paidAmount !== currentInvoice.paidAmount) {
-      data.remainingAmount = currentInvoice.amount - data.paidAmount;
+    if (data.paid_amount !== undefined && data.paid_amount !== currentInvoice.paid_amount) {
+      const amount = data.amount !== undefined ? data.amount : currentInvoice.amount;
+      data.remaining_amount = amount - data.paid_amount;
 
       // Auto-update status pembayaran based on payment
-      if (data.paidAmount >= currentInvoice.amount) {
+      if (data.paid_amount >= amount) {
         data.status_pembayaran = 'paid';
         data.fullyPaidDate = new Date().toISOString();
-      } else if (data.paidAmount > 0 && data.paidAmount < currentInvoice.amount) {
+      } else if (data.paid_amount > 0 && data.paid_amount < amount) {
         data.status_pembayaran = 'partial';
       }
 
@@ -147,17 +155,12 @@ module.exports = {
 
   // After updating an invoice
   async afterUpdate(event) {
-    const { result, where } = event.params;
+    const { result } = event;
+    const { where } = event.params;
+    const documentId = where.documentId || where.id;
 
-    // Check if status pembayaran changed to paid
-    const currentInvoice = await strapi.entityService.findOne('api::payment-invoice.payment-invoice', where.id);
-    if (currentInvoice && currentInvoice.status_pembayaran === 'paid' && currentInvoice.fullyPaidDate) {
-      console.log(`Invoice ${result.invoiceNumber} has been fully paid on ${currentInvoice.fullyPaidDate}`);
-    }
-
-    // Log significant updates
-    if (currentInvoice && currentInvoice.status_pembayaran !== result.status_pembayaran) {
-      console.log(`Invoice ${result.invoiceNumber} status pembayaran changed from ${result.status_pembayaran} to ${currentInvoice.status_pembayaran}`);
+    if (result && result.status_pembayaran === 'paid' && result.fullyPaidDate) {
+      console.log(`Invoice ${result.invoiceNumber} has been fully paid on ${result.fullyPaidDate}`);
     }
   },
 
@@ -166,16 +169,21 @@ module.exports = {
     await cleanupMediaOnDelete(event);
 
     const { where } = event.params;
+    const documentId = where.documentId || where.id;
+
+    if (!documentId) return;
 
     // Get invoice details for cleanup
-    const invoice = await strapi.entityService.findOne('api::payment-invoice.payment-invoice', where.id);
+    const invoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
+      documentId: documentId
+    });
 
     if (invoice) {
       // Log deletion
       console.log(`Deleting invoice ${invoice.invoiceNumber} with amount ${invoice.amount}`);
 
       // If invoice has payments, prevent deletion
-      if (invoice.paidAmount > 0) {
+      if (invoice.paid_amount > 0) {
         throw new Error('Cannot delete invoice with existing payments');
       }
     }
@@ -183,7 +191,7 @@ module.exports = {
 
   // After deleting an invoice
   async afterDelete(event) {
-    const { result } = event.params;
+    const { result } = event;
 
     if (result && result.invoiceNumber) {
       console.log(`Invoice ${result.invoiceNumber} has been deleted`);

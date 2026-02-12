@@ -84,20 +84,21 @@
         "cancelled"
       ]
     },
-    "paidAmount": {
+    "paid_amount": {
       "type": "decimal",
       "required": true,
       "default": 0,
       "min": 0
     },
-    "remainingAmount": {
+    "remaining_amount": {
       "type": "decimal",
       "required": true,
       "min": 0
     },
-    "paymentHistory": {
-      "type": "json",
-      "default": []
+    "payment_history": {
+      "type": "component",
+      "repeatable": true,
+      "component": "komponen.invoice-payment-record"
     },
     "invoiceDocument": {
       "type": "media",

@@ -87,6 +87,36 @@ export interface KomponenHarga extends Struct.ComponentSchema {
   };
 }
 
+export interface KomponenInvoicePaymentRecord extends Struct.ComponentSchema {
+  collectionName: 'components_komponen_invoice_payment_records';
+  info: {
+    description: 'Record of a single payment for an invoice';
+    displayName: 'Invoice Payment Record';
+    icon: 'hand-holding-usd';
+  };
+  attributes: {
+    amount: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    bankAccount: Schema.Attribute.String;
+    date: Schema.Attribute.Date & Schema.Attribute.Required;
+    method: Schema.Attribute.Enumeration<
+      ['transfer', 'cash', 'check', 'giro', 'others']
+    > &
+      Schema.Attribute.DefaultTo<'transfer'>;
+    notes: Schema.Attribute.Text;
+    paidBy: Schema.Attribute.Relation<'oneToOne', 'api::karyawan.karyawan'>;
+    processedAt: Schema.Attribute.DateTime;
+    receiptDocument: Schema.Attribute.Media<'images' | 'files'>;
+    reference: Schema.Attribute.String;
+  };
+}
+
 export interface KomponenKontak extends Struct.ComponentSchema {
   collectionName: 'components_komponen_kontaks';
   info: {
@@ -517,6 +547,7 @@ declare module '@strapi/strapi' {
       'komponen.alamat': KomponenAlamat;
       'komponen.dokumen': KomponenDokumen;
       'komponen.harga': KomponenHarga;
+      'komponen.invoice-payment-record': KomponenInvoicePaymentRecord;
       'komponen.kontak': KomponenKontak;
       'komponen.kontak-subkontraktor': KomponenKontakSubkontraktor;
       'komponen.lokasi-absensi': KomponenLokasiAbsensi;
