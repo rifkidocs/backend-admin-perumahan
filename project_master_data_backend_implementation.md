@@ -30,7 +30,7 @@ Backend implementation untuk sistem master data proyek perumahan menggunakan Str
   - `investment_value` (decimal)
   - `project_description` (text, max: 1000)
   - `address` (text, max: 500)
-  - `coordinate_lat` & `coordinate_lng` (decimal)
+  - `coordinate_lat` & `coordinate_lng` (float)
   - `building_license` (string, max: 50)
   - `environment_permits` (json)
   - `zoning_type` (enumeration: residensial, komersial, campuran)

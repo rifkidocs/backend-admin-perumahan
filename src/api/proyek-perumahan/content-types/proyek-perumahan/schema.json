@@ -96,12 +96,12 @@
       "maxLength": 500
     },
     "coordinate_lat": {
-      "type": "decimal",
+      "type": "float",
       "min": -90,
       "max": 90
     },
     "coordinate_lng": {
-      "type": "decimal",
+      "type": "float",
       "min": -180,
       "max": 180
     },

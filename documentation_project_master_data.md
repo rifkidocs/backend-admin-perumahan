@@ -30,8 +30,8 @@ Dokumentasi API untuk sistem manajemen master data proyek perumahan menggunakan 
 | `investment_value`     | Decimal     | No       | Nilai investasi total        | Min: 0                                      |
 | `address`              | Text        | No       | Alamat lengkap proyek        | Max： 500                                   |
 | `location`             | Text        | No       | Lokasi detail proyek         | Max: 500                                    |
-| `coordinate_lat`       | Decimal     | No       | Latitude koordinat           | Range: -90 to 90                            |
-| `coordinate_lng`       | Decimal     | No       | Longitude koordinat          | Range: -180 to 180                          |
+| `coordinate_lat`       | Float       | No       | Latitude koordinat           | Range: -90 to 90                            |
+| `coordinate_lng`       | Float       | No       | Longitude koordinat          | Range: -180 to 180                          |
 | `land_area`            | Decimal     | No       | Luas lahan (hektar)          | Min: 0                                      |
 | `zoning_type`          | Enumeration | No       | Jenis zonasi                 | Options: residensial, komersial, campuran   |
 | `building_license`     | String      | No       | Nomor IMB                    | Max: 50                                     |
