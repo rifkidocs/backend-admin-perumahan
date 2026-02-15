@@ -14,7 +14,7 @@ Dokumentasi ini menjelaskan implementasi backend untuk sistem Jadwal & Kegiatan 
 
 **Fitur**:
 
-- Manajemen jadwal kegiatan marketing (pameran, open house, kunjungan, dll)
+- Manajemen jadwal kegiatan marketing (pameran, open house, kunjungan, broadcast, dll)
 - Relasi dengan karyawan (assigned_staff), proyek, dan lead
 - Status tracking (upcoming, ongoing, completed, cancelled)
 - Priority levels (low, medium, high, urgent)

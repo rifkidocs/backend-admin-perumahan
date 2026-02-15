@@ -1978,6 +1978,7 @@ export interface ApiJadwalMarketingJadwalMarketing
         'customer_visit',
         'phone_call',
         'create_content',
+        'broadcast',
       ]
     > &
       Schema.Attribute.Required;
@@ -2956,6 +2957,7 @@ export interface ApiLaporanKegiatanLaporanKegiatan
         'canvassing_report',
         'visit_report',
         'create_content_report',
+        'broadcast_report',
       ]
     > &
       Schema.Attribute.Required;

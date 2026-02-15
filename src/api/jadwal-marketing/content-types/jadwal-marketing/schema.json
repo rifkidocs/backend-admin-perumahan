@@ -26,7 +26,8 @@
         "canvassing",
         "customer_visit",
         "phone_call",
-        "create_content"
+        "create_content",
+        "broadcast"
       ],
       "required": true
     },
