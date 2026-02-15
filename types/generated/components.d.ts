@@ -194,6 +194,7 @@ export interface KomponenPaymentHistory extends Struct.ComponentSchema {
     status: Schema.Attribute.Enumeration<['paid', 'pending', 'failed']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'paid'>;
+    transferProof: Schema.Attribute.Media<'images' | 'files'>;
     type: Schema.Attribute.Enumeration<
       ['booking-fee', 'dp', 'termin', 'kpr', 'pelunasan']
     > &

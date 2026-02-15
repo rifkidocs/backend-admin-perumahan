@@ -272,6 +272,11 @@ Content-Type: application/json
     "bankReference": {
       "type": "string",
       "maxLength": 100
+    },
+    "transferProof": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images", "files"]
     }
   }
 }
@@ -460,7 +465,8 @@ curl -X PUT \
         "type": "dp",
         "status": "paid",
         "paymentMethod": "transfer",
-        "bankReference": "TRF-123"
+        "bankReference": "TRF-123",
+        "transferProof": "file_id_or_url"
       }
     ]
   }'

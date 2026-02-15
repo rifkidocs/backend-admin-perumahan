@@ -55,6 +55,14 @@
     "bankReference": {
       "type": "string",
       "maxLength": 100
+    },
+    "transferProof": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
     }
   }
 }

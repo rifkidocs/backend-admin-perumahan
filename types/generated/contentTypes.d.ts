@@ -5200,7 +5200,7 @@ export interface ApiProyekPerumahanProyekPerumahan
       >;
     contact_info: Schema.Attribute.JSON;
     contractors: Schema.Attribute.Relation<'manyToMany', 'api::vendor.vendor'>;
-    coordinate_lat: Schema.Attribute.Decimal &
+    coordinate_lat: Schema.Attribute.Float &
       Schema.Attribute.SetMinMax<
         {
           max: 90;
@@ -5208,7 +5208,7 @@ export interface ApiProyekPerumahanProyekPerumahan
         },
         number
       >;
-    coordinate_lng: Schema.Attribute.Decimal &
+    coordinate_lng: Schema.Attribute.Float &
       Schema.Attribute.SetMinMax<
         {
           max: 180;
