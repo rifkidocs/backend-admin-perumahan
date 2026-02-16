@@ -6111,13 +6111,6 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
         },
         number
       >;
-    bonus: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -6130,6 +6123,13 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
         number
       >;
     effective_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    harian: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     karyawan: Schema.Attribute.Relation<'oneToOne', 'api::karyawan.karyawan'>;
     kas_keluars: Schema.Attribute.Relation<
       'oneToMany',
@@ -6141,21 +6141,7 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
       'api::salary.salary'
     > &
       Schema.Attribute.Private;
-    meal_allowance: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
     net_salary: Schema.Attribute.Decimal;
-    overtime_rate: Schema.Attribute.Decimal &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 0;
-        },
-        number
-      >;
     payment_method: Schema.Attribute.Enumeration<
       ['transfer', 'cash', 'check']
     > &
@@ -6168,7 +6154,7 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
         number
       >;
     publishedAt: Schema.Attribute.DateTime;
-    transport_allowance: Schema.Attribute.Decimal &
+    tunjangan_kinerja: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
           min: 0;

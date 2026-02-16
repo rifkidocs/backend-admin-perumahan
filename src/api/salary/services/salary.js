@@ -171,9 +171,8 @@ module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
         acc[department].totalBasic += salary.basic_salary;
         acc[department].totalAllowances +=
           (salary.position_allowance || 0) +
-          (salary.transport_allowance || 0) +
-          (salary.meal_allowance || 0) +
-          (salary.bonus || 0);
+          (salary.tunjangan_kinerja || 0) +
+          (salary.harian || 0);
         acc[department].totalDeductions += salary.deductions || 0;
         acc[department].totalNet += salary.net_salary;
 

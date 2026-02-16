@@ -52,9 +52,8 @@ Dokumentasi API untuk sistem manajemen master data HRM (Human Resource Managemen
 | --------------------- | ----------- | -------- | -------------------- | ------------------------------ |
 | `basic_salary`        | Decimal     | Yes      | Gaji pokok           | Min: 0                         |
 | `position_allowance`  | Decimal     | No       | Tunjangan jabatan    | Min: 0                         |
-| `transport_allowance` | Decimal     | No       | Tunjangan transport  | Min: 0                         |
-| `meal_allowance`      | Decimal     | No       | Tunjangan makan      | Min: 0                         |
-| `overtime_rate`       | Decimal     | No       | Tarif lembur per jam | Min: 0                         |
+| `tunjangan_kinerja`   | Decimal     | No       | Tunjangan kinerja    | Min: 0                         |
+| `harian`              | Decimal     | No       | Harian               | Min: 0                         |
 | `bonus`               | Decimal     | No       | Bonus/komisi         | Min: 0                         |
 | `deductions`          | Decimal     | No       | Total potongan       | Min: 0                         |
 | `net_salary`          | Decimal     | Auto     | Gaji bersih          | Auto-calculated                |
@@ -237,7 +236,7 @@ Dokumentasi API untuk sistem manajemen master data HRM (Human Resource Managemen
             "attributes": {
               "basic_salary": 5000000,
               "position_allowance": 1000000,
-              "transport_allowance": 500000,
+              "tunjangan_kinerja": 500000,
               "net_salary": 8200000
             }
           }
@@ -329,9 +328,8 @@ Dokumentasi API untuk sistem manajemen master data HRM (Human Resource Managemen
   "data": {
     "basic_salary": 5000000,
     "position_allowance": 1000000,
-    "transport_allowance": 500000,
-    "meal_allowance": 300000,
-    "overtime_rate": 25000,
+    "tunjangan_kinerja": 500000,
+    "harian": 300000,
     "effective_date": "2023-01-01",
     "currency": "IDR",
     "payment_method": "transfer",
@@ -731,16 +729,16 @@ module.exports = {
     // Calculate net salary
     const basic = data.basic_salary || 0;
     const positionAllowance = data.position_allowance || 0;
-    const transportAllowance = data.transport_allowance || 0;
-    const mealAllowance = data.meal_allowance || 0;
+    const tunjanganKinerja = data.tunjangan_kinerja || 0;
+    const harian = data.harian || 0;
     const bonus = data.bonus || 0;
     const deductions = data.deductions || 0;
 
     data.net_salary =
       basic +
       positionAllowance +
-      transportAllowance +
-      mealAllowance +
+      tunjanganKinerja +
+      harian +
       bonus -
       deductions;
   },
@@ -752,23 +750,23 @@ module.exports = {
     if (
       data.basic_salary ||
       data.position_allowance ||
-      data.transport_allowance ||
-      data.meal_allowance ||
+      data.tunjangan_kinerja ||
+      data.harian ||
       data.bonus ||
       data.deductions
     ) {
       const basic = data.basic_salary || 0;
       const positionAllowance = data.position_allowance || 0;
-      const transportAllowance = data.transport_allowance || 0;
-      const mealAllowance = data.meal_allowance || 0;
+      const tunjanganKinerja = data.tunjangan_kinerja || 0;
+      const harian = data.harian || 0;
       const bonus = data.bonus || 0;
       const deductions = data.deductions || 0;
 
       data.net_salary =
         basic +
         positionAllowance +
-        transportAllowance +
-        mealAllowance +
+        tunjanganKinerja +
+        harian +
         bonus -
         deductions;
     }

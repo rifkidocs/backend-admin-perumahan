@@ -21,19 +21,11 @@
       "type": "decimal",
       "min": 0
     },
-    "transport_allowance": {
+    "tunjangan_kinerja": {
       "type": "decimal",
       "min": 0
     },
-    "meal_allowance": {
-      "type": "decimal",
-      "min": 0
-    },
-    "overtime_rate": {
-      "type": "decimal",
-      "min": 0
-    },
-    "bonus": {
+    "harian": {
       "type": "decimal",
       "min": 0
     },
@@ -55,11 +47,7 @@
     "payment_method": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "transfer",
-        "cash",
-        "check"
-      ]
+      "enum": ["transfer", "cash", "check"]
     },
     "karyawan": {
       "type": "relation",

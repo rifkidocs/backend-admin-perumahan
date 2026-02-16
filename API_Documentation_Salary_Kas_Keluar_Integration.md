@@ -260,7 +260,7 @@ The salary content type includes these lifecycle hooks:
 ## Business Logic
 
 ### Automatic Calculations
-- **Net Salary**: `basic_salary + position_allowance + transport_allowance + meal_allowance + bonus - deductions`
+- **Net Salary**: `basic_salary + position_allowance + tunjangan_kinerja + harian + bonus - deductions`
 - **Invoice Number**: `SALARY-{salary_id}-{YYYY-MM}`
 - **Description**: `Gaji bulanan {employee_name} - {period}`
 
@@ -341,8 +341,8 @@ const salary = await fetch('/api/salaries', {
     data: {
       basic_salary: 5000000,
       position_allowance: 1000000,
-      transport_allowance: 500000,
-      meal_allowance: 300000,
+      tunjangan_kinerja: 500000,
+      harian: 300000,
       deductions: 500000,
       effective_date: '2024-11-15',
       payment_method: 'transfer',

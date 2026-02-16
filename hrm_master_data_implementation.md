@@ -32,9 +32,8 @@ Dokumentasi implementasi backend untuk sistem master data HRM (Human Resource Ma
 - **Fields**:
   - `basic_salary` (decimal, required)
   - `position_allowance` (decimal)
-  - `transport_allowance` (decimal)
-  - `meal_allowance` (decimal)
-  - `overtime_rate` (decimal)
+  - `tunjangan_kinerja` (decimal)
+  - `harian` (decimal)
   - `bonus` (decimal)
   - `deductions` (decimal)
   - `net_salary` (decimal, auto-calculated)
@@ -213,9 +212,8 @@ Dokumentasi implementasi backend untuk sistem master data HRM (Human Resource Ma
   "data": {
     "basic_salary": 5000000,
     "position_allowance": 1000000,
-    "transport_allowance": 500000,
-    "meal_allowance": 300000,
-    "overtime_rate": 25000,
+    "tunjangan_kinerja": 500000,
+    "harian": 300000,
     "effective_date": "2023-01-01",
     "currency": "IDR",
     "payment_method": "transfer",

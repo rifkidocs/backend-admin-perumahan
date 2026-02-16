@@ -11,17 +11,15 @@ module.exports = {
         // Calculate net salary
         const basic = data.basic_salary || 0;
         const positionAllowance = data.position_allowance || 0;
-        const transportAllowance = data.transport_allowance || 0;
-        const mealAllowance = data.meal_allowance || 0;
-        const bonus = data.bonus || 0;
+        const tunjanganKinerja = data.tunjangan_kinerja || 0;
+        const harian = data.harian || 0;
         const deductions = data.deductions || 0;
 
         data.net_salary =
             basic +
             positionAllowance +
-            transportAllowance +
-            mealAllowance +
-            bonus -
+            tunjanganKinerja +
+            harian -
             deductions;
     },
 
@@ -32,24 +30,21 @@ module.exports = {
         if (
             data.basic_salary ||
             data.position_allowance ||
-            data.transport_allowance ||
-            data.meal_allowance ||
-            data.bonus ||
+            data.tunjangan_kinerja ||
+            data.harian ||
             data.deductions
         ) {
             const basic = data.basic_salary || 0;
             const positionAllowance = data.position_allowance || 0;
-            const transportAllowance = data.transport_allowance || 0;
-            const mealAllowance = data.meal_allowance || 0;
-            const bonus = data.bonus || 0;
+            const tunjanganKinerja = data.tunjangan_kinerja || 0;
+            const harian = data.harian || 0;
             const deductions = data.deductions || 0;
 
             data.net_salary =
                 basic +
                 positionAllowance +
-                transportAllowance +
-                mealAllowance +
-                bonus -
+                tunjanganKinerja +
+                harian -
                 deductions;
         }
     },
