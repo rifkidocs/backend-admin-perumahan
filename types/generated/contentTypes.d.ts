@@ -4507,8 +4507,8 @@ export interface ApiPotonganTunjanganPotonganTunjangan
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    tunjangan_bpjs_kesehatan: Schema.Attribute.BigInteger;
-    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.BigInteger;
+    tunjangan_bpjs_kesehatan: Schema.Attribute.Decimal;
+    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.Decimal;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -6154,6 +6154,20 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
         number
       >;
     publishedAt: Schema.Attribute.DateTime;
+    tunjangan_bpjs_kesehatan: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     tunjangan_kinerja: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {

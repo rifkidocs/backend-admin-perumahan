@@ -12,10 +12,10 @@
   "pluginOptions": {},
   "attributes": {
     "tunjangan_bpjs_kesehatan": {
-      "type": "biginteger"
+      "type": "decimal"
     },
     "tunjangan_bpjs_ketenagakerjaan": {
-      "type": "biginteger"
+      "type": "decimal"
     }
   }
 }

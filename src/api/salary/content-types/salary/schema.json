@@ -29,6 +29,14 @@
       "type": "decimal",
       "min": 0
     },
+    "tunjangan_bpjs_kesehatan": {
+      "type": "decimal",
+      "min": 0
+    },
+    "tunjangan_bpjs_ketenagakerjaan": {
+      "type": "decimal",
+      "min": 0
+    },
     "deductions": {
       "type": "decimal",
       "min": 0

@@ -13,13 +13,17 @@ module.exports = {
         const positionAllowance = data.position_allowance || 0;
         const tunjanganKinerja = data.tunjangan_kinerja || 0;
         const harian = data.harian || 0;
+        const tunjanganBpjsKesehatan = data.tunjangan_bpjs_kesehatan || 0;
+        const tunjanganBpjsKetenagakerjaan = data.tunjangan_bpjs_ketenagakerjaan || 0;
         const deductions = data.deductions || 0;
 
         data.net_salary =
             basic +
             positionAllowance +
             tunjanganKinerja +
-            harian -
+            harian +
+            tunjanganBpjsKesehatan +
+            tunjanganBpjsKetenagakerjaan -
             deductions;
     },
 
@@ -32,19 +36,25 @@ module.exports = {
             data.position_allowance ||
             data.tunjangan_kinerja ||
             data.harian ||
+            data.tunjangan_bpjs_kesehatan ||
+            data.tunjangan_bpjs_ketenagakerjaan ||
             data.deductions
         ) {
             const basic = data.basic_salary || 0;
             const positionAllowance = data.position_allowance || 0;
             const tunjanganKinerja = data.tunjangan_kinerja || 0;
             const harian = data.harian || 0;
+            const tunjanganBpjsKesehatan = data.tunjangan_bpjs_kesehatan || 0;
+            const tunjanganBpjsKetenagakerjaan = data.tunjangan_bpjs_ketenagakerjaan || 0;
             const deductions = data.deductions || 0;
 
             data.net_salary =
                 basic +
                 positionAllowance +
                 tunjanganKinerja +
-                harian -
+                harian +
+                tunjanganBpjsKesehatan +
+                tunjanganBpjsKetenagakerjaan -
                 deductions;
         }
     },
