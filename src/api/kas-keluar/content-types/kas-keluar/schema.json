@@ -73,7 +73,8 @@
         "transfer",
         "cash",
         "cek",
-        "giro"
+        "giro",
+        "escrow"
       ],
       "required": true,
       "description": "Metode pembayaran yang digunakan"
@@ -206,7 +207,8 @@
       "enum": [
         "Transfer",
         "Tunai",
-        "Cek"
+        "Cek",
+        "Escrow"
       ],
       "required": false,
       "description": "Legacy field for backward compatibility"

@@ -193,7 +193,7 @@ Content-Type: application/json
     },
     "paymentMethod": {
       "type": "enumeration",
-      "enum": ["transfer", "cash", "cek", "giro"],
+      "enum": ["transfer", "cash", "cek", "giro", "escrow"],
       "required": true,
       "description": "Metode pembayaran yang digunakan"
     },

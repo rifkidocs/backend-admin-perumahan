@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "potongan_tunjangans",
+  "info": {
+    "singularName": "potongan-tunjangan",
+    "pluralName": "potongan-tunjangans",
+    "displayName": "Potongan Tunjangan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tunjangan_bpjs_kesehatan": {
+      "type": "biginteger"
+    },
+    "tunjangan_bpjs_ketenagakerjaan": {
+      "type": "biginteger"
+    }
+  }
+}

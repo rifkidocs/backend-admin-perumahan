@@ -2486,7 +2486,7 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     metode_pembayaran: Schema.Attribute.Enumeration<
-      ['Transfer', 'Tunai', 'Cek']
+      ['Transfer', 'Tunai', 'Cek', 'Escrow']
     >;
     nominal: Schema.Attribute.Decimal;
     nomor_transaksi: Schema.Attribute.String;
@@ -2495,7 +2495,7 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
         maxLength: 1000;
       }>;
     paymentMethod: Schema.Attribute.Enumeration<
-      ['transfer', 'cash', 'cek', 'giro']
+      ['transfer', 'cash', 'cek', 'giro', 'escrow']
     > &
       Schema.Attribute.Required;
     penerima: Schema.Attribute.String;
@@ -4479,6 +4479,36 @@ export interface ApiPosKeuanganPosKeuangan extends Struct.CollectionTypeSchema {
       Schema.Attribute.DefaultTo<0>;
     saldo_minimum: Schema.Attribute.Decimal;
     status_aktif: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPotonganTunjanganPotonganTunjangan
+  extends Struct.SingleTypeSchema {
+  collectionName: 'potongan_tunjangans';
+  info: {
+    displayName: 'Potongan Tunjangan';
+    pluralName: 'potongan-tunjangans';
+    singularName: 'potongan-tunjangan';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::potongan-tunjangan.potongan-tunjangan'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    tunjangan_bpjs_kesehatan: Schema.Attribute.BigInteger;
+    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.BigInteger;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -7980,6 +8010,7 @@ declare module '@strapi/strapi' {
       'api::piutang-konsumen.piutang-konsumen': ApiPiutangKonsumenPiutangKonsumen;
       'api::placement.placement': ApiPlacementPlacement;
       'api::pos-keuangan.pos-keuangan': ApiPosKeuanganPosKeuangan;
+      'api::potongan-tunjangan.potongan-tunjangan': ApiPotonganTunjanganPotonganTunjangan;
       'api::progres-harian.progres-harian': ApiProgresHarianProgresHarian;
       'api::project-document.project-document': ApiProjectDocumentProjectDocument;
       'api::project-material.project-material': ApiProjectMaterialProjectMaterial;
