@@ -2523,6 +2523,10 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     salary_id: Schema.Attribute.Relation<'manyToOne', 'api::salary.salary'>;
     supplier: Schema.Attribute.Relation<'manyToOne', 'api::supplier.supplier'>;
     tanggal_transaksi: Schema.Attribute.Date;
+    tipe_terkait: Schema.Attribute.Enumeration<
+      ['proyek', 'kantor', 'lainnya']
+    > &
+      Schema.Attribute.DefaultTo<'proyek'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
