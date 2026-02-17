@@ -111,6 +111,10 @@ export interface KomponenInvoicePaymentRecord extends Struct.ComponentSchema {
       Schema.Attribute.DefaultTo<'transfer'>;
     notes: Schema.Attribute.Text;
     paidBy: Schema.Attribute.Relation<'oneToOne', 'api::karyawan.karyawan'>;
+    pos_keuangan: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::pos-keuangan.pos-keuangan'
+    >;
     processedAt: Schema.Attribute.DateTime;
     receiptDocument: Schema.Attribute.Media<'images' | 'files'>;
     reference: Schema.Attribute.String;
@@ -190,6 +194,10 @@ export interface KomponenPaymentHistory extends Struct.ComponentSchema {
       }>;
     paymentMethod: Schema.Attribute.Enumeration<
       ['cash', 'transfer', 'check', 'giro', 'kpr-disbursement']
+    >;
+    pos_keuangan: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::pos-keuangan.pos-keuangan'
     >;
     status: Schema.Attribute.Enumeration<['paid', 'pending', 'failed']> &
       Schema.Attribute.Required &

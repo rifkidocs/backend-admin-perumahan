@@ -43,13 +43,7 @@
     "category": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "material",
-        "jasa",
-        "operasional",
-        "legal",
-        "lainnya"
-      ]
+      "enum": ["material", "jasa", "operasional", "legal", "lainnya"]
     },
     "project": {
       "type": "relation",
@@ -60,13 +54,7 @@
     "paymentTerms": {
       "type": "enumeration",
       "required": true,
-      "enum": [
-        "cash",
-        "dp",
-        "termin",
-        "net30",
-        "net60"
-      ]
+      "enum": ["cash", "dp", "termin", "net30", "net60"]
     },
     "notes": {
       "type": "text",
@@ -76,13 +64,7 @@
       "type": "enumeration",
       "required": true,
       "default": "pending",
-      "enum": [
-        "pending",
-        "partial",
-        "paid",
-        "overdue",
-        "cancelled"
-      ]
+      "enum": ["pending", "partial", "paid", "overdue", "cancelled"]
     },
     "paid_amount": {
       "type": "decimal",
@@ -95,19 +77,17 @@
       "required": true,
       "min": 0
     },
-    "payment_history": {
-      "type": "component",
-      "repeatable": true,
-      "component": "komponen.invoice-payment-record"
+    "riwayat_pembayarans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::riwayat-pembayaran.riwayat-pembayaran",
+      "mappedBy": "payment_invoice"
     },
     "invoiceDocument": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     },
     "approvedBy": {
       "type": "relation",
@@ -120,17 +100,7 @@
     },
     "paymentMethod": {
       "type": "enumeration",
-      "enum": [
-        "transfer",
-        "cash",
-        "check",
-        "giro",
-        "others"
-      ]
-    },
-    "bankAccount": {
-      "type": "string",
-      "maxLength": 100
+      "enum": ["transfer", "cash", "check", "giro", "others"]
     },
     "lastPaymentDate": {
       "type": "datetime"
@@ -145,12 +115,7 @@
     "priority": {
       "type": "enumeration",
       "default": "normal",
-      "enum": [
-        "low",
-        "normal",
-        "high",
-        "urgent"
-      ]
+      "enum": ["low", "normal", "high", "urgent"]
     },
     "taxIncluded": {
       "type": "boolean",
@@ -175,14 +140,7 @@
     },
     "department": {
       "type": "enumeration",
-      "enum": [
-        "gudang",
-        "proyek",
-        "hrm",
-        "marketing",
-        "operasional",
-        "umum"
-      ]
+      "enum": ["gudang", "proyek", "hrm", "marketing", "operasional", "umum"]
     },
     "createdBy": {
       "type": "relation",
@@ -198,22 +156,13 @@
       "type": "enumeration",
       "required": true,
       "default": "IDR",
-      "enum": [
-        "IDR",
-        "USD",
-        "EUR"
-      ]
+      "enum": ["IDR", "USD", "EUR"]
     },
     "statusInvoice": {
       "type": "enumeration",
       "required": true,
       "default": "received",
-      "enum": [
-        "received",
-        "verified",
-        "rejected",
-        "cancelled"
-      ]
+      "enum": ["received", "verified", "rejected", "cancelled"]
     },
     "paymentReference": {
       "type": "string",
@@ -244,10 +193,7 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": [
-        "images",
-        "files"
-      ]
+      "allowedTypes": ["images", "files"]
     },
     "paidBy": {
       "type": "relation",

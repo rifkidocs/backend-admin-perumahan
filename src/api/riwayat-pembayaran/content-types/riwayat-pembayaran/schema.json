@@ -5,18 +5,27 @@
     "singularName": "riwayat-pembayaran",
     "pluralName": "riwayat-pembayarans",
     "displayName": "Riwayat Pembayaran",
-    "description": "Riwayat pembayaran untuk subkontraktor"
+    "description": "Sistem pencatatan riwayat pembayaran terpadu (Hutang, Piutang, Subkon)"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "subkontraktor": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::subkontraktor.subkontraktor",
-      "inversedBy": "riwayat_pembayarans",
+    "tipe_transaksi": {
+      "type": "enumeration",
+      "enum": ["masuk", "keluar"],
+      "required": true,
+      "description": "Menentukan apakah ini dana masuk atau keluar"
+    },
+    "kategori_pembayaran": {
+      "type": "enumeration",
+      "enum": [
+        "piutang_konsumen",
+        "tagihan_supplier",
+        "subkontraktor",
+        "lainnya"
+      ],
       "required": true
     },
     "jumlah_pembayaran": {
@@ -31,25 +40,46 @@
     "metode_pembayaran": {
       "type": "enumeration",
       "required": true,
-      "enum": ["Transfer Bank", "Tunai", "Cek"]
+      "enum": ["Transfer Bank", "Tunai", "Cek", "Giro", "Escrow", "Lainnya"],
+      "default": "Transfer Bank"
+    },
+    "pos_keuangan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pos-keuangan.pos-keuangan"
+    },
+    "piutang_konsumen": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::piutang-konsumen.piutang-konsumen",
+      "inversedBy": "riwayat_pembayarans"
+    },
+    "payment_invoice": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::payment-invoice.payment-invoice",
+      "inversedBy": "riwayat_pembayarans"
+    },
+    "subkontraktor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::subkontraktor.subkontraktor",
+      "inversedBy": "riwayat_pembayarans"
     },
     "nomor_referensi": {
       "type": "string",
-      "maxLength": 50
-    },
-    "termin": {
-      "type": "integer",
-      "min": 1
-    },
-    "deskripsi": {
-      "type": "text",
-      "maxLength": 500
+      "maxLength": 100,
+      "description": "Nomor bukti transfer, cek, atau referensi lainnya"
     },
     "status_pembayaran": {
       "type": "enumeration",
       "required": true,
       "enum": ["Pending", "Berhasil", "Gagal"],
-      "default": "Pending"
+      "default": "Berhasil"
+    },
+    "deskripsi": {
+      "type": "text",
+      "maxLength": 1000
     },
     "bukti_pembayaran": {
       "type": "media",
@@ -57,14 +87,14 @@
       "required": false,
       "allowedTypes": ["images", "files"]
     },
-    "catatan": {
+    "catatan_internal": {
       "type": "text",
       "maxLength": 500
     },
     "dibuat_oleh": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "plugin::users-permissions.user"
+      "target": "api::karyawan.karyawan"
     }
   }
 }

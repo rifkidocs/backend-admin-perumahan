@@ -101,10 +101,11 @@
       "type": "text",
       "maxLength": 1000
     },
-    "payment_history": {
-      "type": "component",
-      "repeatable": true,
-      "component": "komponen.payment-history"
+    "riwayat_pembayarans": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::riwayat-pembayaran.riwayat-pembayaran",
+      "mappedBy": "piutang_konsumen"
     }
   }
 }

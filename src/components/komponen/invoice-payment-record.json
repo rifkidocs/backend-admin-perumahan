@@ -41,6 +41,11 @@
     "notes": {
       "type": "text"
     },
+    "pos_keuangan": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pos-keuangan.pos-keuangan"
+    },
     "receiptDocument": {
       "type": "media",
       "multiple": false,

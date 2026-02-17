@@ -2610,10 +2610,6 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
       ['booking', 'dp', 'pelunasan', 'kpr', 'lainnya']
     > &
       Schema.Attribute.Required;
-    unit_rumah: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::unit-rumah.unit-rumah'
-    >;
     unitRelation: Schema.Attribute.Relation<
       'manyToOne',
       'api::unit-rumah.unit-rumah'
@@ -3489,10 +3485,6 @@ export interface ApiPaymentInvoicePaymentInvoice
     >;
     approvedDate: Schema.Attribute.DateTime;
     attachments: Schema.Attribute.Media<'images' | 'files', true>;
-    bankAccount: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
     category: Schema.Attribute.Enumeration<
       ['material', 'jasa', 'operasional', 'legal', 'lainnya']
     > &
@@ -3556,10 +3548,6 @@ export interface ApiPaymentInvoicePaymentInvoice
       > &
       Schema.Attribute.DefaultTo<0>;
     paidBy: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
-    payment_history: Schema.Attribute.Component<
-      'komponen.invoice-payment-record',
-      true
-    >;
     paymentMethod: Schema.Attribute.Enumeration<
       ['transfer', 'cash', 'check', 'giro', 'others']
     >;
@@ -3604,6 +3592,10 @@ export interface ApiPaymentInvoicePaymentInvoice
         },
         number
       >;
+    riwayat_pembayarans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::riwayat-pembayaran.riwayat-pembayaran'
+    >;
     status_pembayaran: Schema.Attribute.Enumeration<
       ['pending', 'partial', 'paid', 'overdue', 'cancelled']
     > &
@@ -4313,10 +4305,6 @@ export interface ApiPiutangKonsumenPiutangKonsumen
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 1000;
       }>;
-    payment_history: Schema.Attribute.Component<
-      'komponen.payment-history',
-      true
-    >;
     payment_schedule: Schema.Attribute.Enumeration<
       ['cash', 'dp', 'termin', 'kpr']
     > &
@@ -4335,6 +4323,10 @@ export interface ApiPiutangKonsumenPiutangKonsumen
         },
         string
       >;
+    riwayat_pembayarans: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::riwayat-pembayaran.riwayat-pembayaran'
+    >;
     status_piutang: Schema.Attribute.Enumeration<
       ['active', 'overdue', 'completed', 'cancelled']
     > &
@@ -6001,7 +5993,7 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
   extends Struct.CollectionTypeSchema {
   collectionName: 'riwayat_pembayarans';
   info: {
-    description: 'Riwayat pembayaran untuk subkontraktor';
+    description: 'Sistem pencatatan riwayat pembayaran terpadu (Hutang, Piutang, Subkon)';
     displayName: 'Riwayat Pembayaran';
     pluralName: 'riwayat-pembayarans';
     singularName: 'riwayat-pembayaran';
@@ -6011,7 +6003,7 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
   };
   attributes: {
     bukti_pembayaran: Schema.Attribute.Media<'images' | 'files'>;
-    catatan: Schema.Attribute.Text &
+    catatan_internal: Schema.Attribute.Text &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;
       }>;
@@ -6020,11 +6012,11 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
       Schema.Attribute.Private;
     deskripsi: Schema.Attribute.Text &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 500;
+        maxLength: 1000;
       }>;
     dibuat_oleh: Schema.Attribute.Relation<
       'manyToOne',
-      'plugin::users-permissions.user'
+      'api::karyawan.karyawan'
     >;
     jumlah_pembayaran: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
@@ -6034,6 +6026,10 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
         },
         number
       >;
+    kategori_pembayaran: Schema.Attribute.Enumeration<
+      ['piutang_konsumen', 'tagihan_supplier', 'subkontraktor', 'lainnya']
+    > &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -6041,32 +6037,39 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
     > &
       Schema.Attribute.Private;
     metode_pembayaran: Schema.Attribute.Enumeration<
-      ['Transfer Bank', 'Tunai', 'Cek']
+      ['Transfer Bank', 'Tunai', 'Cek', 'Giro', 'Escrow', 'Lainnya']
     > &
-      Schema.Attribute.Required;
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Transfer Bank'>;
     nomor_referensi: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 50;
+        maxLength: 100;
       }>;
+    payment_invoice: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::payment-invoice.payment-invoice'
+    >;
+    piutang_konsumen: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::piutang-konsumen.piutang-konsumen'
+    >;
+    pos_keuangan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pos-keuangan.pos-keuangan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     status_pembayaran: Schema.Attribute.Enumeration<
       ['Pending', 'Berhasil', 'Gagal']
     > &
       Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'Pending'>;
+      Schema.Attribute.DefaultTo<'Berhasil'>;
     subkontraktor: Schema.Attribute.Relation<
       'manyToOne',
       'api::subkontraktor.subkontraktor'
-    > &
-      Schema.Attribute.Required;
+    >;
     tanggal_pembayaran: Schema.Attribute.Date & Schema.Attribute.Required;
-    termin: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
+    tipe_transaksi: Schema.Attribute.Enumeration<['masuk', 'keluar']> &
+      Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -7194,10 +7197,6 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
       ['pending', 'completed', 'rejected']
     >;
     images: Schema.Attribute.Media<'images', true>;
-    kas_masuks: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::kas-masuk.kas-masuk'
-    >;
     kavling_number: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{

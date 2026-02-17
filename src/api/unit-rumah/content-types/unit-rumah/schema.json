@@ -178,12 +178,6 @@
       "target": "api::pengeluaran-material.pengeluaran-material",
       "mappedBy": "unit_rumah"
     },
-    "kas_masuks": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::kas-masuk.kas-masuk",
-      "mappedBy": "unit_rumah"
-    },
     "bookings": {
       "type": "relation",
       "relation": "oneToMany",
