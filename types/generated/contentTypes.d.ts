@@ -2475,21 +2475,12 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 50;
       }>;
-    jenis_transaksi: Schema.Attribute.Enumeration<
-      ['Pembayaran Supplier', 'Gaji', 'Operasional', 'Biaya Legal', 'Lainnya']
-    >;
-    keterangan: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::kas-keluar.kas-keluar'
     > &
       Schema.Attribute.Private;
-    metode_pembayaran: Schema.Attribute.Enumeration<
-      ['Transfer', 'Tunai', 'Cek', 'Escrow']
-    >;
-    nominal: Schema.Attribute.Decimal;
-    nomor_transaksi: Schema.Attribute.String;
     notes: Schema.Attribute.Text &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 1000;
@@ -2498,16 +2489,11 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
       ['transfer', 'cash', 'cek', 'giro', 'escrow']
     > &
       Schema.Attribute.Required;
-    penerima: Schema.Attribute.String;
     pos_keuangan: Schema.Attribute.Relation<
       'manyToOne',
       'api::pos-keuangan.pos-keuangan'
     >;
     project: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::proyek-perumahan.proyek-perumahan'
-    >;
-    proyek_perumahan: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
     >;
@@ -2522,7 +2508,6 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
       }>;
     salary_id: Schema.Attribute.Relation<'manyToOne', 'api::salary.salary'>;
     supplier: Schema.Attribute.Relation<'manyToOne', 'api::supplier.supplier'>;
-    tanggal_transaksi: Schema.Attribute.Date;
     tipe_terkait: Schema.Attribute.Enumeration<
       ['proyek', 'kantor', 'lainnya']
     > &
@@ -2531,7 +2516,6 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     urgent: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    vendor: Schema.Attribute.Relation<'manyToOne', 'api::vendor.vendor'>;
   };
 }
 
@@ -4457,8 +4441,6 @@ export interface ApiPosKeuanganPosKeuangan extends Struct.CollectionTypeSchema {
       'api::pos-keuangan.pos-keuangan'
     > &
       Schema.Attribute.Private;
-    mata_uang: Schema.Attribute.Enumeration<['IDR', 'USD', 'EUR']> &
-      Schema.Attribute.DefaultTo<'IDR'>;
     nama_pemilik: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 200;
@@ -6114,7 +6096,6 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    currency: Schema.Attribute.String & Schema.Attribute.DefaultTo<'IDR'>;
     deductions: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {

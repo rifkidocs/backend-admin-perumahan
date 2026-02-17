@@ -161,33 +161,6 @@
       "nullable": true,
       "description": "Nomor dokumen referensi terkait (PO, SPK, dll)"
     },
-    "nomor_transaksi": {
-      "type": "string",
-      "required": false,
-      "description": "Legacy field for backward compatibility"
-    },
-    "tanggal_transaksi": {
-      "type": "date",
-      "required": false,
-      "description": "Legacy field for backward compatibility"
-    },
-    "jenis_transaksi": {
-      "type": "enumeration",
-      "enum": [
-        "Pembayaran Supplier",
-        "Gaji",
-        "Operasional",
-        "Biaya Legal",
-        "Lainnya"
-      ],
-      "required": false,
-      "description": "Legacy field for backward compatibility"
-    },
-    "nominal": {
-      "type": "decimal",
-      "required": false,
-      "description": "Legacy field for backward compatibility"
-    },
     "salary_id": {
       "type": "relation",
       "relation": "manyToOne",
@@ -202,44 +175,10 @@
       "nullable": true,
       "description": "Informasi rekening bank untuk transfer (auto-generated dari salary)"
     },
-    "metode_pembayaran": {
-      "type": "enumeration",
-      "enum": [
-        "Transfer",
-        "Tunai",
-        "Cek",
-        "Escrow"
-      ],
-      "required": false,
-      "description": "Legacy field for backward compatibility"
-    },
-    "keterangan": {
-      "type": "string",
-      "required": false,
-      "description": "Legacy field for backward compatibility"
-    },
-    "penerima": {
-      "type": "string",
-      "required": false,
-      "description": "Legacy field for backward compatibility"
-    },
-    "vendor": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::vendor.vendor",
-      "inversedBy": "kas_keluars",
-      "description": "Legacy relation for backward compatibility"
-    },
     "purchasing": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::purchasing.purchasing",
-      "inversedBy": "kas_keluars"
-    },
-    "proyek_perumahan": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "kas_keluars"
     }
   }

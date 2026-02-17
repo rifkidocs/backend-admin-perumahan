@@ -48,10 +48,6 @@
       "type": "date",
       "required": true
     },
-    "currency": {
-      "type": "string",
-      "default": "IDR"
-    },
     "payment_method": {
       "type": "enumeration",
       "required": true,

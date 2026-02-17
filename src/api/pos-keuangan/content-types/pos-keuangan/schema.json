@@ -50,12 +50,6 @@
       "default": "tabungan",
       "description": "Jenis pos keuangan"
     },
-    "mata_uang": {
-      "type": "enumeration",
-      "enum": ["IDR", "USD", "EUR"],
-      "default": "IDR",
-      "description": "Mata uang rekening"
-    },
     "saldo_minimum": {
       "type": "decimal",
       "description": "Saldo minimum yang harus dipertahankan"
