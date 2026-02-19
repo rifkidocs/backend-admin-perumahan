@@ -4503,14 +4503,12 @@ export interface ApiProgresHarianProgresHarian
   };
   attributes: {
     aktivitas: Schema.Attribute.String &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 255;
       }>;
     catatan: Schema.Attribute.Text;
     catatan_kehadiran: Schema.Attribute.Text;
     completed_work: Schema.Attribute.Text &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;
         minLength: 10;
@@ -4587,7 +4585,6 @@ export interface ApiProgresHarianProgresHarian
     photos_after: Schema.Attribute.Media<'images', true>;
     photos_before: Schema.Attribute.Media<'images', true>;
     progress_after: Schema.Attribute.Integer &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
           max: 100;
@@ -4596,7 +4593,6 @@ export interface ApiProgresHarianProgresHarian
         number
       >;
     progress_before: Schema.Attribute.Integer &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
           max: 100;
@@ -4627,7 +4623,7 @@ export interface ApiProgresHarianProgresHarian
       'manyToOne',
       'api::unit-rumah.unit-rumah'
     >;
-    update_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    update_date: Schema.Attribute.Date;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

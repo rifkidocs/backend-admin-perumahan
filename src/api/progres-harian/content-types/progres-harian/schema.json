@@ -39,8 +39,7 @@
       "inversedBy": "progres_harians"
     },
     "update_date": {
-      "type": "date",
-      "required": true
+      "type": "date"
     },
     "status_harian": {
       "type": "enumeration",
@@ -54,18 +53,15 @@
     "progress_before": {
       "type": "integer",
       "min": 0,
-      "max": 100,
-      "required": true
+      "max": 100
     },
     "progress_after": {
       "type": "integer",
       "min": 0,
-      "max": 100,
-      "required": true
+      "max": 100
     },
     "completed_work": {
       "type": "text",
-      "required": true,
       "minLength": 10,
       "maxLength": 500
     },
@@ -80,7 +76,6 @@
     "photos_before": {
       "type": "media",
       "multiple": true,
-      "required": false,
       "allowedTypes": [
         "images"
       ]
@@ -88,7 +83,6 @@
     "photos_after": {
       "type": "media",
       "multiple": true,
-      "required": false,
       "allowedTypes": [
         "images"
       ]
@@ -102,8 +96,7 @@
     },
     "aktivitas": {
       "type": "string",
-      "maxLength": 255,
-      "required": true
+      "maxLength": 255
     },
     "deskripsi": {
       "type": "text"
