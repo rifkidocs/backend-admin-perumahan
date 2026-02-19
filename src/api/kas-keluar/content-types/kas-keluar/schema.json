@@ -22,6 +22,7 @@
       "enum": [
         "material",
         "gaji",
+        "insentif",
         "operasional",
         "legal",
         "lainnya"
@@ -134,9 +135,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::pos-keuangan.pos-keuangan",
-      "inversedBy": "kas_keluars",
-      "nullable": true,
-      "description": "Pos keuangan yang digunakan untuk pembayaran"
+      "inversedBy": "kas_keluars"
     },
     "department": {
       "type": "enumeration",

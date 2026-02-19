@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "insentifs",
+  "info": {
+    "singularName": "insentif",
+    "pluralName": "insentifs",
+    "displayName": "Insentif",
+    "description": "Manajemen Insentif Karyawan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "karyawan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "insentifs"
+    },
+    "jabatan": {
+      "type": "string"
+    },
+    "insentif_real": {
+      "type": "decimal",
+      "default": 0
+    },
+    "insentif_utj": {
+      "type": "decimal",
+      "default": 0
+    },
+    "bonus_kinerja": {
+      "type": "decimal",
+      "default": 0
+    },
+    "take_home_pay": {
+      "type": "decimal",
+      "default": 0
+    },
+    "keterangan": {
+      "type": "text"
+    },
+    "status_pembayaran": {
+      "type": "enumeration",
+      "default": "draft",
+      "enum": [
+        "draft",
+        "disetujui",
+        "ditolak"
+      ]
+    },
+    "tanggal_pembayaran": {
+      "type": "date"
+    }
+  }
+}

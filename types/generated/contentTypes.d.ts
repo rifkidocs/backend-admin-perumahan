@@ -1853,6 +1853,46 @@ export interface ApiHandoverDocumentHandoverDocument
   };
 }
 
+export interface ApiInsentifInsentif extends Struct.CollectionTypeSchema {
+  collectionName: 'insentifs';
+  info: {
+    description: 'Manajemen Insentif Karyawan';
+    displayName: 'Insentif';
+    pluralName: 'insentifs';
+    singularName: 'insentif';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    bonus_kinerja: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    insentif_real: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    insentif_utj: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    jabatan: Schema.Attribute.String;
+    karyawan: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
+    keterangan: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::insentif.insentif'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    status_pembayaran: Schema.Attribute.Enumeration<
+      ['draft', 'disetujui', 'ditolak']
+    > &
+      Schema.Attribute.DefaultTo<'draft'>;
+    take_home_pay: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    tanggal_pembayaran: Schema.Attribute.Date;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiJabatanJabatan extends Struct.CollectionTypeSchema {
   collectionName: 'jabatans';
   info: {
@@ -2268,6 +2308,7 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     >;
     dokumen_karyawan: Schema.Attribute.Component<'komponen.dokumen', true>;
     foto_karyawan: Schema.Attribute.Media<'images'>;
+    insentifs: Schema.Attribute.Relation<'oneToMany', 'api::insentif.insentif'>;
     is_security_personnel: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
     jabatan: Schema.Attribute.Relation<'manyToOne', 'api::jabatan.jabatan'>;
@@ -2454,7 +2495,7 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
         maxLength: 200;
       }>;
     category: Schema.Attribute.Enumeration<
-      ['material', 'gaji', 'operasional', 'legal', 'lainnya']
+      ['material', 'gaji', 'insentif', 'operasional', 'legal', 'lainnya']
     > &
       Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
@@ -7956,6 +7997,7 @@ declare module '@strapi/strapi' {
       'api::fasilitas-proyek.fasilitas-proyek': ApiFasilitasProyekFasilitasProyek;
       'api::gudang.gudang': ApiGudangGudang;
       'api::handover-document.handover-document': ApiHandoverDocumentHandoverDocument;
+      'api::insentif.insentif': ApiInsentifInsentif;
       'api::jabatan.jabatan': ApiJabatanJabatan;
       'api::jadwal-kerja.jadwal-kerja': ApiJadwalKerjaJadwalKerja;
       'api::jadwal-marketing.jadwal-marketing': ApiJadwalMarketingJadwalMarketing;

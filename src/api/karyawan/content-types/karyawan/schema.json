@@ -356,6 +356,12 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "admin::user"
+    },
+    "insentifs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::insentif.insentif",
+      "mappedBy": "karyawan"
     }
   }
 }
