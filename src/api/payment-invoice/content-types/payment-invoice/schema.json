@@ -43,13 +43,33 @@
     "category": {
       "type": "enumeration",
       "required": true,
-      "enum": ["material", "jasa", "operasional", "legal", "lainnya"]
+      "enum": ["opname tukang", "hutang tanah", "hutang supplier", "lainnya"]
     },
     "project": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "payment_invoices"
+    },
+    "pekerja": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pekerja.pekerja",
+      "inversedBy": "payment_invoices"
+    },
+    "unit_rumah": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "payment_invoices"
+    },
+    "luas_tanah": {
+      "type": "decimal",
+      "min": 0
+    },
+    "atas_nama": {
+      "type": "string",
+      "maxLength": 100
     },
     "paymentTerms": {
       "type": "enumeration",
@@ -81,6 +101,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::riwayat-pembayaran.riwayat-pembayaran",
+      "mappedBy": "payment_invoice"
+    },
+    "penyesuaian_hutangs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::penyesuaian-hutang.penyesuaian-hutang",
       "mappedBy": "payment_invoice"
     },
     "invoiceDocument": {
@@ -138,10 +164,6 @@
       "type": "string",
       "maxLength": 50
     },
-    "department": {
-      "type": "enumeration",
-      "enum": ["gudang", "proyek", "hrm", "marketing", "operasional", "umum"]
-    },
     "createdBy": {
       "type": "relation",
       "relation": "manyToOne",
@@ -151,12 +173,6 @@
     "invoiceDate": {
       "type": "date",
       "required": true
-    },
-    "currency": {
-      "type": "enumeration",
-      "required": true,
-      "default": "IDR",
-      "enum": ["IDR", "USD", "EUR"]
     },
     "statusInvoice": {
       "type": "enumeration",

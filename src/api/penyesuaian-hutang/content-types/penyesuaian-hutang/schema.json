@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "penyesuaian_hutangs",
+  "info": {
+    "singularName": "penyesuaian-hutang",
+    "pluralName": "penyesuaian-hutangs",
+    "displayName": "Penyesuaian Hutang",
+    "description": "Pencatatan penyesuaian (penambahan) nilai hutang"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "amount": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "keterangan": {
+      "type": "string",
+      "required": true
+    },
+    "tanggal": {
+      "type": "date",
+      "required": true
+    },
+    "payment_invoice": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::payment-invoice.payment-invoice",
+      "inversedBy": "penyesuaian_hutangs"
+    },
+    "dibuat_oleh": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    }
+  }
+}

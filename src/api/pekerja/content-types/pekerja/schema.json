@@ -112,6 +112,12 @@
       "target": "api::progres-harian.progres-harian",
       "mappedBy": "tukang"
     },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "pekerja"
+    },
     "nomor_hp": {
       "type": "string"
     }

@@ -189,7 +189,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     }
 
     // Validate category
-    const validCategories = ['material', 'jasa', 'operasional', 'legal', 'lainnya'];
+    const validCategories = ["opname tukang", "hutang tanah", "hutang supplier", "lainnya"];
     if (invoiceData.category && !validCategories.includes(invoiceData.category)) {
       errors.push('Invalid category');
     }

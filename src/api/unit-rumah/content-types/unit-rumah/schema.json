@@ -231,6 +231,12 @@
       "relation": "oneToMany",
       "target": "api::piutang-konsumen.piutang-konsumen",
       "mappedBy": "unit"
+    },
+    "payment_invoices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::payment-invoice.payment-invoice",
+      "mappedBy": "unit_rumah"
     }
   }
 }

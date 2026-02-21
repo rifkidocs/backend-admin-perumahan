@@ -3525,20 +3525,18 @@ export interface ApiPaymentInvoicePaymentInvoice
       'api::karyawan.karyawan'
     >;
     approvedDate: Schema.Attribute.DateTime;
+    atas_nama: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
     attachments: Schema.Attribute.Media<'images' | 'files', true>;
     category: Schema.Attribute.Enumeration<
-      ['material', 'jasa', 'operasional', 'legal', 'lainnya']
+      ['opname tukang', 'hutang tanah', 'hutang supplier', 'lainnya']
     > &
       Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    currency: Schema.Attribute.Enumeration<['IDR', 'USD', 'EUR']> &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'IDR'>;
-    department: Schema.Attribute.Enumeration<
-      ['gudang', 'proyek', 'hrm', 'marketing', 'operasional', 'umum']
-    >;
     description: Schema.Attribute.Text &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -3573,6 +3571,13 @@ export interface ApiPaymentInvoicePaymentInvoice
       'api::payment-invoice.payment-invoice'
     > &
       Schema.Attribute.Private;
+    luas_tanah: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     notes: Schema.Attribute.Text &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 2000;
@@ -3600,6 +3605,7 @@ export interface ApiPaymentInvoicePaymentInvoice
       ['cash', 'dp', 'termin', 'net30', 'net60']
     > &
       Schema.Attribute.Required;
+    pekerja: Schema.Attribute.Relation<'manyToOne', 'api::pekerja.pekerja'>;
     penaltyAmount: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
@@ -3608,6 +3614,10 @@ export interface ApiPaymentInvoicePaymentInvoice
         number
       > &
       Schema.Attribute.DefaultTo<0>;
+    penyesuaian_hutangs: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::penyesuaian-hutang.penyesuaian-hutang'
+    >;
     priority: Schema.Attribute.Enumeration<
       ['low', 'normal', 'high', 'urgent']
     > &
@@ -3656,6 +3666,10 @@ export interface ApiPaymentInvoicePaymentInvoice
         number
       >;
     taxIncluded: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    unit_rumah: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -3713,6 +3727,10 @@ export interface ApiPekerjaPekerja extends Struct.CollectionTypeSchema {
       }>;
     nik: Schema.Attribute.String & Schema.Attribute.Unique;
     nomor_hp: Schema.Attribute.String;
+    payment_invoices: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::payment-invoice.payment-invoice'
+    >;
     penugasans: Schema.Attribute.Relation<
       'manyToMany',
       'api::penugasan.penugasan'
@@ -4092,6 +4110,53 @@ export interface ApiPenugasanPenugasan extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 500;
       }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPenyesuaianHutangPenyesuaianHutang
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'penyesuaian_hutangs';
+  info: {
+    description: 'Pencatatan penyesuaian (penambahan) nilai hutang';
+    displayName: 'Penyesuaian Hutang';
+    pluralName: 'penyesuaian-hutangs';
+    singularName: 'penyesuaian-hutang';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    amount: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dibuat_oleh: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
+    keterangan: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::penyesuaian-hutang.penyesuaian-hutang'
+    > &
+      Schema.Attribute.Private;
+    payment_invoice: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::payment-invoice.payment-invoice'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    tanggal: Schema.Attribute.Date & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -7267,6 +7332,10 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 1000;
       }>;
+    payment_invoices: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::payment-invoice.payment-invoice'
+    >;
     pengeluaran_materials: Schema.Attribute.Relation<
       'oneToMany',
       'api::pengeluaran-material.pengeluaran-material'
@@ -8022,6 +8091,7 @@ declare module '@strapi/strapi' {
       'api::penerimaan-material.penerimaan-material': ApiPenerimaanMaterialPenerimaanMaterial;
       'api::pengeluaran-material.pengeluaran-material': ApiPengeluaranMaterialPengeluaranMaterial;
       'api::penugasan.penugasan': ApiPenugasanPenugasan;
+      'api::penyesuaian-hutang.penyesuaian-hutang': ApiPenyesuaianHutangPenyesuaianHutang;
       'api::performance-review.performance-review': ApiPerformanceReviewPerformanceReview;
       'api::permit-document.permit-document': ApiPermitDocumentPermitDocument;
       'api::pertukaran-jadwal.pertukaran-jadwal': ApiPertukaranJadwalPertukaranJadwal;

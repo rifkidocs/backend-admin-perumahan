@@ -63,22 +63,30 @@ module.exports = {
 
     // Get current invoice for comparison using Document Service
     const currentInvoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
-      documentId: documentId
+      documentId: documentId,
+      populate: ['penyesuaian_hutangs']
     });
 
     if (!currentInvoice) return;
 
-    // Auto-calculate remaining amount if paid amount is updated
-    if (data.paid_amount !== undefined && data.paid_amount !== currentInvoice.paid_amount) {
-      const amount = data.amount !== undefined ? data.amount : currentInvoice.amount;
-      data.remaining_amount = amount - data.paid_amount;
+    // Calculate total amount including adjustments
+    const baseAmount = data.amount !== undefined ? data.amount : (currentInvoice.amount || 0);
+    const adjustmentsSum = (currentInvoice.penyesuaian_hutangs || []).reduce((sum, adj) => sum + (Number(adj.amount) || 0), 0);
+    const totalDebt = baseAmount + adjustmentsSum;
+
+    // Auto-calculate remaining amount if paid amount or base amount is updated
+    if (data.paid_amount !== undefined || data.amount !== undefined) {
+      const paidAmount = data.paid_amount !== undefined ? data.paid_amount : (currentInvoice.paid_amount || 0);
+      data.remaining_amount = totalDebt - paidAmount;
 
       // Auto-update status pembayaran based on payment
-      if (data.paid_amount >= amount) {
+      if (paidAmount >= totalDebt && totalDebt > 0) {
         data.status_pembayaran = 'paid';
         data.fullyPaidDate = new Date().toISOString();
-      } else if (data.paid_amount > 0 && data.paid_amount < amount) {
+      } else if (paidAmount > 0 && paidAmount < totalDebt) {
         data.status_pembayaran = 'partial';
+      } else if (paidAmount === 0) {
+        data.status_pembayaran = 'pending';
       }
 
       data.lastPaymentDate = new Date().toISOString();
