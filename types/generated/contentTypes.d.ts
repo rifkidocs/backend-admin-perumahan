@@ -2053,6 +2053,8 @@ export interface ApiJadwalMarketingJadwalMarketing
         },
         number
       >;
+    is_all_projects: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     lead: Schema.Attribute.Relation<
       'manyToOne',
       'api::lead-marketing.lead-marketing'

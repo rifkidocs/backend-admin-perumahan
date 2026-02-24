@@ -68,6 +68,10 @@
       "relation": "manyToMany",
       "target": "api::karyawan.karyawan"
     },
+    "is_all_projects": {
+      "type": "boolean",
+      "default": false
+    },
     "project": {
       "type": "relation",
       "relation": "manyToOne",

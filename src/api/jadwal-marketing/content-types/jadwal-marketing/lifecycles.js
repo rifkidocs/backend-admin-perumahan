@@ -2,6 +2,13 @@ module.exports = {
     async beforeCreate(event) {
         const { data } = event.params;
 
+        // Validasi relasi proyek
+        if (data.is_all_projects) {
+            data.project = null;
+        } else if (!data.project) {
+            throw new Error("Pilih salah satu proyek jika tidak mencentang 'Semua Proyek'");
+        }
+
         // Validasi tanggal
         if (data.start_date && data.end_date) {
             const startDate = new Date(data.start_date);
@@ -45,6 +52,22 @@ module.exports = {
 
     async beforeUpdate(event) {
         const { data, where } = event.params;
+
+        // Validasi relasi proyek jika diubah
+        if (data.is_all_projects !== undefined || data.project !== undefined) {
+            const existing = await strapi.entityService.findOne("api::jadwal-marketing.jadwal-marketing", where.id, {
+                populate: ['project']
+            });
+
+            const isAllProjects = data.is_all_projects !== undefined ? data.is_all_projects : existing.is_all_projects;
+            const project = data.project !== undefined ? data.project : existing.project;
+
+            if (isAllProjects) {
+                data.project = null;
+            } else if (!project) {
+                throw new Error("Pilih salah satu proyek jika tidak mencentang 'Semua Proyek'");
+            }
+        }
 
         // Validasi tanggal
         if (data.start_date && data.end_date) {
