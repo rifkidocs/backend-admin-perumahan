@@ -29,9 +29,9 @@
       "required": true
     },
     "jumlah_pembayaran": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
-      "min": 0
+      "min": "0"
     },
     "tanggal_pembayaran": {
       "type": "date",

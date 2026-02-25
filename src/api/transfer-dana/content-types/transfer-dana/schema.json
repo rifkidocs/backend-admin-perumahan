@@ -17,9 +17,9 @@
       "required": true
     },
     "nominal": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
-      "min": 0
+      "min": "0"
     },
     "pos_asal": {
       "type": "relation",

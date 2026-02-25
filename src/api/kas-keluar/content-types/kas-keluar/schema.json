@@ -31,11 +31,9 @@
       "description": "Kategori pengeluaran"
     },
     "amount": {
-      "type": "integer",
+      "type": "biginteger",
       "required": true,
-      "min": 1000,
-      "max": 9999999999,
-      "description": "Jumlah pengeluaran dalam Rupiah"
+      "min": "1000"
     },
     "supplier": {
       "type": "relation",

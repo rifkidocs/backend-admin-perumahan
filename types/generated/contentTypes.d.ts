@@ -2468,14 +2468,13 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.Integer &
+    amount: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          max: 9999999999;
-          min: 1000;
+          min: '1000';
         },
-        number
+        string
       >;
     approval_status: Schema.Attribute.Enumeration<
       ['pending', 'approved', 'rejected']
@@ -2570,14 +2569,13 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.Decimal &
+    amount: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          max: 9999999999;
-          min: 1;
+          min: '1';
         },
-        number
+        string
       >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -3509,14 +3507,13 @@ export interface ApiPaymentInvoicePaymentInvoice
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.Decimal &
+    amount: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          max: 999999999;
-          min: 0.01;
+          min: '1';
         },
-        number
+        string
       >;
     approvedBy: Schema.Attribute.Relation<
       'manyToOne',
@@ -3541,12 +3538,12 @@ export interface ApiPaymentInvoicePaymentInvoice
         maxLength: 1000;
         minLength: 10;
       }>;
-    discountAmount: Schema.Attribute.Decimal &
+    discountAmount: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     dueDate: Schema.Attribute.Date & Schema.Attribute.Required;
     fullyPaidDate: Schema.Attribute.DateTime;
@@ -3582,15 +3579,15 @@ export interface ApiPaymentInvoicePaymentInvoice
       }>;
     overdueNotified: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
-    paid_amount: Schema.Attribute.Decimal &
+    paid_amount: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       > &
-      Schema.Attribute.DefaultTo<0>;
+      Schema.Attribute.DefaultTo<'0'>;
     paidBy: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     paymentMethod: Schema.Attribute.Enumeration<
       ['transfer', 'cash', 'check', 'giro', 'others']
@@ -3604,14 +3601,14 @@ export interface ApiPaymentInvoicePaymentInvoice
     > &
       Schema.Attribute.Required;
     pekerja: Schema.Attribute.Relation<'manyToOne', 'api::pekerja.pekerja'>;
-    penaltyAmount: Schema.Attribute.Decimal &
+    penaltyAmount: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       > &
-      Schema.Attribute.DefaultTo<0>;
+      Schema.Attribute.DefaultTo<'0'>;
     penyesuaian_hutangs: Schema.Attribute.Relation<
       'oneToMany',
       'api::penyesuaian-hutang.penyesuaian-hutang'
@@ -3633,13 +3630,13 @@ export interface ApiPaymentInvoicePaymentInvoice
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 50;
       }>;
-    remaining_amount: Schema.Attribute.Decimal &
+    remaining_amount: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     riwayat_pembayarans: Schema.Attribute.Relation<
       'oneToMany',
@@ -3656,12 +3653,12 @@ export interface ApiPaymentInvoicePaymentInvoice
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'received'>;
     supplier: Schema.Attribute.Relation<'manyToOne', 'api::supplier.supplier'>;
-    taxAmount: Schema.Attribute.Decimal &
+    taxAmount: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     taxIncluded: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     unit_rumah: Schema.Attribute.Relation<
@@ -4127,13 +4124,13 @@ export interface ApiPenyesuaianHutangPenyesuaianHutang
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.Decimal &
+    amount: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -5826,7 +5823,8 @@ export interface ApiRabRab extends Struct.CollectionTypeSchema {
     >;
     status_rab: Schema.Attribute.Enumeration<['Draft', 'Disetujui', 'Revisi']>;
     tanggal_dibuat: Schema.Attribute.Date;
-    total_anggaran: Schema.Attribute.Decimal;
+    total_anggaran: Schema.Attribute.BigInteger &
+      Schema.Attribute.DefaultTo<'0'>;
     unit_rumah: Schema.Attribute.Relation<
       'manyToOne',
       'api::unit-rumah.unit-rumah'
@@ -5922,7 +5920,8 @@ export interface ApiRealisasiAnggaranRealisasiAnggaran
     status_realisasi_anggaran: Schema.Attribute.Enumeration<
       ['Proses', 'Selesai']
     >;
-    total_realisasi: Schema.Attribute.Decimal;
+    total_realisasi: Schema.Attribute.BigInteger &
+      Schema.Attribute.DefaultTo<'0'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -6118,13 +6117,13 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
       'manyToOne',
       'api::karyawan.karyawan'
     >;
-    jumlah_pembayaran: Schema.Attribute.Decimal &
+    jumlah_pembayaran: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     kategori_pembayaran: Schema.Attribute.Enumeration<
       ['piutang_konsumen', 'tagihan_supplier', 'subkontraktor', 'lainnya']
@@ -6188,31 +6187,31 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    basic_salary: Schema.Attribute.Decimal &
+    basic_salary: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    deductions: Schema.Attribute.Decimal &
+    deductions: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     effective_date: Schema.Attribute.Date & Schema.Attribute.Required;
-    harian: Schema.Attribute.Decimal &
+    harian: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     karyawan: Schema.Attribute.Relation<'oneToOne', 'api::karyawan.karyawan'>;
     kas_keluars: Schema.Attribute.Relation<
@@ -6225,39 +6224,39 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
       'api::salary.salary'
     > &
       Schema.Attribute.Private;
-    net_salary: Schema.Attribute.Decimal;
+    net_salary: Schema.Attribute.BigInteger;
     payment_method: Schema.Attribute.Enumeration<
       ['transfer', 'cash', 'check']
     > &
       Schema.Attribute.Required;
-    position_allowance: Schema.Attribute.Decimal &
+    position_allowance: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     publishedAt: Schema.Attribute.DateTime;
-    tunjangan_bpjs_kesehatan: Schema.Attribute.Decimal &
+    tunjangan_bpjs_kesehatan: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
-    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.Decimal &
+    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
-    tunjangan_kinerja: Schema.Attribute.Decimal &
+    tunjangan_kinerja: Schema.Attribute.BigInteger &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -6850,7 +6849,8 @@ export interface ApiSupplierSupplier extends Struct.CollectionTypeSchema {
       ['active', 'inactive', 'blacklist']
     > &
       Schema.Attribute.DefaultTo<'active'>;
-    totalPurchases: Schema.Attribute.Decimal;
+    totalPurchases: Schema.Attribute.BigInteger &
+      Schema.Attribute.DefaultTo<'0'>;
     type: Schema.Attribute.Enumeration<['Perusahaan', 'Individu']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -7050,13 +7050,13 @@ export interface ApiTransferDanaTransferDana
       'api::transfer-dana.transfer-dana'
     > &
       Schema.Attribute.Private;
-    nominal: Schema.Attribute.Decimal &
+    nominal: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     pos_asal: Schema.Attribute.Relation<
       'manyToOne',

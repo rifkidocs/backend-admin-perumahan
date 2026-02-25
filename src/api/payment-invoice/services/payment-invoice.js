@@ -137,7 +137,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     return {
       period: `${days} days`,
-      totalAmountDue: upcomingPayments.reduce((sum, p) => sum + p.remaining_amount, 0),
+      totalAmountDue: upcomingPayments.reduce((sum, p) => sum + (Number(p.remaining_amount) || 0), 0),
       cashFlowByDate: Object.values(cashFlowByDate),
       generatedAt: today.toISOString()
     };
@@ -219,9 +219,9 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     const statistics = {
       total: allInvoices.length,
-      totalAmount: allInvoices.reduce((sum, inv) => sum + inv.amount, 0),
-      paid_amount: allInvoices.reduce((sum, inv) => sum + inv.paid_amount, 0),
-      outstandingAmount: allInvoices.reduce((sum, inv) => sum + inv.remaining_amount, 0),
+      totalAmount: allInvoices.reduce((sum, inv) => sum + (Number(inv.amount) || 0), 0),
+      paid_amount: allInvoices.reduce((sum, inv) => sum + (Number(inv.paid_amount) || 0), 0),
+      outstandingAmount: allInvoices.reduce((sum, inv) => sum + (Number(inv.remaining_amount) || 0), 0),
       statusDistribution: {},
       categoryDistribution: {},
       departmentDistribution: {},
@@ -237,7 +237,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
       // Category distribution
       if (invoice.category) {
-        statistics.categoryDistribution[invoice.category] = (statistics.categoryDistribution[invoice.category] || 0) + invoice.amount;
+        statistics.categoryDistribution[invoice.category] = (statistics.categoryDistribution[invoice.category] || 0) + (Number(invoice.amount) || 0);
       }
 
       // Department distribution
@@ -250,13 +250,13 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
         if (!statistics.topSuppliers[invoice.supplier.name]) {
           statistics.topSuppliers[invoice.supplier.name] = 0;
         }
-        statistics.topSuppliers[invoice.supplier.name] += invoice.amount;
+        statistics.topSuppliers[invoice.supplier.name] += (Number(invoice.amount) || 0);
       }
 
       // Overdue calculation
       if (invoice.status_pembayaran === 'overdue') {
         statistics.overdueCount += 1;
-        statistics.overdueAmount += invoice.remaining_amount;
+        statistics.overdueAmount += (Number(invoice.remaining_amount) || 0);
       }
     });
 

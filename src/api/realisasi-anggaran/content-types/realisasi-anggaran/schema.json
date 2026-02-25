@@ -22,7 +22,8 @@
       ]
     },
     "total_realisasi": {
-      "type": "decimal"
+      "type": "biginteger",
+      "default": "0"
     },
     "persentase_terhadap_rab": {
       "type": "decimal"

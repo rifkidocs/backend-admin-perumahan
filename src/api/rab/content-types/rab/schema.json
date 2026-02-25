@@ -26,7 +26,8 @@
       ]
     },
     "total_anggaran": {
-      "type": "decimal"
+      "type": "biginteger",
+      "default": "0"
     },
     "item_rab": {
       "type": "json"

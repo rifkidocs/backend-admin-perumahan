@@ -23,8 +23,8 @@ module.exports = {
     if (data.paid_amount === undefined) data.paid_amount = 0;
     if (data.remaining_amount === undefined) data.remaining_amount = data.amount;
 
-    // Calculate remaining amount
-    data.remaining_amount = data.amount - (data.paid_amount || 0);
+    // Calculate remaining amount - using Number() to handle strings from biginteger
+    data.remaining_amount = Number(data.amount) - (Number(data.paid_amount) || 0);
   },
 
   // After creating an invoice
@@ -38,10 +38,14 @@ module.exports = {
           documentId: result.supplier.documentId || result.supplier
         });
         if (supplier) {
+          // Both result.amount and supplier.totalPurchases are strings from biginteger
+          const amount = Number(result.amount) || 0;
+          const currentTotal = Number(supplier.totalPurchases) || 0;
+
           await strapi.documents('api::supplier.supplier').update({
             documentId: supplier.documentId,
             data: {
-              totalPurchases: (supplier.totalPurchases || 0) + result.amount,
+              totalPurchases: currentTotal + amount,
               lastOrderDate: new Date().toISOString().split('T')[0]
             }
           });
@@ -69,14 +73,14 @@ module.exports = {
 
     if (!currentInvoice) return;
 
-    // Calculate total amount including adjustments
-    const baseAmount = data.amount !== undefined ? data.amount : (currentInvoice.amount || 0);
+    // Calculate total amount including adjustments - using Number() for biginteger strings
+    const baseAmount = data.amount !== undefined ? Number(data.amount) : (Number(currentInvoice.amount) || 0);
     const adjustmentsSum = (currentInvoice.penyesuaian_hutangs || []).reduce((sum, adj) => sum + (Number(adj.amount) || 0), 0);
     const totalDebt = baseAmount + adjustmentsSum;
 
     // Auto-calculate remaining amount if paid amount or base amount is updated
     if (data.paid_amount !== undefined || data.amount !== undefined) {
-      const paidAmount = data.paid_amount !== undefined ? data.paid_amount : (currentInvoice.paid_amount || 0);
+      const paidAmount = data.paid_amount !== undefined ? Number(data.paid_amount) : (Number(currentInvoice.paid_amount) || 0);
       data.remaining_amount = totalDebt - paidAmount;
 
       // Auto-update status pembayaran based on payment

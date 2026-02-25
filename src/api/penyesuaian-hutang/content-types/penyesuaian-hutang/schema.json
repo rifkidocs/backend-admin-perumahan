@@ -13,9 +13,9 @@
   "pluginOptions": {},
   "attributes": {
     "amount": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
-      "min": 0
+      "min": "0"
     },
     "keterangan": {
       "type": "string",

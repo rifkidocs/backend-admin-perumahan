@@ -25,10 +25,9 @@
       "inversedBy": "payment_invoices"
     },
     "amount": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
-      "min": 0.01,
-      "max": 999999999
+      "min": "1"
     },
     "dueDate": {
       "type": "date",
@@ -87,15 +86,15 @@
       "enum": ["pending", "partial", "paid", "overdue", "cancelled"]
     },
     "paid_amount": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
-      "default": 0,
-      "min": 0
+      "default": "0",
+      "min": "0"
     },
     "remaining_amount": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
-      "min": 0
+      "min": "0"
     },
     "riwayat_pembayarans": {
       "type": "relation",
@@ -148,17 +147,17 @@
       "default": false
     },
     "taxAmount": {
-      "type": "decimal",
-      "min": 0
+      "type": "biginteger",
+      "min": "0"
     },
     "discountAmount": {
-      "type": "decimal",
-      "min": 0
+      "type": "biginteger",
+      "min": "0"
     },
     "penaltyAmount": {
-      "type": "decimal",
-      "default": 0,
-      "min": 0
+      "type": "biginteger",
+      "default": "0",
+      "min": "0"
     },
     "referenceNumber": {
       "type": "string",
