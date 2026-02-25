@@ -37,20 +37,12 @@
       "type": "decimal",
       "default": 0
     },
+    "effective_date": {
+      "type": "date",
+      "required": true
+    },
     "keterangan": {
       "type": "text"
-    },
-    "status_pembayaran": {
-      "type": "enumeration",
-      "default": "draft",
-      "enum": [
-        "draft",
-        "disetujui",
-        "ditolak"
-      ]
-    },
-    "tanggal_pembayaran": {
-      "type": "date"
     }
   }
 }

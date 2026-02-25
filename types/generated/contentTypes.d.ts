@@ -1869,6 +1869,7 @@ export interface ApiInsentifInsentif extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    effective_date: Schema.Attribute.Date & Schema.Attribute.Required;
     insentif_real: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     insentif_utj: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     jabatan: Schema.Attribute.String;
@@ -1881,12 +1882,7 @@ export interface ApiInsentifInsentif extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    status_pembayaran: Schema.Attribute.Enumeration<
-      ['draft', 'disetujui', 'ditolak']
-    > &
-      Schema.Attribute.DefaultTo<'draft'>;
     take_home_pay: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
-    tanggal_pembayaran: Schema.Attribute.Date;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
