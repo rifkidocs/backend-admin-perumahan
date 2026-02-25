@@ -51,8 +51,8 @@
       ]
     },
     "total_harga": {
-      "type": "biginteger",
-      "min": "0"
+      "type": "decimal",
+      "min": 0
     },
     "catatan": {
       "type": "text"

@@ -13,36 +13,36 @@
   "pluginOptions": {},
   "attributes": {
     "basic_salary": {
-      "type": "biginteger",
+      "type": "decimal",
       "required": true,
-      "min": "0"
+      "min": 0
     },
     "position_allowance": {
-      "type": "biginteger",
-      "min": "0"
+      "type": "decimal",
+      "min": 0
     },
     "tunjangan_kinerja": {
-      "type": "biginteger",
-      "min": "0"
+      "type": "decimal",
+      "min": 0
     },
     "harian": {
-      "type": "biginteger",
-      "min": "0"
+      "type": "decimal",
+      "min": 0
     },
     "tunjangan_bpjs_kesehatan": {
-      "type": "biginteger",
-      "min": "0"
+      "type": "decimal",
+      "min": 0
     },
     "tunjangan_bpjs_ketenagakerjaan": {
-      "type": "biginteger",
-      "min": "0"
+      "type": "decimal",
+      "min": 0
     },
     "deductions": {
-      "type": "biginteger",
-      "min": "0"
+      "type": "decimal",
+      "min": 0
     },
     "net_salary": {
-      "type": "biginteger"
+      "type": "decimal"
     },
     "effective_date": {
       "type": "date",

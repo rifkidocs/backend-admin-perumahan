@@ -52,8 +52,7 @@
       "type": "date"
     },
     "totalPurchases": {
-      "type": "biginteger",
-      "default": "0"
+      "type": "decimal"
     },
     "documents": {
       "type": "component",

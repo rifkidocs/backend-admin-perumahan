@@ -52,7 +52,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
       }
 
       // Validate payment amount
-      if (paymentData.paid_amount > currentInvoice.amount) {
+      if (Number(paymentData.paid_amount) > Number(currentInvoice.amount)) {
         return ctx.badRequest('Payment amount exceeds invoice total');
       }
 
@@ -61,7 +61,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
       if (paymentData.paymentEntry) {
         updatedPaymentHistory.push({
           date: paymentData.paymentEntry.date || new Date().toISOString().split('T')[0],
-          amount: paymentData.paymentEntry.amount,
+          amount: Number(paymentData.paymentEntry.amount),
           method: paymentData.paymentEntry.method,
           reference: paymentData.paymentEntry.reference,
           bankAccount: paymentData.paymentEntry.bankAccount,
@@ -73,11 +73,11 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
       }
 
       // Calculate remaining amount
-      const remaining_amount = currentInvoice.amount - paymentData.paid_amount;
+      const remaining_amount = Number(currentInvoice.amount) - Number(paymentData.paid_amount);
 
       // Determine status pembayaran
       let status_pembayaran = 'partial';
-      if (paymentData.paid_amount === 0) {
+      if (Number(paymentData.paid_amount) === 0) {
         status_pembayaran = 'pending';
       } else if (remaining_amount <= 0) {
         status_pembayaran = 'paid';
@@ -87,7 +87,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
         documentId: id,
         data: {
           status_pembayaran,
-          paid_amount: paymentData.paid_amount,
+          paid_amount: Number(paymentData.paid_amount),
           remaining_amount: Math.max(0, remaining_amount),
           payment_history: updatedPaymentHistory,
           lastPaymentDate: paymentData.paid_amount > 0 ? new Date().toISOString() : currentInvoice.lastPaymentDate,
@@ -212,9 +212,9 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     // Calculate summary
     const summary = {
       totalInvoices: invoices.length,
-      totalAmount: invoices.reduce((sum, inv) => sum + inv.amount, 0),
-      totalPaid: invoices.reduce((sum, inv) => sum + inv.paid_amount, 0),
-      totalRemaining: invoices.reduce((sum, inv) => sum + inv.remaining_amount, 0),
+      totalAmount: invoices.reduce((sum, inv) => sum + Number(inv.amount), 0),
+      totalPaid: invoices.reduce((sum, inv) => sum + Number(inv.paid_amount), 0),
+      totalRemaining: invoices.reduce((sum, inv) => sum + Number(inv.remaining_amount), 0),
       statusBreakdown: {
         pending: invoices.filter(inv => inv.status_pembayaran === 'pending').length,
         partial: invoices.filter(inv => inv.status_pembayaran === 'partial').length,
@@ -228,7 +228,7 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
     // Category breakdown
     invoices.forEach(inv => {
       if (inv.category) {
-        summary.categoryBreakdown[inv.category] = (summary.categoryBreakdown[inv.category] || 0) + inv.amount;
+        summary.categoryBreakdown[inv.category] = (summary.categoryBreakdown[inv.category] || 0) + Number(inv.amount);
       }
     });
 

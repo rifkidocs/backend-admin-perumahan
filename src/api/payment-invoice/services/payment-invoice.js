@@ -59,7 +59,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     // Penalty calculation: 1% per month overdue of the remaining amount
     const monthlyPenaltyRate = 0.01;
     const monthsOverdue = daysOverdue / 30;
-    const penaltyAmount = invoice.remaining_amount * monthlyPenaltyRate * monthsOverdue;
+    const penaltyAmount = Number(invoice.remaining_amount) * monthlyPenaltyRate * monthsOverdue;
 
     return Math.round(penaltyAmount);
   },
@@ -125,19 +125,19 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
           invoices: []
         };
       }
-      cashFlowByDate[dueDate].totalAmount += payment.remaining_amount;
+      cashFlowByDate[dueDate].totalAmount += Number(payment.remaining_amount);
       cashFlowByDate[dueDate].invoices.push({
         documentId: payment.documentId,
         invoiceNumber: payment.invoiceNumber,
         supplier: payment.supplier?.name,
-        remaining_amount: payment.remaining_amount,
+        remaining_amount: Number(payment.remaining_amount),
         category: payment.category
       });
     });
 
     return {
       period: `${days} days`,
-      totalAmountDue: upcomingPayments.reduce((sum, p) => sum + (Number(p.remaining_amount) || 0), 0),
+      totalAmountDue: upcomingPayments.reduce((sum, p) => sum + Number(p.remaining_amount), 0),
       cashFlowByDate: Object.values(cashFlowByDate),
       generatedAt: today.toISOString()
     };
@@ -219,9 +219,9 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     const statistics = {
       total: allInvoices.length,
-      totalAmount: allInvoices.reduce((sum, inv) => sum + (Number(inv.amount) || 0), 0),
-      paid_amount: allInvoices.reduce((sum, inv) => sum + (Number(inv.paid_amount) || 0), 0),
-      outstandingAmount: allInvoices.reduce((sum, inv) => sum + (Number(inv.remaining_amount) || 0), 0),
+      totalAmount: allInvoices.reduce((sum, inv) => sum + Number(inv.amount), 0),
+      paid_amount: allInvoices.reduce((sum, inv) => sum + Number(inv.paid_amount), 0),
+      outstandingAmount: allInvoices.reduce((sum, inv) => sum + Number(inv.remaining_amount), 0),
       statusDistribution: {},
       categoryDistribution: {},
       departmentDistribution: {},
@@ -237,7 +237,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
       // Category distribution
       if (invoice.category) {
-        statistics.categoryDistribution[invoice.category] = (statistics.categoryDistribution[invoice.category] || 0) + (Number(invoice.amount) || 0);
+        statistics.categoryDistribution[invoice.category] = (statistics.categoryDistribution[invoice.category] || 0) + Number(invoice.amount);
       }
 
       // Department distribution
@@ -250,13 +250,13 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
         if (!statistics.topSuppliers[invoice.supplier.name]) {
           statistics.topSuppliers[invoice.supplier.name] = 0;
         }
-        statistics.topSuppliers[invoice.supplier.name] += (Number(invoice.amount) || 0);
+        statistics.topSuppliers[invoice.supplier.name] += Number(invoice.amount);
       }
 
       // Overdue calculation
       if (invoice.status_pembayaran === 'overdue') {
         statistics.overdueCount += 1;
-        statistics.overdueAmount += (Number(invoice.remaining_amount) || 0);
+        statistics.overdueAmount += Number(invoice.remaining_amount);
       }
     });
 

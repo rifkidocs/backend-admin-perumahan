@@ -27,7 +27,7 @@
     "amount": {
       "type": "biginteger",
       "required": true,
-      "min": "1"
+      "min": "0"
     },
     "dueDate": {
       "type": "date",

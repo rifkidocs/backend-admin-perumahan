@@ -12,9 +12,9 @@
       "required": true
     },
     "amount": {
-      "type": "decimal",
+      "type": "biginteger",
       "required": true,
-      "min": 0
+      "min": "0"
     },
     "method": {
       "type": "enumeration",

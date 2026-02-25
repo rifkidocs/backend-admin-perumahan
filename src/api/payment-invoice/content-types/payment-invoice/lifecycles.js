@@ -21,9 +21,9 @@ module.exports = {
     if (!data.status_pembayaran) data.status_pembayaran = 'pending';
     if (!data.statusInvoice) data.statusInvoice = 'received';
     if (data.paid_amount === undefined) data.paid_amount = 0;
-    if (data.remaining_amount === undefined) data.remaining_amount = data.amount;
+    if (data.remaining_amount === undefined) data.remaining_amount = Number(data.amount);
 
-    // Calculate remaining amount - using Number() to handle strings from biginteger
+    // Calculate remaining amount
     data.remaining_amount = Number(data.amount) - (Number(data.paid_amount) || 0);
   },
 
@@ -38,14 +38,10 @@ module.exports = {
           documentId: result.supplier.documentId || result.supplier
         });
         if (supplier) {
-          // Both result.amount and supplier.totalPurchases are strings from biginteger
-          const amount = Number(result.amount) || 0;
-          const currentTotal = Number(supplier.totalPurchases) || 0;
-
           await strapi.documents('api::supplier.supplier').update({
             documentId: supplier.documentId,
             data: {
-              totalPurchases: currentTotal + amount,
+              totalPurchases: (Number(supplier.totalPurchases) || 0) + Number(result.amount),
               lastOrderDate: new Date().toISOString().split('T')[0]
             }
           });
@@ -73,7 +69,7 @@ module.exports = {
 
     if (!currentInvoice) return;
 
-    // Calculate total amount including adjustments - using Number() for biginteger strings
+    // Calculate total amount including adjustments
     const baseAmount = data.amount !== undefined ? Number(data.amount) : (Number(currentInvoice.amount) || 0);
     const adjustmentsSum = (currentInvoice.penyesuaian_hutangs || []).reduce((sum, adj) => sum + (Number(adj.amount) || 0), 0);
     const totalDebt = baseAmount + adjustmentsSum;
@@ -118,7 +114,7 @@ module.exports = {
       documentId: documentId
     });
 
-    if (invoice && invoice.paid_amount > 0) {
+    if (invoice && Number(invoice.paid_amount) > 0) {
       throw new Error('Cannot delete invoice with existing payments');
     }
   },
