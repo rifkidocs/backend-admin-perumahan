@@ -95,13 +95,13 @@ export interface KomponenInvoicePaymentRecord extends Struct.ComponentSchema {
     icon: 'hand-holding-usd';
   };
   attributes: {
-    amount: Schema.Attribute.Decimal &
+    amount: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: 0;
+          min: '0';
         },
-        number
+        string
       >;
     bankAccount: Schema.Attribute.String;
     date: Schema.Attribute.Date & Schema.Attribute.Required;

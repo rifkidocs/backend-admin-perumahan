@@ -36,6 +36,88 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     return `INV-${year}-${month}-${String(sequence).padStart(3, '0')}`;
   },
 
+  // Synchronize invoice totals (paid_amount, remaining_amount, status)
+  async syncInvoiceTotals(documentId) {
+    if (!documentId || typeof documentId === 'object') {
+      console.log(`[Sync] Invalid documentId:`, documentId);
+      return null;
+    }
+    console.log(`[Sync] Starting sync for Invoice: ${documentId}`);
+    
+    const invoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
+      documentId: documentId,
+      populate: ['penyesuaian_hutangs', 'riwayat_pembayarans']
+    });
+
+    if (!invoice) {
+      console.log(`[Sync] Invoice not found: ${documentId}`);
+      return null;
+    }
+
+    const baseAmount = Number(invoice.amount) || 0;
+    console.log(`[Sync] Base Amount from DB: ${baseAmount}`);
+    
+    // Sum all adjustments
+    const adjustmentsSum = (invoice.penyesuaian_hutangs || []).reduce((sum, adj) => {
+      const amount = Number(adj.amount) || 0;
+      console.log(`[Sync] DEBUG ADJ OBJECT: ${JSON.stringify(adj)}`);
+      
+      if (adj.tipe_penyesuaian === 'pengurangan') {
+        console.log(`[Sync] Action: SUBTRACT (-${amount}) because type is ${adj.tipe_penyesuaian}`);
+        return sum - amount;
+      } else {
+        console.log(`[Sync] Action: ADD (+${amount}) because type is ${adj.tipe_penyesuaian || 'null/penambahan'}`);
+        return sum + amount;
+      }
+    }, 0);
+
+    const totalDebt = baseAmount + adjustmentsSum;
+
+    // Sum all successful payments
+    console.log(`[Sync] Found ${invoice.riwayat_pembayarans?.length || 0} riwayat records`);
+    const paidSum = (invoice.riwayat_pembayarans || []).reduce((sum, pay) => {
+      console.log(`[Sync] Checking Riwayat: amount=${pay.jumlah_pembayaran}, status=${pay.status_pembayaran}`);
+      if (pay.status_pembayaran === 'Berhasil') {
+        return sum + (Number(pay.jumlah_pembayaran) || 0);
+      }
+      return sum;
+    }, 0);
+
+    const remainingAmount = Math.max(0, totalDebt - paidSum);
+
+    // Determine status pembayaran
+    let status_pembayaran = 'pending';
+    if (paidSum >= totalDebt && totalDebt > 0) {
+      status_pembayaran = 'paid';
+    } else if (paidSum > 0) {
+      status_pembayaran = 'partial';
+    }
+
+    console.log(`[Sync] Calculated for ${invoice.invoiceNumber}: TotalDebt=${totalDebt}, Paid=${paidSum}, Remaining=${remainingAmount}, Status=${status_pembayaran}`);
+
+    // CEK: Jika data yang akan diupdate sama dengan data sekarang, JANGAN update lagi (hindari loop)
+    if (
+      Number(invoice.paid_amount) === paidSum && 
+      Number(invoice.remaining_amount) === remainingAmount && 
+      invoice.status_pembayaran === status_pembayaran
+    ) {
+      console.log(`[Sync] No changes detected for ${invoice.invoiceNumber}. Skipping update to prevent loop.`);
+      return invoice;
+    }
+
+    console.log(`[Sync] Applying update to ${invoice.invoiceNumber}...`);
+    return await strapi.documents('api::payment-invoice.payment-invoice').update({
+      documentId: documentId,
+      data: {
+        paid_amount: paidSum,
+        remaining_amount: remainingAmount,
+        status_pembayaran,
+        fullyPaidDate: status_pembayaran === 'paid' ? new Date().toISOString() : invoice.fullyPaidDate,
+        lastPaymentDate: paidSum > 0 ? new Date().toISOString() : invoice.lastPaymentDate
+      }
+    });
+  },
+
   // Calculate overdue penalties
   async calculatePenalty(documentId) {
     const invoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({

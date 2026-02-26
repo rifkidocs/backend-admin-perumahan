@@ -1,11 +1,11 @@
 {
   "kind": "collectionType",
-  "collectionName": "penyesuaian_hutangs",
+  "collectionName": "penyesuaian_piutangs",
   "info": {
-    "singularName": "penyesuaian-hutang",
-    "pluralName": "penyesuaian-hutangs",
-    "displayName": "Penyesuaian Hutang",
-    "description": "Pencatatan penyesuaian (penambahan) nilai hutang"
+    "singularName": "penyesuaian-piutang",
+    "pluralName": "penyesuaian-piutangs",
+    "displayName": "Penyesuaian Piutang",
+    "description": "Pencatatan penyesuaian (penambahan) nilai piutang konsumen"
   },
   "options": {
     "draftAndPublish": false
@@ -31,11 +31,11 @@
       "type": "date",
       "required": true
     },
-    "payment_invoice": {
+    "piutang_konsumen": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::payment-invoice.payment-invoice",
-      "inversedBy": "penyesuaian_hutangs"
+      "target": "api::piutang-konsumen.piutang-konsumen",
+      "inversedBy": "penyesuaian_piutangs"
     },
     "dibuat_oleh": {
       "type": "relation",

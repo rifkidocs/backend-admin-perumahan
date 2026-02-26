@@ -2468,13 +2468,14 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.BigInteger &
+    amount: Schema.Attribute.Integer &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '1000';
+          max: 9999999999;
+          min: 1000;
         },
-        string
+        number
       >;
     approval_status: Schema.Attribute.Enumeration<
       ['pending', 'approved', 'rejected']
@@ -2569,13 +2570,14 @@ export interface ApiKasMasukKasMasuk extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.BigInteger &
+    amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '1';
+          max: 9999999999;
+          min: 1;
         },
-        string
+        number
       >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -3511,7 +3513,7 @@ export interface ApiPaymentInvoicePaymentInvoice
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '1';
+          min: '0';
         },
         string
       >;
@@ -4152,6 +4154,63 @@ export interface ApiPenyesuaianHutangPenyesuaianHutang
     >;
     publishedAt: Schema.Attribute.DateTime;
     tanggal: Schema.Attribute.Date & Schema.Attribute.Required;
+    tipe_penyesuaian: Schema.Attribute.Enumeration<
+      ['penambahan', 'pengurangan']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'penambahan'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPenyesuaianPiutangPenyesuaianPiutang
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'penyesuaian_piutangs';
+  info: {
+    description: 'Pencatatan penyesuaian (penambahan) nilai piutang konsumen';
+    displayName: 'Penyesuaian Piutang';
+    pluralName: 'penyesuaian-piutangs';
+    singularName: 'penyesuaian-piutang';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    amount: Schema.Attribute.BigInteger &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: '0';
+        },
+        string
+      >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dibuat_oleh: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
+    keterangan: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::penyesuaian-piutang.penyesuaian-piutang'
+    > &
+      Schema.Attribute.Private;
+    piutang_konsumen: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::piutang-konsumen.piutang-konsumen'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    tanggal: Schema.Attribute.Date & Schema.Attribute.Required;
+    tipe_penyesuaian: Schema.Attribute.Enumeration<
+      ['penambahan', 'pengurangan']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'penambahan'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -4406,11 +4465,24 @@ export interface ApiPiutangKonsumenPiutangKonsumen
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 1000;
       }>;
+    paid_amount: Schema.Attribute.BigInteger &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: '0';
+        },
+        string
+      > &
+      Schema.Attribute.DefaultTo<'0'>;
     payment_schedule: Schema.Attribute.Enumeration<
       ['cash', 'dp', 'termin', 'kpr']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'dp'>;
+    penyesuaian_piutangs: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::penyesuaian-piutang.penyesuaian-piutang'
+    >;
     project: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
@@ -5823,8 +5895,7 @@ export interface ApiRabRab extends Struct.CollectionTypeSchema {
     >;
     status_rab: Schema.Attribute.Enumeration<['Draft', 'Disetujui', 'Revisi']>;
     tanggal_dibuat: Schema.Attribute.Date;
-    total_anggaran: Schema.Attribute.BigInteger &
-      Schema.Attribute.DefaultTo<'0'>;
+    total_anggaran: Schema.Attribute.Decimal;
     unit_rumah: Schema.Attribute.Relation<
       'manyToOne',
       'api::unit-rumah.unit-rumah'
@@ -5920,8 +5991,7 @@ export interface ApiRealisasiAnggaranRealisasiAnggaran
     status_realisasi_anggaran: Schema.Attribute.Enumeration<
       ['Proses', 'Selesai']
     >;
-    total_realisasi: Schema.Attribute.BigInteger &
-      Schema.Attribute.DefaultTo<'0'>;
+    total_realisasi: Schema.Attribute.Decimal;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -6187,31 +6257,31 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    basic_salary: Schema.Attribute.BigInteger &
+    basic_salary: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    deductions: Schema.Attribute.BigInteger &
+    deductions: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     effective_date: Schema.Attribute.Date & Schema.Attribute.Required;
-    harian: Schema.Attribute.BigInteger &
+    harian: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     karyawan: Schema.Attribute.Relation<'oneToOne', 'api::karyawan.karyawan'>;
     kas_keluars: Schema.Attribute.Relation<
@@ -6224,39 +6294,39 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
       'api::salary.salary'
     > &
       Schema.Attribute.Private;
-    net_salary: Schema.Attribute.BigInteger;
+    net_salary: Schema.Attribute.Decimal;
     payment_method: Schema.Attribute.Enumeration<
       ['transfer', 'cash', 'check']
     > &
       Schema.Attribute.Required;
-    position_allowance: Schema.Attribute.BigInteger &
+    position_allowance: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     publishedAt: Schema.Attribute.DateTime;
-    tunjangan_bpjs_kesehatan: Schema.Attribute.BigInteger &
+    tunjangan_bpjs_kesehatan: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
-    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.BigInteger &
+    tunjangan_bpjs_ketenagakerjaan: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
-    tunjangan_kinerja: Schema.Attribute.BigInteger &
+    tunjangan_kinerja: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -6849,8 +6919,7 @@ export interface ApiSupplierSupplier extends Struct.CollectionTypeSchema {
       ['active', 'inactive', 'blacklist']
     > &
       Schema.Attribute.DefaultTo<'active'>;
-    totalPurchases: Schema.Attribute.BigInteger &
-      Schema.Attribute.DefaultTo<'0'>;
+    totalPurchases: Schema.Attribute.Decimal;
     type: Schema.Attribute.Enumeration<['Perusahaan', 'Individu']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -7050,13 +7119,13 @@ export interface ApiTransferDanaTransferDana
       'api::transfer-dana.transfer-dana'
     > &
       Schema.Attribute.Private;
-    nominal: Schema.Attribute.BigInteger &
+    nominal: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     pos_asal: Schema.Attribute.Relation<
       'manyToOne',
@@ -8090,6 +8159,7 @@ declare module '@strapi/strapi' {
       'api::pengeluaran-material.pengeluaran-material': ApiPengeluaranMaterialPengeluaranMaterial;
       'api::penugasan.penugasan': ApiPenugasanPenugasan;
       'api::penyesuaian-hutang.penyesuaian-hutang': ApiPenyesuaianHutangPenyesuaianHutang;
+      'api::penyesuaian-piutang.penyesuaian-piutang': ApiPenyesuaianPiutangPenyesuaianPiutang;
       'api::performance-review.performance-review': ApiPerformanceReviewPerformanceReview;
       'api::permit-document.permit-document': ApiPermitDocumentPermitDocument;
       'api::pertukaran-jadwal.pertukaran-jadwal': ApiPertukaranJadwalPertukaranJadwal;

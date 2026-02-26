@@ -39,70 +39,55 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
   async updatePayment(ctx) {
     const { id } = ctx.params;
     const { paymentData } = ctx.request.body;
+    
+    console.log(`[Controller] updatePayment for ${id}. Data:`, JSON.stringify(paymentData));
 
     try {
       // Get current invoice
       const currentInvoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
         documentId: id,
-        populate: ['payment_history']
+        populate: ['supplier', 'project']
       });
 
       if (!currentInvoice) {
         return ctx.notFound('Invoice found');
       }
 
-      // Validate payment amount
-      if (Number(paymentData.paid_amount) > Number(currentInvoice.amount)) {
-        return ctx.badRequest('Payment amount exceeds invoice total');
-      }
-
-      // Update payment history
-      const updatedPaymentHistory = [...(currentInvoice.payment_history || [])];
-      if (paymentData.paymentEntry) {
-        updatedPaymentHistory.push({
-          date: paymentData.paymentEntry.date || new Date().toISOString().split('T')[0],
-          amount: Number(paymentData.paymentEntry.amount),
-          method: paymentData.paymentEntry.method,
-          reference: paymentData.paymentEntry.reference,
-          bankAccount: paymentData.paymentEntry.bankAccount,
-          paidBy: paymentData.paymentEntry.paidBy,
-          notes: paymentData.paymentEntry.notes,
-          receiptDocument: paymentData.paymentEntry.receiptDocument,
-          processedAt: new Date().toISOString()
+      // Create Riwayat Pembayaran record if there is a payment
+      if (paymentData.paid_amount > 0) {
+        console.log(`[Controller] Creating Riwayat Pembayaran for ${id}...`);
+        await strapi.documents('api::riwayat-pembayaran.riwayat-pembayaran').create({
+          data: {
+            tipe_transaksi: 'keluar',
+            kategori_pembayaran: 'tagihan_supplier',
+            jumlah_pembayaran: Number(paymentData.paid_amount),
+            tanggal_pembayaran: paymentData.paymentEntry?.date || new Date().toISOString().split('T')[0],
+            metode_pembayaran: paymentData.paymentMethod || 'Transfer Bank',
+            nomor_referensi: paymentData.paymentEntry?.reference,
+            deskripsi: paymentData.paymentEntry?.notes || 'Pembayaran via Update Payment',
+            payment_invoice: id,
+            pos_keuangan: paymentData.pos_keuangan || paymentData.paymentEntry?.pos_keuangan,
+            status_pembayaran: 'Berhasil'
+          }
         });
+        // The lifecycle of riwayat-pembayaran will trigger syncInvoiceTotals
+      } else {
+        // If only updating metadata, sync manually
+        await strapi.service('api::payment-invoice.payment-invoice').syncInvoiceTotals(id);
       }
 
-      // Calculate remaining amount
-      const remaining_amount = Number(currentInvoice.amount) - Number(paymentData.paid_amount);
-
-      // Determine status pembayaran
-      let status_pembayaran = 'partial';
-      if (Number(paymentData.paid_amount) === 0) {
-        status_pembayaran = 'pending';
-      } else if (remaining_amount <= 0) {
-        status_pembayaran = 'paid';
-      }
-
-      const updatedInvoice = await strapi.documents('api::payment-invoice.payment-invoice').update({
+      // Fetch updated invoice to return
+      const updatedInvoice = await strapi.documents('api::payment-invoice.payment-invoice').findOne({
         documentId: id,
-        data: {
-          status_pembayaran,
-          paid_amount: Number(paymentData.paid_amount),
-          remaining_amount: Math.max(0, remaining_amount),
-          payment_history: updatedPaymentHistory,
-          lastPaymentDate: paymentData.paid_amount > 0 ? new Date().toISOString() : currentInvoice.lastPaymentDate,
-          fullyPaidDate: status_pembayaran === 'paid' ? new Date().toISOString() : currentInvoice.fullyPaidDate,
-          paymentMethod: paymentData.paymentMethod,
-          ...paymentData.additionalData
-        },
-        populate: ['supplier', 'project', 'approvedBy', 'createdBy']
+        populate: ['supplier', 'project', 'approvedBy', 'createdBy', 'riwayat_pembayarans']
       });
 
       ctx.send({
         data: updatedInvoice,
-        message: `Payment updated successfully. Status: ${status_pembayaran}`
+        message: `Payment processed successfully.`
       });
     } catch (error) {
+      console.error('[Controller] updatePayment Error:', error);
       ctx.badRequest('Payment update failed', { error: error.message });
     }
   },
