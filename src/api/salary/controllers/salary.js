@@ -99,7 +99,8 @@ module.exports = createCoreController('api::salary.salary', ({ strapi }) => ({
         try {
             const salary = await strapi.entityService.findOne('api::salary.salary', id, {
                 populate: {
-                    karyawan: true
+                    karyawan: true,
+                    pos_keuangan: true
                 }
             });
 

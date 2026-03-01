@@ -47,7 +47,9 @@ module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
         bankInfo: salaryData.payment_method === 'transfer' ?
           `${employee.nama_bank || ''} - ${employee.rekening_bank || ''}` : null,
         // Reference to salary
-        salary_id: salaryData.id
+        salary_id: salaryData.id,
+        // Link to pos keuangan
+        pos_keuangan: salaryData.pos_keuangan?.id || salaryData.pos_keuangan
       };
 
       console.log('Creating cash out transaction with data:', JSON.stringify(cashOutData, null, 2));
@@ -78,7 +80,8 @@ module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
         paymentMethod: salaryData.payment_method === 'check' ? 'cek' : salaryData.payment_method, // Map check -> cek
         bankInfo: salaryData.payment_method === 'transfer' ?
           `${employee.nama_bank || ''} - ${employee.rekening_bank || ''}` : null,
-        notes: `Diperbarui dari sistem gaji. ID Salary: ${salaryData.id}`
+        notes: `Diperbarui dari sistem gaji. ID Salary: ${salaryData.id}`,
+        pos_keuangan: salaryData.pos_keuangan?.id || salaryData.pos_keuangan
       };
 
       const updatedTransaction = await strapi.entityService.update('api::kas-keluar.kas-keluar', transaction.id, {
@@ -103,7 +106,12 @@ module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
       for (const employeeId of employeeIds) {
         try {
           const employee = await strapi.entityService.findOne('api::karyawan.karyawan', employeeId, {
-            populate: ['salary', 'penggajian']
+            populate: {
+              salary: {
+                populate: ['pos_keuangan']
+              },
+              penggajian: true
+            }
           });
 
           if (!employee) {
@@ -118,7 +126,7 @@ module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
 
           // Create cash out transaction
           const transaction = await this.createCashOutTransaction(employee.salary, employee);
-          results.push({ employeeId, employeeName: employee.nama_karyawan, transaction });
+          results.push({ employeeId, employeeName: employee.nama_lengkap, transaction });
 
         } catch (error) {
           errors.push({ employeeId, error: error.message });

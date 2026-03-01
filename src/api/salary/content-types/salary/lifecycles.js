@@ -71,7 +71,8 @@ module.exports = {
                 result.id,
                 {
                     populate: {
-                        karyawan: true
+                        karyawan: true,
+                        pos_keuangan: true
                     }
                 }
             );
@@ -102,7 +103,8 @@ module.exports = {
                 result.id,
                 {
                     populate: {
-                        karyawan: true
+                        karyawan: true,
+                        pos_keuangan: true
                     }
                 }
             );

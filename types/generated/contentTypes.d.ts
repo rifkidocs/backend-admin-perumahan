@@ -4636,6 +4636,7 @@ export interface ApiPosKeuanganPosKeuangan extends Struct.CollectionTypeSchema {
         maxLength: 50;
       }>;
     publishedAt: Schema.Attribute.DateTime;
+    salaries: Schema.Attribute.Relation<'oneToMany', 'api::salary.salary'>;
     saldo: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<0>;
@@ -6315,6 +6316,10 @@ export interface ApiSalarySalary extends Struct.CollectionTypeSchema {
       ['transfer', 'cash', 'check']
     > &
       Schema.Attribute.Required;
+    pos_keuangan: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pos-keuangan.pos-keuangan'
+    >;
     position_allowance: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
