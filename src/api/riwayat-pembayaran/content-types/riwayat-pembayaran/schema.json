@@ -95,6 +95,9 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan"
+    },
+    "alokasi_pembayaran": {
+      "type": "json"
     }
   }
 }

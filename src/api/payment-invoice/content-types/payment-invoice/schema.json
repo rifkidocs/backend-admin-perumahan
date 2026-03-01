@@ -215,6 +215,9 @@
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
       "inversedBy": "payment_invoices_paid"
+    },
+    "rincian_pekerjaan": {
+      "type": "json"
     }
   }
 }

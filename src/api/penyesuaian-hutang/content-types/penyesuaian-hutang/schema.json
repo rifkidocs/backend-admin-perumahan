@@ -41,6 +41,10 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan"
+    },
+    "item_id": {
+      "type": "string",
+      "description": "Diisi dengan ID item pekerjaan jika penyesuaian spesifik untuk satu item opname tukang"
     }
   }
 }

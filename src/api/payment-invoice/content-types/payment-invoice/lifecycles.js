@@ -60,13 +60,48 @@ module.exports = {
     await cleanupMediaOnUpdate(event);
     const { data, where } = event.params;
     console.log(`[Lifecycle] beforeUpdate for ${where.documentId || where.id}. Data:`, JSON.stringify(data));
+
+    // Intercept paymentData from Content Manager
+    if (data.paymentData) {
+      event.state = event.state || {};
+      event.state.paymentData = data.paymentData;
+      // We don't delete it because Strapi sometimes complains if we alter the object reference,
+      // or we just delete it from data to avoid validation errors
+      delete data.paymentData;
+    }
   },
 
   // After updating an invoice
   async afterUpdate(event) {
-    const { result } = event;
+    const { result, state } = event;
     console.log(`[Lifecycle] afterUpdate for Invoice: ${result.invoiceNumber}`);
     
+    // Process paymentData if it was intercepted
+    if (state && state.paymentData && state.paymentData.paid_amount > 0) {
+      const paymentData = state.paymentData;
+      try {
+        console.log(`[Lifecycle] Creating Riwayat Pembayaran from intercepted paymentData for ${result.documentId}...`);
+        await strapi.documents('api::riwayat-pembayaran.riwayat-pembayaran').create({
+          data: {
+            tipe_transaksi: 'keluar',
+            kategori_pembayaran: 'tagihan_supplier',
+            jumlah_pembayaran: Number(paymentData.paid_amount),
+            tanggal_pembayaran: paymentData.paymentEntry?.date || new Date().toISOString().split('T')[0],
+            metode_pembayaran: paymentData.paymentMethod || 'Transfer Bank',
+            nomor_referensi: paymentData.paymentEntry?.reference || '',
+            deskripsi: paymentData.paymentEntry?.notes || 'Pembayaran via Content Manager',
+            payment_invoice: result.documentId,
+            pos_keuangan: paymentData.pos_keuangan,
+            status_pembayaran: 'Berhasil',
+            alokasi_pembayaran: paymentData.alokasi_pembayaran || null
+          }
+        });
+        console.log(`[Lifecycle] Successfully created Riwayat Pembayaran`);
+      } catch (error) {
+        console.error(`[Lifecycle] Failed to create Riwayat Pembayaran:`, error);
+      }
+    }
+
     // Sync totals if amount changed
     await strapi.service('api::payment-invoice.payment-invoice').syncInvoiceTotals(result.documentId);
 

@@ -3653,6 +3653,7 @@ export interface ApiPaymentInvoicePaymentInvoice
         },
         string
       >;
+    rincian_pekerjaan: Schema.Attribute.JSON;
     riwayat_pembayarans: Schema.Attribute.Relation<
       'oneToMany',
       'api::riwayat-pembayaran.riwayat-pembayaran'
@@ -4154,6 +4155,7 @@ export interface ApiPenyesuaianHutangPenyesuaianHutang
       'manyToOne',
       'api::karyawan.karyawan'
     >;
+    item_id: Schema.Attribute.String;
     keterangan: Schema.Attribute.String & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -6184,6 +6186,7 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
     draftAndPublish: false;
   };
   attributes: {
+    alokasi_pembayaran: Schema.Attribute.JSON;
     bukti_pembayaran: Schema.Attribute.Media<'images' | 'files'>;
     catatan_internal: Schema.Attribute.Text &
       Schema.Attribute.SetMinMaxLength<{

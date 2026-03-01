@@ -67,7 +67,8 @@ module.exports = createCoreController('api::payment-invoice.payment-invoice', {
             deskripsi: paymentData.paymentEntry?.notes || 'Pembayaran via Update Payment',
             payment_invoice: id,
             pos_keuangan: paymentData.pos_keuangan || paymentData.paymentEntry?.pos_keuangan,
-            status_pembayaran: 'Berhasil'
+            status_pembayaran: 'Berhasil',
+            alokasi_pembayaran: paymentData.alokasi_pembayaran || null
           }
         });
         // The lifecycle of riwayat-pembayaran will trigger syncInvoiceTotals

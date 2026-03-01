@@ -75,10 +75,51 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     // Sum all successful payments
     console.log(`[Sync] Found ${invoice.riwayat_pembayarans?.length || 0} riwayat records`);
+    
+    // Process rincian_pekerjaan for itemized payments
+    let updatedRincianPekerjaan = invoice.rincian_pekerjaan ? JSON.parse(JSON.stringify(invoice.rincian_pekerjaan)) : null;
+    
+    if (updatedRincianPekerjaan && Array.isArray(updatedRincianPekerjaan)) {
+      updatedRincianPekerjaan.forEach(item => {
+        // Find if this specific item has any adjustments
+        const itemAdjustments = (invoice.penyesuaian_hutangs || []).filter(adj => adj.item_id === item.id);
+        const itemAdjSum = itemAdjustments.reduce((sum, adj) => {
+          const adjAmount = Number(adj.amount) || 0;
+          return adj.tipe_penyesuaian === 'pengurangan' ? sum - adjAmount : sum + adjAmount;
+        }, 0);
+
+        // Calculate actual price after adjustments
+        const actualItemPrice = (Number(item.harga_borongan) || 0) + itemAdjSum;
+        item.harga_borongan_final = Math.max(0, actualItemPrice); // Store the adjusted price (optional, but good for tracking)
+
+        item.jumlah_dibayar = 0;
+        item.sisa_tagihan = item.harga_borongan_final;
+      });
+    }
+
     const paidSum = (invoice.riwayat_pembayarans || []).reduce((sum, pay) => {
       console.log(`[Sync] Checking Riwayat: amount=${pay.jumlah_pembayaran}, status=${pay.status_pembayaran}`);
       if (pay.status_pembayaran === 'Berhasil') {
-        return sum + (Number(pay.jumlah_pembayaran) || 0);
+        const payAmount = Number(pay.jumlah_pembayaran) || 0;
+        
+        // Accumulate itemized payments
+        if (pay.alokasi_pembayaran && updatedRincianPekerjaan && Array.isArray(updatedRincianPekerjaan)) {
+          let alokasi = Array.isArray(pay.alokasi_pembayaran) ? pay.alokasi_pembayaran : [];
+          if (typeof pay.alokasi_pembayaran === 'string') {
+            try { alokasi = JSON.parse(pay.alokasi_pembayaran); } catch(e) {}
+          }
+          alokasi.forEach(al => {
+            const item = updatedRincianPekerjaan.find(r => r.id === al.item_id);
+            if (item) {
+              item.jumlah_dibayar += Number(al.nominal_dialokasikan) || 0;
+              // Use the adjusted price for remaining calculation
+              const basePrice = item.harga_borongan_final !== undefined ? item.harga_borongan_final : (Number(item.harga_borongan) || 0);
+              item.sisa_tagihan = Math.max(0, basePrice - item.jumlah_dibayar);
+            }
+          });
+        }
+
+        return sum + payAmount;
       }
       return sum;
     }, 0);
@@ -95,26 +136,38 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     console.log(`[Sync] Calculated for ${invoice.invoiceNumber}: TotalDebt=${totalDebt}, Paid=${paidSum}, Remaining=${remainingAmount}, Status=${status_pembayaran}`);
 
+    const isRincianChanged = updatedRincianPekerjaan 
+      ? JSON.stringify(invoice.rincian_pekerjaan) !== JSON.stringify(updatedRincianPekerjaan)
+      : false;
+
     // CEK: Jika data yang akan diupdate sama dengan data sekarang, JANGAN update lagi (hindari loop)
     if (
       Number(invoice.paid_amount) === paidSum && 
       Number(invoice.remaining_amount) === remainingAmount && 
-      invoice.status_pembayaran === status_pembayaran
+      invoice.status_pembayaran === status_pembayaran &&
+      !isRincianChanged
     ) {
       console.log(`[Sync] No changes detected for ${invoice.invoiceNumber}. Skipping update to prevent loop.`);
       return invoice;
     }
 
     console.log(`[Sync] Applying update to ${invoice.invoiceNumber}...`);
+    
+    const updateData = {
+      paid_amount: paidSum,
+      remaining_amount: remainingAmount,
+      status_pembayaran,
+      fullyPaidDate: status_pembayaran === 'paid' ? new Date().toISOString() : invoice.fullyPaidDate,
+      lastPaymentDate: paidSum > 0 ? new Date().toISOString() : invoice.lastPaymentDate
+    };
+    
+    if (updatedRincianPekerjaan) {
+      updateData.rincian_pekerjaan = updatedRincianPekerjaan;
+    }
+
     return await strapi.documents('api::payment-invoice.payment-invoice').update({
       documentId: documentId,
-      data: {
-        paid_amount: paidSum,
-        remaining_amount: remainingAmount,
-        status_pembayaran,
-        fullyPaidDate: status_pembayaran === 'paid' ? new Date().toISOString() : invoice.fullyPaidDate,
-        lastPaymentDate: paidSum > 0 ? new Date().toISOString() : invoice.lastPaymentDate
-      }
+      data: updateData
     });
   },
 
