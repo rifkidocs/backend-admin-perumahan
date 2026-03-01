@@ -51,7 +51,11 @@
     "payment_method": {
       "type": "enumeration",
       "required": true,
-      "enum": ["transfer", "cash", "check"]
+      "enum": [
+        "transfer",
+        "cash",
+        "check"
+      ]
     },
     "karyawan": {
       "type": "relation",
@@ -65,6 +69,12 @@
       "target": "api::kas-keluar.kas-keluar",
       "mappedBy": "salary_id",
       "description": "Transaksi kas keluar yang dihasilkan dari data gaji ini"
+    },
+    "pos_keuangan": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pos-keuangan.pos-keuangan",
+      "inversedBy": "salaries"
     }
   }
 }

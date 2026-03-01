@@ -67,6 +67,12 @@
       "relation": "oneToMany",
       "target": "api::kas-masuk.kas-masuk",
       "mappedBy": "pos_keuangan"
+    },
+    "salaries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::salary.salary",
+      "mappedBy": "pos_keuangan"
     }
   }
 }

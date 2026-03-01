@@ -45,17 +45,27 @@ module.exports = {
         
         // Mapping kategori invoice ke kategori kas keluar
         let kasKeluarCategory = 'lainnya';
-        if (invoice.category === 'opname tukang') kasKeluarCategory = 'operasional';
-        else if (invoice.category === 'hutang supplier') kasKeluarCategory = 'material';
-        else if (invoice.category === 'hutang tanah') kasKeluarCategory = 'legal';
-        else kasKeluarCategory = 'lainnya';
+        let deskripsiKasKeluar = `[Auto] Riwayat Pembayaran Tagihan: ${invoice.invoiceNumber}. ${data.deskripsi || ''}`;
+
+        if (invoice.category === 'opname tukang') {
+          kasKeluarCategory = 'operasional';
+          deskripsiKasKeluar = `[Auto] Pembayaran Opname Tukang: ${invoice.invoiceNumber}. ${data.deskripsi || ''}`;
+        }
+        else if (invoice.category === 'hutang supplier') {
+          kasKeluarCategory = 'material';
+          deskripsiKasKeluar = `[Auto] Pembayaran Tagihan Supplier: ${invoice.invoiceNumber}. ${data.deskripsi || ''}`;
+        }
+        else if (invoice.category === 'hutang tanah') {
+          kasKeluarCategory = 'legal';
+          deskripsiKasKeluar = `[Auto] Pembayaran Hutang Tanah: ${invoice.invoiceNumber}. ${data.deskripsi || ''}`;
+        }
 
         await strapi.documents('api::kas-keluar.kas-keluar').create({
           data: {
             date: data.tanggal_pembayaran,
             category: kasKeluarCategory,
             amount: Number(data.jumlah_pembayaran),
-            description: `[Auto] Riwayat Pembayaran Tagihan: ${invoice.invoiceNumber}. ${data.deskripsi || ''}`,
+            description: deskripsiKasKeluar,
             paymentMethod: data.metode_pembayaran === 'Tunai' ? 'cash' : (data.metode_pembayaran === 'Cek' ? 'cek' : 'transfer'),
             pos_keuangan: posKeuanganId,
             approval_status: 'pending',
