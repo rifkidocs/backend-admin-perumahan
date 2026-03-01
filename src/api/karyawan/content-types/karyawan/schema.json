@@ -362,6 +362,12 @@
       "relation": "oneToMany",
       "target": "api::insentif.insentif",
       "mappedBy": "karyawan"
+    },
+    "verified_booking_documents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::booking-document.booking-document",
+      "mappedBy": "verified_by"
     }
   }
 }

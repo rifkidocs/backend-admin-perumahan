@@ -47,9 +47,10 @@
       "default": false
     },
     "verified_by": {
-      "type": "string",
-      "required": false,
-      "maxLength": 100
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "verified_booking_documents"
     },
     "verified_date": {
       "type": "date",
@@ -58,6 +59,21 @@
     "notes": {
       "type": "text",
       "maxLength": 500
+    },
+    "komentar": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "status_dokumen": {
+      "type": "enumeration",
+      "enum": [
+        "Menunggu Verifikasi",
+        "Valid",
+        "Perlu Direvisi",
+        "Ditolak"
+      ],
+      "default": "Menunggu Verifikasi",
+      "required": true
     },
     "booking": {
       "type": "relation",

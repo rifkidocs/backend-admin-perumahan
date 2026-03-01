@@ -765,6 +765,10 @@ export interface ApiBookingDocumentBookingDocument
       Schema.Attribute.Required;
     file: Schema.Attribute.Media<'images' | 'files'> &
       Schema.Attribute.Required;
+    komentar: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 1000;
+      }>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -776,6 +780,11 @@ export interface ApiBookingDocumentBookingDocument
         maxLength: 500;
       }>;
     publishedAt: Schema.Attribute.DateTime;
+    status_dokumen: Schema.Attribute.Enumeration<
+      ['Menunggu Verifikasi', 'Valid', 'Perlu Direvisi', 'Ditolak']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Menunggu Verifikasi'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -783,10 +792,10 @@ export interface ApiBookingDocumentBookingDocument
     verified: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
-    verified_by: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
+    verified_by: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
     verified_date: Schema.Attribute.Date;
   };
 }
@@ -2453,6 +2462,10 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     user: Schema.Attribute.Relation<'oneToOne', 'admin::user'>;
+    verified_booking_documents: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::booking-document.booking-document'
+    >;
   };
 }
 
