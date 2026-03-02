@@ -12,19 +12,27 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "status_dokumen": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "draft"
+    },
     "poNumber": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true,
       "maxLength": 50
     },
     "receivingDate": {
       "type": "date",
-      "required": true
+      "required": false
     },
     "receivingTime": {
       "type": "string",
-      "required": true,
+      "required": false,
       "regex": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
     },
     "supplier": {
@@ -35,7 +43,7 @@
     },
     "deliveryPerson": {
       "type": "string",
-      "required": true,
+      "required": false,
       "minLength": 3,
       "maxLength": 100
     },
@@ -47,11 +55,11 @@
       "type": "component",
       "repeatable": true,
       "component": "penerimaan.material-item",
-      "required": true
+      "required": false
     },
     "statusReceiving": {
       "type": "enumeration",
-      "required": true,
+      "required": false,
       "default": "pending",
       "enum": [
         "pending",

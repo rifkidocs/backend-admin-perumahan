@@ -15,12 +15,12 @@ module.exports = {
     const { result, params } = event;
     const { data } = params;
 
-    // Decrement stock when status is 'approved'
-    // Check if materials exist in result OR input data (fallback)
+    // Decrement stock when status is 'approved' AND published
     const hasMaterials = (result.list_materials && Array.isArray(result.list_materials) && result.list_materials.length > 0) ||
                          (data && data.list_materials && Array.isArray(data.list_materials) && data.list_materials.length > 0);
 
     if (
+      result.status_dokumen === "published" &&
       result.approvalStatus === "approved" &&
       hasMaterials
     ) {
@@ -32,19 +32,26 @@ module.exports = {
     const { result, params } = event;
     const { data } = params;
 
-    // 1. Status changed to 'approved'
-    if (
-      data.approvalStatus === "approved" &&
-      result.approvalStatus === "approved" &&
-      params._oldStatus !== "approved"
-    ) {
+    const isNowPublishedAndApproved = 
+      result.status_dokumen === "published" && 
+      result.approvalStatus === "approved";
+    
+    const wasPublishedAndApproved = 
+      params._oldStatusDokumen === "published" && 
+      params._oldStatus === "approved";
+
+    // 1. Transition to 'published' and 'approved' from something else
+    if (isNowPublishedAndApproved && !wasPublishedAndApproved) {
       await updateStock(result);
     }
-    // 2. Already approved and content changed (e.g. list_materials updated)
-    else if (
-      result.approvalStatus === "approved" &&
-      params._oldStatus === "approved"
-    ) {
+    // 2. Transition FROM 'published' and 'approved' back to draft or other status
+    else if (!isNowPublishedAndApproved && wasPublishedAndApproved) {
+      if (params._oldRecord) {
+        await restoreStock(params._oldRecord);
+      }
+    }
+    // 3. Content change while staying 'published' and 'approved'
+    else if (isNowPublishedAndApproved && wasPublishedAndApproved) {
       // Restore old stock
       if (params._oldRecord) {
         await restoreStock(params._oldRecord);
@@ -74,6 +81,7 @@ module.exports = {
 
     if (oldRecord) {
       params._oldStatus = oldRecord.approvalStatus;
+      params._oldStatusDokumen = oldRecord.status_dokumen;
       params._oldRecord = oldRecord;
     }
   },
@@ -97,6 +105,7 @@ module.exports = {
 
     if (
       record &&
+      record.status_dokumen === "published" &&
       record.approvalStatus === "approved" &&
       record.list_materials &&
       Array.isArray(record.list_materials)

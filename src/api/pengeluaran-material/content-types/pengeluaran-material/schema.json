@@ -11,6 +11,14 @@
     "draftAndPublish": false
   },
   "attributes": {
+    "status_dokumen": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "draft"
+    },
     "mrNumber": {
       "type": "string",
       "required": false,
@@ -23,27 +31,27 @@
     },
     "date": {
       "type": "date",
-      "required": true
+      "required": false
     },
     "time": {
       "type": "time",
-      "required": true
+      "required": false
     },
     "project": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
-      "required": true
+      "required": false
     },
     "list_materials": {
       "type": "component",
       "repeatable": true,
       "component": "pengeluaran.item-pengeluaran",
-      "required": true
+      "required": false
     },
     "requester": {
       "type": "string",
-      "required": true,
+      "required": false,
       "maxLength": 255
     },
     "approver": {

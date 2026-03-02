@@ -3803,7 +3803,6 @@ export interface ApiPenerimaanMaterialPenerimaanMaterial
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     deliveryPerson: Schema.Attribute.String &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100;
         minLength: 3;
@@ -3818,8 +3817,7 @@ export interface ApiPenerimaanMaterialPenerimaanMaterial
     list_materials: Schema.Attribute.Component<
       'penerimaan.material-item',
       true
-    > &
-      Schema.Attribute.Required;
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -3837,7 +3835,6 @@ export interface ApiPenerimaanMaterialPenerimaanMaterial
     >;
     penerima: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     poNumber: Schema.Attribute.String &
-      Schema.Attribute.Required &
       Schema.Attribute.Unique &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 50;
@@ -3863,12 +3860,13 @@ export interface ApiPenerimaanMaterialPenerimaanMaterial
       'manyToOne',
       'api::karyawan.karyawan'
     >;
-    receivingDate: Schema.Attribute.Date & Schema.Attribute.Required;
-    receivingTime: Schema.Attribute.String & Schema.Attribute.Required;
+    receivingDate: Schema.Attribute.Date;
+    receivingTime: Schema.Attribute.String;
+    status_dokumen: Schema.Attribute.Enumeration<['draft', 'published']> &
+      Schema.Attribute.DefaultTo<'draft'>;
     statusReceiving: Schema.Attribute.Enumeration<
       ['pending', 'in-progress', 'completed', 'rejected']
     > &
-      Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'pending'>;
     supplier: Schema.Attribute.Relation<'manyToOne', 'api::supplier.supplier'>;
     total_pembelian: Schema.Attribute.Decimal &
@@ -3906,7 +3904,7 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    date: Schema.Attribute.Date & Schema.Attribute.Required;
+    date: Schema.Attribute.Date;
     deliveryCost: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
@@ -3934,8 +3932,7 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
     list_materials: Schema.Attribute.Component<
       'pengeluaran.item-pengeluaran',
       true
-    > &
-      Schema.Attribute.Required;
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -3958,8 +3955,7 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
     project: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
-    > &
-      Schema.Attribute.Required;
+    >;
     proyek_perumahan: Schema.Attribute.Relation<
       'manyToOne',
       'api::proyek-perumahan.proyek-perumahan'
@@ -3974,11 +3970,12 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
         maxLength: 255;
       }>;
     requester: Schema.Attribute.String &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 255;
       }>;
     specialInstructions: Schema.Attribute.Text;
+    status_dokumen: Schema.Attribute.Enumeration<['draft', 'published']> &
+      Schema.Attribute.DefaultTo<'draft'>;
     status_issuance: Schema.Attribute.Enumeration<
       [
         'pending',
@@ -3994,7 +3991,7 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 255;
       }>;
-    time: Schema.Attribute.Time & Schema.Attribute.Required;
+    time: Schema.Attribute.Time;
     trackingNotes: Schema.Attribute.Text;
     transportType: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{

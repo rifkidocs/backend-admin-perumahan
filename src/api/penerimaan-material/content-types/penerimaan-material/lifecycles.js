@@ -50,17 +50,24 @@ module.exports = {
     const { params } = event;
     const { data, where } = params;
 
-    // Store the old status in the event for use in afterUpdate
-    if (data.statusReceiving) {
-      const oldRecord = await strapi.db
-        .query("api::penerimaan-material.penerimaan-material")
-        .findOne({
-          where: where,
-          select: ["statusReceiving"],
-        });
+    // Fetch old record for comparison
+    const oldRecord = await strapi.entityService.findOne(
+      "api::penerimaan-material.penerimaan-material",
+      where.id,
+      {
+        populate: {
+          list_materials: {
+            populate: ["material"],
+          },
+          gudang: true,
+        },
+      }
+    );
 
-      // Store in params so afterUpdate can access it
-      params._oldStatus = oldRecord?.statusReceiving;
+    if (oldRecord) {
+      params._oldStatus = oldRecord.statusReceiving;
+      params._oldStatusDokumen = oldRecord.status_dokumen;
+      params._oldRecord = oldRecord;
     }
 
     // Handle new material creation (same as beforeCreate)
@@ -102,6 +109,7 @@ module.exports = {
     const { result } = event;
 
     if (
+      result.status_dokumen === "published" &&
       result.statusReceiving === "completed" &&
       result.list_materials &&
       Array.isArray(result.list_materials)
@@ -114,13 +122,45 @@ module.exports = {
     const { result, params } = event;
     const { data } = params;
 
-    // Check if status is being changed TO 'completed' (and was NOT completed before)
-    if (
-      data.statusReceiving === "completed" &&
-      params._oldStatus !== "completed" &&
-      result.statusReceiving === "completed"
-    ) {
-      // Need to fetch the full record with populated materials and gudang
+    const isNowPublishedAndCompleted = 
+      result.status_dokumen === "published" && 
+      result.statusReceiving === "completed";
+    
+    const wasPublishedAndCompleted = 
+      params._oldStatusDokumen === "published" && 
+      params._oldStatus === "completed";
+
+    // 1. Transition to 'published' and 'completed' from something else
+    if (isNowPublishedAndCompleted && !wasPublishedAndCompleted) {
+      const fullRecord = await strapi.entityService.findOne(
+        "api::penerimaan-material.penerimaan-material",
+        result.id,
+        {
+          populate: {
+            list_materials: {
+              populate: ["material"],
+            },
+            gudang: true,
+          },
+        }
+      );
+      await updateStock(fullRecord);
+    }
+    // 2. Transition FROM 'published' and 'completed' back to draft or other status
+    else if (!isNowPublishedAndCompleted && wasPublishedAndCompleted) {
+      if (params._oldRecord) {
+        await restoreStock(params._oldRecord);
+      }
+    }
+    // 3. Content change while staying 'published' and 'completed'
+    else if (isNowPublishedAndCompleted && wasPublishedAndCompleted) {
+      // Check if critical data changed (list_materials or gudang)
+      // For simplicity, we can always restore and update, or do deep comparison
+      // Here we follow pengeluaran-material's pattern of restoring and updating
+      if (params._oldRecord) {
+        await restoreStock(params._oldRecord);
+      }
+      
       const fullRecord = await strapi.entityService.findOne(
         "api::penerimaan-material.penerimaan-material",
         result.id,
@@ -139,8 +179,74 @@ module.exports = {
 
   async beforeDelete(event) {
       await cleanupMediaOnDelete(event);
+
+      const { where } = event.params;
+      const record = await strapi.entityService.findOne(
+        "api::penerimaan-material.penerimaan-material",
+        where.id,
+        {
+          populate: {
+            list_materials: {
+              populate: ["material"],
+            },
+            gudang: true,
+          },
+        }
+      );
+
+      if (
+        record &&
+        record.status_dokumen === "published" &&
+        record.statusReceiving === "completed"
+      ) {
+        await restoreStock(record);
+      }
   }
 };
+
+async function restoreStock(record) {
+  console.log("📈 Restoring (removing) stock for record:", record.id);
+
+  const gudangId = record.gudang?.id || record.gudang;
+  if (!gudangId) return;
+
+  if (record.list_materials && Array.isArray(record.list_materials)) {
+    for (const item of record.list_materials) {
+      if (item.material && item.quantity) {
+        const materialId = item.material.id || item.material;
+
+        // Find existing material-gudang record
+        const materialGudang = await strapi.db
+          .query("api::material-gudang.material-gudang")
+          .findOne({
+            where: {
+              material: materialId,
+              gudang: gudangId,
+            },
+          });
+
+        if (materialGudang) {
+          const newStock =
+            Math.round(
+              (Number(materialGudang.stok) - Number(item.quantity)) * 100
+            ) / 100;
+
+          await strapi.entityService.update(
+            "api::material-gudang.material-gudang",
+            materialGudang.id,
+            {
+              data: {
+                stok: newStock,
+                last_updated_by: "system (penerimaan: restore)",
+              },
+            }
+          );
+          console.log(`✅ Restored stock to ${newStock}`);
+        }
+      }
+    }
+  }
+}
 
 async function updateStock(record) {
   console.log("✅ Updating stock for record:", record.id);
