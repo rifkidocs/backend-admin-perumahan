@@ -14,5 +14,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Support decimal/cent values in financial records (Pos Keuangan, Kas, Piutang, Hutang).**
+- [x] **Track: Support decimal/cent values in financial records (Pos Keuangan, Kas, Piutang, Hutang).**
 *Link: [./tracks/financial_decimal_support_20260304/](./tracks/financial_decimal_support_20260304/)*
