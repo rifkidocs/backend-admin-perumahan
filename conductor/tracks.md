@@ -11,3 +11,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Security Guard Attendance & Patrol System**
 *Link: [./tracks/security_patrol_20260123/](./tracks/security_patrol_20260123/)*
+
+---
+
+- [ ] **Track: Support decimal/cent values in financial records (Pos Keuangan, Kas, Piutang, Hutang).**
+*Link: [./tracks/financial_decimal_support_20260304/](./tracks/financial_decimal_support_20260304/)*
