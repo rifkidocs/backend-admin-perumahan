@@ -4,6 +4,12 @@
  * numberHelper utility
  */
 
+/**
+ * Cleans and parses a number from various formats, including Indonesian IDR strings.
+ * Handle dot as thousand separator and comma as decimal separator.
+ * @param {string|number} val The value to clean and parse.
+ * @returns {number} The parsed numeric value.
+ */
 const cleanNumber = (val) => {
   if (typeof val === 'number') return val;
   
@@ -32,6 +38,12 @@ const cleanNumber = (val) => {
   return (val === '' || val === null || val === undefined) ? 0 : val;
 };
 
+/**
+ * Rounds a number using Round Half Up strategy.
+ * @param {number} num The number to round.
+ * @param {number} [decimals=2] The number of decimal places.
+ * @returns {number} The rounded number.
+ */
 const roundHalfUp = (num, decimals = 2) => {
   const factor = Math.pow(10, decimals);
   return Math.round(num * factor) / factor;
