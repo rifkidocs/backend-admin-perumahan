@@ -1,15 +1,7 @@
 'use strict';
 
 const { cleanupMediaOnDelete, cleanupMediaOnUpdate } = require('../../../../utils/mediaHelper');
-
-const cleanNumber = (val) => {
-  if (typeof val === 'string' && val.trim() !== '') {
-    const cleaned = val.replace(/\./g, '').replace(/,/g, '.');
-    const parsed = parseFloat(cleaned);
-    return isNaN(parsed) ? 0 : parsed;
-  }
-  return (val === '' || val === null) ? 0 : val;
-};
+const { cleanNumber } = require('../../../../utils/numberHelper');
 
 module.exports = {
   async beforeCreate(event) {
@@ -41,7 +33,7 @@ module.exports = {
 
     if (result.status_transaksi === 'confirmed' && previousData?.status_transaksi !== 'confirmed') {
       const pos = previousData.pos_keuangan;
-      const amount = parseFloat(result.amount || previousData.amount);
+      const amount = parseFloat(result.amount || previousData.amount || 0);
 
       if (pos && amount) {
         const currentPos = await strapi.db.query('api::pos-keuangan.pos-keuangan').findOne({ 

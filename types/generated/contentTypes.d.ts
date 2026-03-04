@@ -2481,7 +2481,7 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.Integer &
+    amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
@@ -3522,13 +3522,13 @@ export interface ApiPaymentInvoicePaymentInvoice
     draftAndPublish: false;
   };
   attributes: {
-    amount: Schema.Attribute.BigInteger &
+    amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     approvedBy: Schema.Attribute.Relation<
       'manyToOne',
@@ -3553,12 +3553,12 @@ export interface ApiPaymentInvoicePaymentInvoice
         maxLength: 1000;
         minLength: 10;
       }>;
-    discountAmount: Schema.Attribute.BigInteger &
+    discountAmount: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     dueDate: Schema.Attribute.Date & Schema.Attribute.Required;
     fullyPaidDate: Schema.Attribute.DateTime;
@@ -3594,15 +3594,15 @@ export interface ApiPaymentInvoicePaymentInvoice
       }>;
     overdueNotified: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
-    paid_amount: Schema.Attribute.BigInteger &
+    paid_amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       > &
-      Schema.Attribute.DefaultTo<'0'>;
+      Schema.Attribute.DefaultTo<0>;
     paidBy: Schema.Attribute.Relation<'manyToOne', 'api::karyawan.karyawan'>;
     paymentMethod: Schema.Attribute.Enumeration<
       ['transfer', 'cash', 'check', 'giro', 'others']
@@ -3616,14 +3616,14 @@ export interface ApiPaymentInvoicePaymentInvoice
     > &
       Schema.Attribute.Required;
     pekerja: Schema.Attribute.Relation<'manyToOne', 'api::pekerja.pekerja'>;
-    penaltyAmount: Schema.Attribute.BigInteger &
+    penaltyAmount: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       > &
-      Schema.Attribute.DefaultTo<'0'>;
+      Schema.Attribute.DefaultTo<0>;
     penyesuaian_hutangs: Schema.Attribute.Relation<
       'oneToMany',
       'api::penyesuaian-hutang.penyesuaian-hutang'
@@ -3645,13 +3645,13 @@ export interface ApiPaymentInvoicePaymentInvoice
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 50;
       }>;
-    remaining_amount: Schema.Attribute.BigInteger &
+    remaining_amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     rincian_pekerjaan: Schema.Attribute.JSON;
     riwayat_pembayarans: Schema.Attribute.Relation<
@@ -3669,12 +3669,12 @@ export interface ApiPaymentInvoicePaymentInvoice
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'received'>;
     supplier: Schema.Attribute.Relation<'manyToOne', 'api::supplier.supplier'>;
-    taxAmount: Schema.Attribute.BigInteger &
+    taxAmount: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     taxIncluded: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     unit_rumah: Schema.Attribute.Relation<
@@ -4439,25 +4439,25 @@ export interface ApiPiutangKonsumenPiutangKonsumen
   };
   attributes: {
     booking: Schema.Attribute.Relation<'manyToOne', 'api::booking.booking'>;
-    booking_fee: Schema.Attribute.BigInteger &
+    booking_fee: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     customer: Schema.Attribute.Relation<'manyToOne', 'api::konsumen.konsumen'>;
-    down_payment: Schema.Attribute.BigInteger &
+    down_payment: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     due_date: Schema.Attribute.Date;
     kpr_status: Schema.Attribute.Enumeration<
@@ -4477,15 +4477,15 @@ export interface ApiPiutangKonsumenPiutangKonsumen
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 1000;
       }>;
-    paid_amount: Schema.Attribute.BigInteger &
+    paid_amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       > &
-      Schema.Attribute.DefaultTo<'0'>;
+      Schema.Attribute.DefaultTo<0>;
     payment_schedule: Schema.Attribute.Enumeration<
       ['cash', 'dp', 'termin', 'kpr']
     > &
@@ -4500,13 +4500,13 @@ export interface ApiPiutangKonsumenPiutangKonsumen
       'api::proyek-perumahan.proyek-perumahan'
     >;
     publishedAt: Schema.Attribute.DateTime;
-    remaining_amount: Schema.Attribute.BigInteger &
+    remaining_amount: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     riwayat_pembayarans: Schema.Attribute.Relation<
       'oneToMany',
@@ -4517,7 +4517,7 @@ export interface ApiPiutangKonsumenPiutangKonsumen
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'active'>;
-    total_price: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+    total_price: Schema.Attribute.Decimal & Schema.Attribute.Required;
     unit: Schema.Attribute.Relation<'manyToOne', 'api::unit-rumah.unit-rumah'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -6201,13 +6201,13 @@ export interface ApiRiwayatPembayaranRiwayatPembayaran
       'manyToOne',
       'api::karyawan.karyawan'
     >;
-    jumlah_pembayaran: Schema.Attribute.BigInteger &
+    jumlah_pembayaran: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          min: '0';
+          min: 0;
         },
-        string
+        number
       >;
     kategori_pembayaran: Schema.Attribute.Enumeration<
       ['piutang_konsumen', 'tagihan_supplier', 'subkontraktor', 'lainnya']

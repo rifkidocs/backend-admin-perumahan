@@ -37,29 +37,49 @@
       "inversedBy": "piutang_konsumens"
     },
     "total_price": {
-      "type": "biginteger",
-      "required": true
+      "type": "decimal",
+      "required": true,
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "booking_fee": {
-      "type": "biginteger",
+      "type": "decimal",
       "required": true,
-      "min": "0"
+      "min": 0,
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "down_payment": {
-      "type": "biginteger",
+      "type": "decimal",
       "required": true,
-      "min": "0"
+      "min": 0,
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "remaining_amount": {
-      "type": "biginteger",
+      "type": "decimal",
       "required": true,
-      "min": "0"
+      "min": 0,
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "paid_amount": {
-      "type": "biginteger",
+      "type": "decimal",
       "required": true,
-      "default": "0",
-      "min": "0"
+      "default": 0,
+      "min": 0,
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "payment_schedule": {
       "type": "enumeration",

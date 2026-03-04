@@ -4,15 +4,7 @@
  * pos-keuangan lifecycles
  */
 
-const cleanNumber = (val) => {
-  if (typeof val === 'string' && val.trim() !== '') {
-    // Hapus titik (separator ribuan) dan ganti koma dengan titik (decimal)
-    const cleaned = val.replace(/\./g, '').replace(/,/g, '.');
-    const parsed = parseFloat(cleaned);
-    return isNaN(parsed) ? 0 : parsed;
-  }
-  return (val === '' || val === null) ? 0 : val;
-};
+const { cleanNumber } = require('../../../../utils/numberHelper');
 
 module.exports = {
   beforeCreate(event) {

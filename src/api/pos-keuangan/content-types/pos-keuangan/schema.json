@@ -31,7 +31,11 @@
     "saldo": {
       "type": "decimal",
       "required": true,
-      "default": 0
+      "default": 0,
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "jenis_rekening": {
       "type": "enumeration",
@@ -46,7 +50,11 @@
       ]
     },
     "saldo_minimum": {
-      "type": "decimal"
+      "type": "decimal",
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "status_aktif": {
       "type": "boolean",

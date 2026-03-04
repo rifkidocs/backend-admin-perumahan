@@ -5,6 +5,7 @@
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
+const { roundHalfUp } = require('../../../utils/numberHelper');
 
 module.exports = createCoreService('api::piutang-konsumen.piutang-konsumen', ({ strapi }) => ({
   async syncPiutangTotals(documentId) {
@@ -24,11 +25,11 @@ module.exports = createCoreService('api::piutang-konsumen.piutang-konsumen', ({ 
       return null;
     }
 
-    const basePrice = Number(piutang.total_price) || 0;
+    const basePrice = parseFloat(piutang.total_price || 0);
     
     // Sum all adjustments
     const adjustmentsSum = (piutang.penyesuaian_piutangs || []).reduce((sum, adj) => {
-      const amount = Number(adj.amount) || 0;
+      const amount = parseFloat(adj.amount || 0);
       if (adj.tipe_penyesuaian === 'pengurangan') {
         console.log(`[Sync-Piutang] Found Adjustment: -${amount} (pengurangan)`);
         return sum - amount;
@@ -37,17 +38,17 @@ module.exports = createCoreService('api::piutang-konsumen.piutang-konsumen', ({ 
       return sum + amount;
     }, 0);
 
-    const totalPrice = basePrice + adjustmentsSum;
+    const totalPrice = roundHalfUp(basePrice + adjustmentsSum);
     
     // Sum all successful payments
     const paidSum = (piutang.riwayat_pembayarans || []).reduce((sum, pay) => {
       if (pay.status_pembayaran === 'Berhasil') {
-        return sum + (Number(pay.jumlah_pembayaran) || 0);
+        return sum + parseFloat(pay.jumlah_pembayaran || 0);
       }
       return sum;
     }, 0);
 
-    const remainingAmount = Math.max(0, totalPrice - paidSum);
+    const remainingAmount = roundHalfUp(Math.max(0, totalPrice - paidSum));
 
     // Determine status
     let status_piutang = 'active';
@@ -59,8 +60,8 @@ module.exports = createCoreService('api::piutang-konsumen.piutang-konsumen', ({ 
 
     // CEK: Hindari loop
     if (
-      Number(piutang.paid_amount) === paidSum &&
-      Number(piutang.remaining_amount) === remainingAmount &&
+      parseFloat(piutang.paid_amount || 0) === paidSum &&
+      parseFloat(piutang.remaining_amount || 0) === remainingAmount &&
       piutang.status_piutang === status_piutang
     ) {
       console.log(`[Sync-Piutang] No changes detected. Skipping update.`);

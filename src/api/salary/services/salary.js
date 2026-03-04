@@ -6,6 +6,7 @@
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
+const { roundHalfUp } = require('../../../utils/numberHelper');
 
 module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
   // Create automatic cash out transaction when salary is created
@@ -30,7 +31,7 @@ module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
       // Create cash out transaction
       const cashOutData = {
         category: 'gaji',
-        amount: Math.round(salaryData.net_salary), // Convert to integer for kas-keluar
+        amount: roundHalfUp(salaryData.net_salary), // Support decimal for kas-keluar
         date: salaryData.effective_date,
         description: `Gaji bulanan ${employee.nama_lengkap} - ${period}`,
         paymentMethod: salaryData.payment_method === 'check' ? 'cek' : salaryData.payment_method, // Map check -> cek
@@ -74,7 +75,7 @@ module.exports = createCoreService('api::salary.salary', ({ strapi }) => ({
       const period = new Date(salaryData.effective_date).toISOString().slice(0, 7);
 
       const updateData = {
-        amount: Math.round(salaryData.net_salary), // Convert to integer for kas-keluar
+        amount: roundHalfUp(salaryData.net_salary), // Support decimal for kas-keluar
         date: salaryData.effective_date,
         description: `Gaji bulanan ${employee.nama_lengkap} - ${period}`,
         paymentMethod: salaryData.payment_method === 'check' ? 'cek' : salaryData.payment_method, // Map check -> cek

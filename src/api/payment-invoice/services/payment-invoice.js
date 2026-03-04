@@ -5,6 +5,7 @@
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
+const { roundHalfUp } = require('../../../utils/numberHelper');
 
 module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ strapi }) => ({
   // Custom service methods for Tagihan & Hutang functionality
@@ -54,12 +55,12 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
       return null;
     }
 
-    const baseAmount = Number(invoice.amount) || 0;
+    const baseAmount = parseFloat(invoice.amount || 0);
     console.log(`[Sync] Base Amount from DB: ${baseAmount}`);
     
     // Sum all adjustments
     const adjustmentsSum = (invoice.penyesuaian_hutangs || []).reduce((sum, adj) => {
-      const amount = Number(adj.amount) || 0;
+      const amount = parseFloat(adj.amount || 0);
       console.log(`[Sync] DEBUG ADJ OBJECT: ${JSON.stringify(adj)}`);
       
       if (adj.tipe_penyesuaian === 'pengurangan') {
@@ -71,7 +72,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
       }
     }, 0);
 
-    const totalDebt = baseAmount + adjustmentsSum;
+    const totalDebt = roundHalfUp(baseAmount + adjustmentsSum);
 
     // Sum all successful payments
     console.log(`[Sync] Found ${invoice.riwayat_pembayarans?.length || 0} riwayat records`);
@@ -84,13 +85,13 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
         // Find if this specific item has any adjustments
         const itemAdjustments = (invoice.penyesuaian_hutangs || []).filter(adj => adj.item_id === item.id);
         const itemAdjSum = itemAdjustments.reduce((sum, adj) => {
-          const adjAmount = Number(adj.amount) || 0;
+          const adjAmount = parseFloat(adj.amount || 0);
           return adj.tipe_penyesuaian === 'pengurangan' ? sum - adjAmount : sum + adjAmount;
         }, 0);
 
         // Calculate actual price after adjustments
-        const actualItemPrice = (Number(item.harga_borongan) || 0) + itemAdjSum;
-        item.harga_borongan_final = Math.max(0, actualItemPrice); // Store the adjusted price (optional, but good for tracking)
+        const actualItemPrice = (parseFloat(item.harga_borongan) || 0) + itemAdjSum;
+        item.harga_borongan_final = roundHalfUp(Math.max(0, actualItemPrice)); // Store the adjusted price (optional, but good for tracking)
 
         item.jumlah_dibayar = 0;
         item.sisa_tagihan = item.harga_borongan_final;
@@ -100,7 +101,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     const paidSum = (invoice.riwayat_pembayarans || []).reduce((sum, pay) => {
       console.log(`[Sync] Checking Riwayat: amount=${pay.jumlah_pembayaran}, status=${pay.status_pembayaran}`);
       if (pay.status_pembayaran === 'Berhasil') {
-        const payAmount = Number(pay.jumlah_pembayaran) || 0;
+        const payAmount = parseFloat(pay.jumlah_pembayaran || 0);
         
         // Accumulate itemized payments
         if (pay.alokasi_pembayaran && updatedRincianPekerjaan && Array.isArray(updatedRincianPekerjaan)) {
@@ -111,10 +112,10 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
           alokasi.forEach(al => {
             const item = updatedRincianPekerjaan.find(r => r.id === al.item_id);
             if (item) {
-              item.jumlah_dibayar += Number(al.nominal_dialokasikan) || 0;
+              item.jumlah_dibayar = roundHalfUp(item.jumlah_dibayar + (parseFloat(al.nominal_dialokasikan) || 0));
               // Use the adjusted price for remaining calculation
-              const basePrice = item.harga_borongan_final !== undefined ? item.harga_borongan_final : (Number(item.harga_borongan) || 0);
-              item.sisa_tagihan = Math.max(0, basePrice - item.jumlah_dibayar);
+              const basePrice = item.harga_borongan_final !== undefined ? item.harga_borongan_final : (parseFloat(item.harga_borongan) || 0);
+              item.sisa_tagihan = roundHalfUp(Math.max(0, basePrice - item.jumlah_dibayar));
             }
           });
         }
@@ -124,7 +125,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
       return sum;
     }, 0);
 
-    const remainingAmount = Math.max(0, totalDebt - paidSum);
+    const remainingAmount = roundHalfUp(Math.max(0, totalDebt - paidSum));
 
     // Determine status pembayaran
     let status_pembayaran = 'pending';
@@ -194,9 +195,9 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
     // Penalty calculation: 1% per month overdue of the remaining amount
     const monthlyPenaltyRate = 0.01;
     const monthsOverdue = daysOverdue / 30;
-    const penaltyAmount = Number(invoice.remaining_amount) * monthlyPenaltyRate * monthsOverdue;
+    const penaltyAmount = parseFloat(invoice.remaining_amount || 0) * monthlyPenaltyRate * monthsOverdue;
 
-    return Math.round(penaltyAmount);
+    return roundHalfUp(penaltyAmount);
   },
 
   // Update overdue status for all invoices
@@ -354,9 +355,9 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
     const statistics = {
       total: allInvoices.length,
-      totalAmount: allInvoices.reduce((sum, inv) => sum + Number(inv.amount), 0),
-      paid_amount: allInvoices.reduce((sum, inv) => sum + Number(inv.paid_amount), 0),
-      outstandingAmount: allInvoices.reduce((sum, inv) => sum + Number(inv.remaining_amount), 0),
+      totalAmount: allInvoices.reduce((sum, inv) => sum + parseFloat(inv.amount || 0), 0),
+      paid_amount: allInvoices.reduce((sum, inv) => sum + parseFloat(inv.paid_amount || 0), 0),
+      outstandingAmount: allInvoices.reduce((sum, inv) => sum + parseFloat(inv.remaining_amount || 0), 0),
       statusDistribution: {},
       categoryDistribution: {},
       departmentDistribution: {},
@@ -372,7 +373,7 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
 
       // Category distribution
       if (invoice.category) {
-        statistics.categoryDistribution[invoice.category] = (statistics.categoryDistribution[invoice.category] || 0) + Number(invoice.amount);
+        statistics.categoryDistribution[invoice.category] = (statistics.categoryDistribution[invoice.category] || 0) + parseFloat(invoice.amount || 0);
       }
 
       // Department distribution
@@ -385,13 +386,13 @@ module.exports = createCoreService('api::payment-invoice.payment-invoice', ({ st
         if (!statistics.topSuppliers[invoice.supplier.name]) {
           statistics.topSuppliers[invoice.supplier.name] = 0;
         }
-        statistics.topSuppliers[invoice.supplier.name] += Number(invoice.amount);
+        statistics.topSuppliers[invoice.supplier.name] += parseFloat(invoice.amount || 0);
       }
 
       // Overdue calculation
       if (invoice.status_pembayaran === 'overdue') {
         statistics.overdueCount += 1;
-        statistics.overdueAmount += Number(invoice.remaining_amount);
+        statistics.overdueAmount += parseFloat(invoice.remaining_amount || 0);
       }
     });
 

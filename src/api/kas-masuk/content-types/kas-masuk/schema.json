@@ -31,7 +31,11 @@
       "type": "decimal",
       "required": true,
       "min": 1,
-      "max": 9999999999
+      "max": 9999999999,
+      "column": {
+        "type": "decimal",
+        "args": [19, 2]
+      }
     },
     "customer": {
       "type": "string",

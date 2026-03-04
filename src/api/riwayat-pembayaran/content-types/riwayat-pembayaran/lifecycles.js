@@ -23,7 +23,7 @@ module.exports = {
           data: {
             date: data.tanggal_pembayaran,
             type: 'pelunasan', // Default pelunasan, bisa disesuaikan
-            amount: data.jumlah_pembayaran,
+            amount: parseFloat(data.jumlah_pembayaran || 0),
             customer: piutang.customer?.nama || piutang.customer?.nama_lengkap || 'Consumer Payment',
             description: `[Auto] Riwayat Pembayaran Piutang. ${data.deskripsi || ''}`,
             paymentMethod: data.metode_pembayaran === 'Tunai' ? 'cash' : (data.metode_pembayaran === 'Cek' ? 'cek' : 'transfer'),
@@ -64,7 +64,7 @@ module.exports = {
           data: {
             date: data.tanggal_pembayaran,
             category: kasKeluarCategory,
-            amount: Number(data.jumlah_pembayaran),
+            amount: parseFloat(data.jumlah_pembayaran || 0),
             description: deskripsiKasKeluar,
             paymentMethod: data.metode_pembayaran === 'Tunai' ? 'cash' : (data.metode_pembayaran === 'Cek' ? 'cek' : 'transfer'),
             pos_keuangan: posKeuanganId,
@@ -117,7 +117,7 @@ module.exports = {
         await strapi.documents('api::kas-masuk.kas-masuk').update({
           documentId: existingKasMasuk[0].documentId,
           data: {
-            amount: data.jumlah_pembayaran,
+            amount: parseFloat(data.jumlah_pembayaran || 0),
             date: data.tanggal_pembayaran,
             pos_keuangan: posKeuanganId,
             description: `[Auto-Update] Riwayat Pembayaran Piutang. ${data.deskripsi || ''}`
