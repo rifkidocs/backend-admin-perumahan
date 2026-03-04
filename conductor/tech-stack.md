@@ -6,6 +6,10 @@
 - **Language:** JavaScript
 - **Database:** MySQL - Used for reliable, relational data storage suitable for complex administrative and financial records.
 
+## Data Management Standards
+- **Financial Precision:** All financial fields (balances, payments, totals) must use the `decimal` type with `precision: 19, scale: 2` to ensure accuracy for cents and large amounts.
+- **Calculation Logic:** Backend calculations must utilize `parseFloat` and centralized rounding utilities (e.g., `roundHalfUp`) to maintain precision and prevent floating-point errors.
+
 ## Key Libraries & Plugins
 - **Data Management:** `strapi-v5-plugin-populate-deep` for handling complex nested relations in API responses.
 - **Database Driver:** `mysql2`
