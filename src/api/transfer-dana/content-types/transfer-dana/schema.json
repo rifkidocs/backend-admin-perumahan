@@ -19,7 +19,14 @@
     "nominal": {
       "type": "decimal",
       "required": true,
-      "min": 0
+      "min": 0,
+      "column": {
+        "type": "decimal",
+        "args": [
+          19,
+          2
+        ]
+      }
     },
     "pos_asal": {
       "type": "relation",
