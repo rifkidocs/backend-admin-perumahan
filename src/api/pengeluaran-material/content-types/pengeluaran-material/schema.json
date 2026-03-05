@@ -202,6 +202,12 @@
       "relation": "oneToOne",
       "target": "api::progres-harian.progres-harian",
       "mappedBy": "pengeluaran_material"
+    },
+    "total_pengeluaran": {
+      "type": "decimal",
+      "required": false,
+      "min": 0,
+      "description": "Total nilai pengeluaran dari semua material"
     }
   }
 }

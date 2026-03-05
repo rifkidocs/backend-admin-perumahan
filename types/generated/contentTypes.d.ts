@@ -3992,6 +3992,13 @@ export interface ApiPengeluaranMaterialPengeluaranMaterial
         maxLength: 255;
       }>;
     time: Schema.Attribute.Time;
+    total_pengeluaran: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     trackingNotes: Schema.Attribute.Text;
     transportType: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{

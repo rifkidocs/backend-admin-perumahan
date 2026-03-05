@@ -134,6 +134,7 @@ module.exports = createCoreService('api::pengeluaran-material.pengeluaran-materi
       delivered: distributions.filter(d => d.status_issuance === 'delivered' || d.status_issuance === 'Selesai').length,
       totalQuantity: distributions.reduce((sum, d) => sum + (d.quantity || 0), 0),
       totalCost: distributions.reduce((sum, d) => sum + (d.deliveryCost || 0), 0),
+      totalMaterialValue: distributions.reduce((sum, d) => sum + (Number(d.total_pengeluaran) || 0), 0),
       uniqueProjects: [...new Set(distributions.map(d => d.project?.id).filter(Boolean))].length,
       uniqueMaterials: [...new Set(distributions.map(d => d.material?.id).filter(Boolean))].length,
     };

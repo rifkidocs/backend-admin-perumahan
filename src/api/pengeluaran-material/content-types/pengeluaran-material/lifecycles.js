@@ -9,6 +9,9 @@ module.exports = {
       const random = Math.floor(Math.random() * 10000).toString().padStart(4, "0");
       data.mrNumber = `MR-${dateStr}-${random}`;
     }
+
+    // Calculate total prices
+    calculateTotalPrices(data);
   },
 
   async afterCreate(event) {
@@ -84,6 +87,11 @@ module.exports = {
       params._oldStatusDokumen = oldRecord.status_dokumen;
       params._oldRecord = oldRecord;
     }
+
+    // Calculate total prices
+    if (params.data) {
+      calculateTotalPrices(params.data);
+    }
   },
 
   async beforeDelete(event) {
@@ -114,6 +122,39 @@ module.exports = {
     }
   },
 };
+
+/**
+ * Calculate total prices for each material item and overall issuance total
+ * @param {Object} data - The pengeluaran-material data object
+ */
+function calculateTotalPrices(data) {
+  if (!data.list_materials || !Array.isArray(data.list_materials)) {
+    return;
+  }
+
+  let totalPengeluaran = 0;
+
+  for (const item of data.list_materials) {
+    // Calculate total_harga for each item if harga_satuan is provided
+    if (item.harga_satuan && item.quantity) {
+      const hargaSatuan = Number(item.harga_satuan);
+      const quantity = Number(item.quantity);
+
+      // Calculate and round to 2 decimal places
+      item.total_harga = Math.round(hargaSatuan * quantity * 100) / 100;
+
+      totalPengeluaran += item.total_harga;
+    } else if (item.total_harga) {
+      // If total_harga is provided but not harga_satuan, just add to total
+      totalPengeluaran += Number(item.total_harga);
+    }
+  }
+
+  // Set total_pengeluaran, rounded to 2 decimal places
+  if (totalPengeluaran > 0) {
+    data.total_pengeluaran = Math.round(totalPengeluaran * 100) / 100;
+  }
+}
 
 async function restoreStock(inputRecord) {
   console.log(`📈 Restoring stock for deleted/cancelled record ${inputRecord.id}`);
