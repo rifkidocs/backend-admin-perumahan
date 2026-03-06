@@ -39,7 +39,7 @@
     },
     "customer": {
       "type": "string",
-      "required": true,
+      "required": false,
       "minLength": 3,
       "maxLength": 200
     },
