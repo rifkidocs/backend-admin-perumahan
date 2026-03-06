@@ -4,9 +4,9 @@ module.exports = {
 
         // Validasi relasi proyek
         if (data.is_all_projects) {
-            data.project = null;
-        } else if (!data.project) {
-            throw new Error("Pilih salah satu proyek jika tidak mencentang 'Semua Proyek'");
+            data.projects = [];
+        } else if (!data.projects || (Array.isArray(data.projects) && data.projects.length === 0)) {
+            throw new Error("Pilih minimal satu proyek jika tidak mencentang 'Semua Proyek'");
         }
 
         // Validasi tanggal
@@ -54,18 +54,18 @@ module.exports = {
         const { data, where } = event.params;
 
         // Validasi relasi proyek jika diubah
-        if (data.is_all_projects !== undefined || data.project !== undefined) {
+        if (data.is_all_projects !== undefined || data.projects !== undefined) {
             const existing = await strapi.entityService.findOne("api::jadwal-marketing.jadwal-marketing", where.id, {
-                populate: ['project']
+                populate: ['projects']
             });
 
             const isAllProjects = data.is_all_projects !== undefined ? data.is_all_projects : existing.is_all_projects;
-            const project = data.project !== undefined ? data.project : existing.project;
+            const projects = data.projects !== undefined ? data.projects : existing.projects;
 
             if (isAllProjects) {
-                data.project = null;
-            } else if (!project) {
-                throw new Error("Pilih salah satu proyek jika tidak mencentang 'Semua Proyek'");
+                data.projects = [];
+            } else if (!projects || (Array.isArray(projects) && projects.length === 0)) {
+                throw new Error("Pilih minimal satu proyek jika tidak mencentang 'Semua Proyek'");
             }
         }
 

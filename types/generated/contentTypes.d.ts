@@ -2083,8 +2083,8 @@ export interface ApiJadwalMarketingJadwalMarketing
       ['low', 'medium', 'high', 'urgent']
     > &
       Schema.Attribute.DefaultTo<'medium'>;
-    project: Schema.Attribute.Relation<
-      'manyToOne',
+    projects: Schema.Attribute.Relation<
+      'manyToMany',
       'api::proyek-perumahan.proyek-perumahan'
     >;
     publishedAt: Schema.Attribute.DateTime;

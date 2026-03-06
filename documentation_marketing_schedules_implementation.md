@@ -80,8 +80,8 @@ Dokumentasi ini menjelaskan implementasi backend untuk sistem Jadwal & Kegiatan 
 // Relasi Many-to-Many dengan Karyawan
 assigned_staff: manyToMany → api::karyawan.karyawan
 
-// Relasi Many-to-One dengan Proyek
-project: manyToOne → api::proyek-perumahan.proyek-perumahan
+// Relasi Many-to-Many dengan Proyek
+projects: manyToMany → api::proyek-perumahan.proyek-perumahan
 
 // Relasi Many-to-One dengan Lead
 lead: manyToOne → api::lead-marketing.lead-marketing

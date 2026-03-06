@@ -74,11 +74,14 @@ Dokumentasi ini menjelaskan implementasi sistem Jadwal & Kegiatan Marketing meng
       "target": "api::karyawan.karyawan",
       "mappedBy": "marketing_schedules"
     },
-    "project": {
+    "is_all_projects": {
+      "type": "boolean",
+      "default": false
+    },
+    "projects": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::proyek-perumahan.proyek-perumahan",
-      "inversedBy": "marketing_schedules"
+      "relation": "manyToMany",
+      "target": "api::proyek-perumahan.proyek-perumahan"
     },
     "lead": {
       "type": "relation",

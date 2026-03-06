@@ -72,9 +72,9 @@
       "type": "boolean",
       "default": false
     },
-    "project": {
+    "projects": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::proyek-perumahan.proyek-perumahan"
     },
     "lead": {
