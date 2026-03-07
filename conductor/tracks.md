@@ -9,5 +9,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Security Guard Attendance & Patrol System**
-*Link: [./tracks/security_patrol_20260123/](./tracks/security_patrol_20260123/)*
+- [ ] **Track: Create a custom Strapi 5 plugin for caching Content Manager API requests to improve admin panel performance.**
+*Link: [./tracks/admin_cache_20260307/](./tracks/admin_cache_20260307/)*
