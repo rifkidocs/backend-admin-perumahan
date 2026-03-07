@@ -1,4 +1,8 @@
 module.exports = ({ env }) => ({
+  "admin-cache": {
+    enabled: true,
+    resolve: "./src/plugins/admin-cache",
+  },
   "strapi-cache": {
     enabled: false,
     config: {

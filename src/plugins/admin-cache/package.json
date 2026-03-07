@@ -1,0 +1,13 @@
+{
+  "name": "strapi-plugin-admin-cache",
+  "version": "1.0.0",
+  "description": "Custom caching plugin for Strapi 5 Content Manager API",
+  "strapi": {
+    "name": "admin-cache",
+    "description": "Admin API caching with per-user isolation and global CUD invalidation",
+    "kind": "plugin"
+  },
+  "dependencies": {
+    "lru-cache": "^11.0.0"
+  }
+}
