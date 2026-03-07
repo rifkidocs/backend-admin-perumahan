@@ -1,32 +1,32 @@
 'use strict';
 
 /**
- * Admin Cache Plugin
- * Caches slow Content Manager GET requests with per-user isolation.
+ * Admin Cache Plugin - Optimized for Shared Cache & High Performance
  */
 
 const crypto = require('crypto');
 
 module.exports = () => {
-  // Handle cross-version LRUCache exports
   const LRU = require('lru-cache');
   const LRUCache = LRU.LRUCache || LRU;
 
-  // Initialize LRU Cache
-  // Supports both v11+ (ttl) and older versions (maxAge)
+  // Konfigurasi Agresif: Shared Cache antar user
+  const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+  
   const cache = new LRUCache({
-    max: 1000,
-    ttl: 1000 * 60 * 60, // 1 hour (v7+)
-    maxAge: 1000 * 60 * 60, // 1 hour (fallback for older versions)
+    max: 5000, // Kapasitas 5.000 entri (Aman untuk server dengan RAM 8GB)
+    ttl: ONE_WEEK,
+    maxAge: ONE_WEEK, // Fallback untuk versi lama
+    updateAgeOnGet: true, // Data yang sering diakses tidak akan kedaluwarsa
   });
 
   return {
     register({ strapi }) {
-      strapi.log.info('Admin Cache Plugin: Registering...');
+      strapi.log.info('Admin Cache Plugin: Registering Optimized Shared Cache...');
     },
 
     async bootstrap({ strapi }) {
-      strapi.log.info('Admin Cache Plugin: Bootstrapping...');
+      strapi.log.info('Admin Cache Plugin: Bootstrapping Shared Cache...');
 
       // Global Purge Function
       strapi.plugin('admin-cache').purge = () => {
@@ -35,7 +35,7 @@ module.exports = () => {
         } else if (typeof cache.reset === 'function') {
           cache.reset();
         }
-        strapi.log.info('Admin Cache: Global Purge Executed');
+        strapi.log.info('Admin Cache: Global Purge Executed (All Users Shared)');
       };
 
       // Add Middleware to the Strapi middleware stack
@@ -55,7 +55,7 @@ module.exports = () => {
         if (isCudOperation) {
           await next();
           
-          // Only purge on successful CUD operations
+          // Purge cache on any successful CUD operation
           if (ctx.status >= 200 && ctx.status < 300) {
             strapi.plugin('admin-cache').purge();
           }
@@ -64,17 +64,15 @@ module.exports = () => {
 
         // 3. Handle Caching (GET)
         if (method === 'GET') {
-          // Per-User Isolation: Use user ID from state (populated by admin auth)
-          const userId = ctx.state?.user?.id || 'anonymous';
-          
-          // Generate Cache Key (User + Path + Raw Query String)
-          const rawKey = `${userId}:${path}:${querystring}`;
+          // SHARED CACHE: Tidak pakai userId lagi agar antar user bisa berbagi cache
+          // Kunci hanya berdasarkan Path dan Raw Query String (Filter)
+          const rawKey = `${path}:${querystring}`;
           const cacheKey = crypto.createHash('sha256').update(rawKey).digest('hex');
 
           // Check Cache
           const cachedResponse = cache.get(cacheKey);
           if (cachedResponse) {
-            strapi.log.info(`Admin Cache: HIT [${path}]`);
+            strapi.log.info(`Admin Cache: SHARED HIT [${path}] - Items: ${cache.size}`);
             ctx.status = 200;
             ctx.body = cachedResponse.body;
             
@@ -84,7 +82,7 @@ module.exports = () => {
             }
             
             // Set cache headers for debugging
-            ctx.set('X-Admin-Cache', 'HIT');
+            ctx.set('X-Admin-Cache', 'HIT-SHARED');
             return;
           }
 
