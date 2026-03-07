@@ -9,5 +9,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Create a custom Strapi 5 plugin for caching Content Manager API requests to improve admin panel performance.**
+- [x] **Track: Create a custom Strapi 5 plugin for caching Content Manager API requests to improve admin panel performance.**
 *Link: [./tracks/admin_cache_20260307/](./tracks/admin_cache_20260307/)*
