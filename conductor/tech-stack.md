@@ -12,6 +12,9 @@
 
 ## Key Libraries & Plugins
 - **Data Management:** `strapi-v5-plugin-populate-deep` for handling complex nested relations in API responses.
+- **Caching:**
+    - `strapi-cache` for general API optimization.
+    - `admin-cache` (Custom Plugin) for per-user Admin Content Manager API caching with global CUD invalidation.
 - **Database Driver:** `mysql2`
 - **Frontend (Admin Panel):** React 18, Styled Components 6, React Router 6.
 - **Utilities:** `fs-extra` for enhanced file system operations, `mime-types` for file handling, `dayjs` for robust date/time manipulation.
