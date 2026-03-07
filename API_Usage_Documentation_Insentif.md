@@ -20,6 +20,7 @@ Dokumentasi API untuk manajemen insentif di sistem perumahan. Sistem ini menduku
 | `insentif_real` | Decimal | No | Nilai insentif real | Default: 0 |
 | `insentif_utj` | Decimal | No | Nilai insentif UTJ | Default: 0 |
 | `bonus_kinerja` | Decimal | No | Bonus kinerja | Default: 0 |
+| `tunjangan_kinerja` | Decimal | No | Tunjangan kinerja | Default: 0 |
 | `take_home_pay` | Decimal | No | Total yang diterima | Default: 0 |
 | `effective_date` | Date | Yes | Tanggal efektif | |
 | `keterangan` | Text | No | Catatan tambahan | |

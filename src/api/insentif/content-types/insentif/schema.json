@@ -52,6 +52,10 @@
       "type": "decimal",
       "default": 0
     },
+    "tunjangan_kinerja": {
+      "type": "decimal",
+      "default": 0
+    },
     "take_home_pay": {
       "type": "decimal",
       "default": 0
