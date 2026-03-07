@@ -1890,8 +1890,15 @@ export interface ApiInsentifInsentif extends Struct.CollectionTypeSchema {
       'api::insentif.insentif'
     > &
       Schema.Attribute.Private;
+    nama: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     take_home_pay: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    team: Schema.Attribute.Relation<'manyToOne', 'api::team.team'>;
+    tipe_penerima: Schema.Attribute.Enumeration<
+      ['Karyawan', 'Team', 'Manual']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Karyawan'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -2448,6 +2455,7 @@ export interface ApiKaryawanKaryawan extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::target-marketing.target-marketing'
     >;
+    teams: Schema.Attribute.Relation<'manyToMany', 'api::team.team'>;
     tempat_lahir: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -7051,6 +7059,40 @@ export interface ApiTargetMarketingTargetMarketing
   };
 }
 
+export interface ApiTeamTeam extends Struct.CollectionTypeSchema {
+  collectionName: 'teams';
+  info: {
+    description: 'Kumpulan Karyawan';
+    displayName: 'Team';
+    pluralName: 'teams';
+    singularName: 'team';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deskripsi: Schema.Attribute.Text;
+    insentifs: Schema.Attribute.Relation<'oneToMany', 'api::insentif.insentif'>;
+    karyawans: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::karyawan.karyawan'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::team.team'> &
+      Schema.Attribute.Private;
+    nama_tim: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiTechnicalDrawingTechnicalDrawing
   extends Struct.CollectionTypeSchema {
   collectionName: 'technical_drawings';
@@ -8217,6 +8259,7 @@ declare module '@strapi/strapi' {
       'api::supplier-evaluation.supplier-evaluation': ApiSupplierEvaluationSupplierEvaluation;
       'api::supplier.supplier': ApiSupplierSupplier;
       'api::target-marketing.target-marketing': ApiTargetMarketingTargetMarketing;
+      'api::team.team': ApiTeamTeam;
       'api::technical-drawing.technical-drawing': ApiTechnicalDrawingTechnicalDrawing;
       'api::transfer-dana.transfer-dana': ApiTransferDanaTransferDana;
       'api::unit-material-requirement.unit-material-requirement': ApiUnitMaterialRequirementUnitMaterialRequirement;

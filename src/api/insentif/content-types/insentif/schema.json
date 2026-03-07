@@ -12,11 +12,30 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "tipe_penerima": {
+      "type": "enumeration",
+      "enum": [
+        "Karyawan",
+        "Team",
+        "Manual"
+      ],
+      "default": "Karyawan",
+      "required": true
+    },
     "karyawan": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::karyawan.karyawan",
       "inversedBy": "insentifs"
+    },
+    "team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "insentifs"
+    },
+    "nama": {
+      "type": "string"
     },
     "jabatan": {
       "type": "string"

@@ -368,6 +368,12 @@
       "relation": "oneToMany",
       "target": "api::booking-document.booking-document",
       "mappedBy": "verified_by"
+    },
+    "teams": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::team.team",
+      "mappedBy": "karyawans"
     }
   }
 }

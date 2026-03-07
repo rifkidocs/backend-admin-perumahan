@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "teams",
+  "info": {
+    "singularName": "team",
+    "pluralName": "teams",
+    "displayName": "Team",
+    "description": "Kumpulan Karyawan"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nama_tim": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "deskripsi": {
+      "type": "text"
+    },
+    "karyawans": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::karyawan.karyawan",
+      "inversedBy": "teams"
+    },
+    "insentifs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::insentif.insentif",
+      "mappedBy": "team"
+    }
+  }
+}
