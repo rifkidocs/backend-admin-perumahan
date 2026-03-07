@@ -5,14 +5,19 @@
  * Caches slow Content Manager GET requests with per-user isolation.
  */
 
-const LRUCache = require('lru-cache');
 const crypto = require('crypto');
 
 module.exports = () => {
-  // Initialize LRU Cache (Older version uses maxAge instead of ttl)
+  // Handle cross-version LRUCache exports
+  const LRU = require('lru-cache');
+  const LRUCache = LRU.LRUCache || LRU;
+
+  // Initialize LRU Cache
+  // Supports both v11+ (ttl) and older versions (maxAge)
   const cache = new LRUCache({
     max: 1000,
-    maxAge: 1000 * 60 * 60, // 1 hour
+    ttl: 1000 * 60 * 60, // 1 hour (v7+)
+    maxAge: 1000 * 60 * 60, // 1 hour (fallback for older versions)
   });
 
   return {
@@ -25,13 +30,17 @@ module.exports = () => {
 
       // Global Purge Function
       strapi.plugin('admin-cache').purge = () => {
-        cache.reset();
+        if (typeof cache.clear === 'function') {
+          cache.clear();
+        } else if (typeof cache.reset === 'function') {
+          cache.reset();
+        }
         strapi.log.info('Admin Cache: Global Purge Executed');
       };
 
       // Add Middleware to the Strapi middleware stack
       strapi.server.use(async (ctx, next) => {
-        const { method, path, query } = ctx;
+        const { method, path, querystring } = ctx;
 
         // 1. Identify Target Routes (Content Manager Collection/Single Types)
         const isContentManagerApi = path.startsWith('/content-manager/collection-types/') || 
@@ -58,24 +67,28 @@ module.exports = () => {
           // Per-User Isolation: Use user ID from state (populated by admin auth)
           const userId = ctx.state?.user?.id || 'anonymous';
           
-          // Generate Cache Key (User + Path + Query)
-          const queryString = JSON.stringify(query);
-          const rawKey = `${userId}:${path}:${queryString}`;
+          // Generate Cache Key (User + Path + Raw Query String)
+          const rawKey = `${userId}:${path}:${querystring}`;
           const cacheKey = crypto.createHash('sha256').update(rawKey).digest('hex');
 
           // Check Cache
           const cachedResponse = cache.get(cacheKey);
           if (cachedResponse) {
-            strapi.log.debug(`Admin Cache: Hit [${path}]`);
+            strapi.log.info(`Admin Cache: HIT [${path}]`);
             ctx.status = 200;
             ctx.body = cachedResponse.body;
+            
+            // Restore original Content-Type
+            if (cachedResponse.contentType) {
+              ctx.type = cachedResponse.contentType;
+            }
             
             // Set cache headers for debugging
             ctx.set('X-Admin-Cache', 'HIT');
             return;
           }
 
-          strapi.log.debug(`Admin Cache: Miss [${path}]`);
+          strapi.log.info(`Admin Cache: MISS [${path}]`);
           await next();
 
           // Cache the response if it's successful
