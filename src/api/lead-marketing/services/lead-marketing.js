@@ -13,7 +13,8 @@ module.exports = createCoreService('api::lead-marketing.lead-marketing', ({ stra
             ...params,
             populate: {
                 marketing: true,
-                interest: true,
+                unit_minat: true,
+                proyek_minat: true,
                 communications: {
                     sort: { date: 'desc' }
                 },
@@ -32,7 +33,8 @@ module.exports = createCoreService('api::lead-marketing.lead-marketing', ({ stra
             },
             populate: {
                 marketing: true,
-                interest: true,
+                unit_minat: true,
+                proyek_minat: true,
                 communications: true,
                 reminders: true
             }
@@ -49,7 +51,8 @@ module.exports = createCoreService('api::lead-marketing.lead-marketing', ({ stra
             },
             populate: {
                 marketing: true,
-                interest: true,
+                unit_minat: true,
+                proyek_minat: true,
                 communications: true,
                 reminders: true
             }
@@ -80,7 +83,8 @@ module.exports = createCoreService('api::lead-marketing.lead-marketing', ({ stra
             },
             populate: {
                 marketing: true,
-                interest: true,
+                unit_minat: true,
+                proyek_minat: true,
                 communications: true,
                 reminders: true
             }

@@ -3062,10 +3062,10 @@ export interface ApiLeadMarketingLeadMarketing
     date: Schema.Attribute.Date & Schema.Attribute.Required;
     email: Schema.Attribute.Email;
     foto_selfie: Schema.Attribute.Media<'images'>;
-    interest: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::proyek-perumahan.proyek-perumahan'
+    hasil_cek_no_hp: Schema.Attribute.Enumeration<
+      ['valid', 'tidak_aktif', 'salah_sambung', 'tidak_diangkat', 'nomor_salah']
     >;
+    last_follow_up: Schema.Attribute.Date;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -3085,6 +3085,10 @@ export interface ApiLeadMarketingLeadMarketing
         maxLength: 1000;
       }>;
     phone: Schema.Attribute.String & Schema.Attribute.Required;
+    proyek_minat: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::proyek-perumahan.proyek-perumahan'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     reminders: Schema.Attribute.Relation<'oneToMany', 'api::reminder.reminder'>;
     rencana_pembelian: Schema.Attribute.Enumeration<
@@ -3094,11 +3098,18 @@ export interface ApiLeadMarketingLeadMarketing
       ['website', 'kunjungan', 'media_social', 'digital_marketing', 'lainnya']
     > &
       Schema.Attribute.Required;
+    status_interaksi: Schema.Attribute.Enumeration<
+      ['chat', 'telepon', 'visit', 'belum_balas']
+    >;
     status_lead: Schema.Attribute.Enumeration<
       ['ragu_ragu', 'berminat', 'prioritas']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'ragu_ragu'>;
+    unit_minat: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::unit-rumah.unit-rumah'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -7433,6 +7444,10 @@ export interface ApiUnitRumahUnitRumah extends Struct.CollectionTypeSchema {
       ['pending', 'completed', 'rejected']
     >;
     images: Schema.Attribute.Media<'images', true>;
+    interested_leads: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::lead-marketing.lead-marketing'
+    >;
     kavling_number: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{

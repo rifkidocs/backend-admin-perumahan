@@ -42,15 +42,35 @@
       ],
       "required": true
     },
-    "interest": {
+    "unit_minat": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::unit-rumah.unit-rumah",
+      "inversedBy": "interested_leads"
+    },
+    "proyek_minat": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::proyek-perumahan.proyek-perumahan",
       "inversedBy": "interested_leads"
     },
+    "hasil_cek_no_hp": {
+      "type": "enumeration",
+      "enum": ["valid", "tidak_aktif", "salah_sambung", "tidak_diangkat", "nomor_salah"],
+      "required": false
+    },
     "rencana_pembelian": {
       "type": "enumeration",
       "enum": ["cash", "cash_bertahap", "kpr"],
+      "required": false
+    },
+    "status_interaksi": {
+      "type": "enumeration",
+      "enum": ["chat", "telepon", "visit", "belum_balas"],
+      "required": false
+    },
+    "last_follow_up": {
+      "type": "date",
       "required": false
     },
     "status_lead": {

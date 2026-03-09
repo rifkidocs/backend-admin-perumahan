@@ -237,6 +237,12 @@
       "relation": "oneToMany",
       "target": "api::payment-invoice.payment-invoice",
       "mappedBy": "unit_rumah"
+    },
+    "interested_leads": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-marketing.lead-marketing",
+      "mappedBy": "unit_minat"
     }
   }
 }

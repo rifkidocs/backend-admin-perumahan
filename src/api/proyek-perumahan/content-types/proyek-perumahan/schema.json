@@ -353,7 +353,7 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::lead-marketing.lead-marketing",
-      "mappedBy": "interest"
+      "mappedBy": "proyek_minat"
     },
     "bookings": {
       "type": "relation",
