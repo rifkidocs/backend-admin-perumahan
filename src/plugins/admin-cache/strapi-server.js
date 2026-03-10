@@ -1,45 +1,96 @@
 "use strict";
 
 /**
- * Admin Cache Plugin - Optimized for Shared Cache & High Performance
+ * Admin Cache Plugin - Optimized for Shared Cache with Redis
  */
 
 const crypto = require("crypto");
+const Redis = require("ioredis");
 
 module.exports = () => {
-  const LRU = require("lru-cache");
-  const LRUCache = LRU.LRUCache || LRU;
+  // Config from ENV
+  const redisHost = process.env.REDIS_HOST || "127.0.0.1";
+  const redisPort = parseInt(process.env.REDIS_PORT || "6379");
+  const redisPassword = process.env.REDIS_PASSWORD || undefined;
+  const redisDb = parseInt(process.env.REDIS_DB || "0");
+  const redisKeyPrefix = process.env.REDIS_KEY_PREFIX || "strapi:admin-cache:";
 
-  // Konfigurasi Agresif: Shared Cache antar user
-  const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+  let redis;
+  let isRedisAvailable = false;
 
-  const cache = new LRUCache({
-    max: 1000,
-    ttl: ONE_WEEK,
-    maxAge: ONE_WEEK, // Fallback untuk versi lama
-    updateAgeOnGet: true, // Data yang sering diakses tidak akan kedaluwarsa
-  });
+  const ONE_WEEK = 60 * 60 * 24 * 7; // TTL in seconds for Redis
 
   return {
     register({ strapi }) {
-      strapi.log.info(
-        "Admin Cache Plugin: Registering Optimized Shared Cache...",
-      );
+      strapi.log.info("Admin Cache Plugin: Registering Redis Shared Cache...");
+
+      try {
+        redis = new Redis({
+          host: redisHost,
+          port: redisPort,
+          password: redisPassword,
+          db: redisDb,
+          keyPrefix: redisKeyPrefix,
+          retryStrategy: (times) => {
+            const delay = Math.min(times * 50, 2000);
+            return delay;
+          },
+          maxRetriesPerRequest: 3,
+        });
+
+        redis.on("connect", () => {
+          isRedisAvailable = true;
+          strapi.log.info(`Admin Cache: Connected to Redis at ${redisHost}:${redisPort}`);
+        });
+
+        redis.on("error", (err) => {
+          isRedisAvailable = false;
+          strapi.log.error(`Admin Cache: Redis Error - ${err.message}`);
+        });
+      } catch (err) {
+        strapi.log.error(`Admin Cache: Redis Initialization Failed - ${err.message}`);
+      }
     },
 
     async bootstrap({ strapi }) {
-      strapi.log.info("Admin Cache Plugin: Bootstrapping Shared Cache...");
+      strapi.log.info("Admin Cache Plugin: Bootstrapping Redis Shared Cache...");
 
       // Global Purge Function
-      strapi.plugin("admin-cache").purge = () => {
-        if (typeof cache.clear === "function") {
-          cache.clear();
-        } else if (typeof cache.reset === "function") {
-          cache.reset();
+      strapi.plugin("admin-cache").purge = async () => {
+        if (!isRedisAvailable) return;
+
+        try {
+          // Efficient clear using SCAN if prefix is used
+          const stream = redis.scanStream({
+            match: `${redisKeyPrefix}*`,
+          });
+
+          stream.on("data", async (keys) => {
+            if (keys.length) {
+              // Keys returned by SCAN already include the prefix if keyPrefix is NOT set in ioredis
+              // But ioredis handles prefixing automatically. 
+              // Wait, ioredis scanStream matches WITHOUT prefix in 'match' if keyPrefix is set?
+              // No, 'match' should include prefix if we want to be safe, but ioredis handles it.
+              // Actually, with keyPrefix set, ioredis handles it for most commands.
+              // For SCAN, we should be careful.
+              const pipeline = redis.pipeline();
+              keys.forEach((key) => {
+                // Remove prefix from key because pipeline/del will re-add it
+                const keyWithoutPrefix = key.startsWith(redisKeyPrefix) 
+                  ? key.slice(redisKeyPrefix.length) 
+                  : key;
+                pipeline.del(keyWithoutPrefix);
+              });
+              await pipeline.exec();
+            }
+          });
+
+          stream.on("end", () => {
+            strapi.log.info("Admin Cache: Global Purge Executed (Redis)");
+          });
+        } catch (err) {
+          strapi.log.error(`Admin Cache: Purge Failed - ${err.message}`);
         }
-        strapi.log.info(
-          "Admin Cache: Global Purge Executed (All Users Shared)",
-        );
       };
 
       // Add Middleware to the Strapi middleware stack
@@ -71,8 +122,6 @@ module.exports = () => {
 
         // 3. Handle Caching (GET)
         if (method === "GET") {
-          // SHARED CACHE: Tidak pakai userId lagi agar antar user bisa berbagi cache
-          // Kunci hanya berdasarkan Path dan Raw Query String (Filter)
           const rawKey = `${path}:${querystring}`;
           const cacheKey = crypto
             .createHash("sha256")
@@ -80,34 +129,43 @@ module.exports = () => {
             .digest("hex");
 
           // Check Cache
-          const cachedResponse = cache.get(cacheKey);
-          if (cachedResponse) {
-            strapi.log.info(
-              `Admin Cache: SHARED HIT [${path}] - Items: ${cache.size}`,
-            );
-            ctx.status = 200;
-            ctx.body = cachedResponse.body;
+          if (isRedisAvailable) {
+            try {
+              const cachedData = await redis.get(cacheKey);
+              if (cachedData) {
+                const cachedResponse = JSON.parse(cachedData);
+                strapi.log.info(`Admin Cache: SHARED HIT [${path}]`);
+                
+                ctx.status = 200;
+                ctx.body = cachedResponse.body;
 
-            // Restore original Content-Type
-            if (cachedResponse.contentType) {
-              ctx.type = cachedResponse.contentType;
+                if (cachedResponse.contentType) {
+                  ctx.type = cachedResponse.contentType;
+                }
+
+                ctx.set("X-Admin-Cache", "HIT-SHARED");
+                return;
+              }
+            } catch (err) {
+              strapi.log.error(`Admin Cache: Get Failed - ${err.message}`);
             }
-
-            // Set cache headers for debugging
-            ctx.set("X-Admin-Cache", "HIT-SHARED");
-            return;
           }
 
           strapi.log.info(`Admin Cache: MISS [${path}]`);
           await next();
 
           // Cache the response if it's successful
-          if (ctx.status === 200 && ctx.body) {
-            cache.set(cacheKey, {
-              body: ctx.body,
-              contentType: ctx.response.get("Content-Type"),
-            });
-            ctx.set("X-Admin-Cache", "MISS");
+          if (isRedisAvailable && ctx.status === 200 && ctx.body) {
+            try {
+              const valueToCache = JSON.stringify({
+                body: ctx.body,
+                contentType: ctx.response.get("Content-Type"),
+              });
+              await redis.set(cacheKey, valueToCache, "EX", ONE_WEEK);
+              ctx.set("X-Admin-Cache", "MISS");
+            } catch (err) {
+              strapi.log.error(`Admin Cache: Set Failed - ${err.message}`);
+            }
           }
           return;
         }
