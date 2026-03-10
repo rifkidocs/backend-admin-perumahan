@@ -11,3 +11,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Create a custom Strapi 5 plugin for caching Content Manager API requests to improve admin panel performance.**
 *Link: [./tracks/admin_cache_20260307/](./tracks/admin_cache_20260307/)*
+
+---
+
+- [ ] **Track: Migrate 'admin-cache' plugin from lru-cache to Redis (ioredis) for shared admin caching.**
+*Link: [./tracks/admin_cache_redis_20260310/](./tracks/admin_cache_redis_20260310/)*
