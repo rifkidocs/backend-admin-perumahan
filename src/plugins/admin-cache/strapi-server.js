@@ -142,7 +142,7 @@ module.exports = () => {
               if (cachedData) {
                 const cachedResponse = JSON.parse(cachedData);
                 strapi.log.info(`Admin Cache: HIT [User:${userId}] [${path}]`);
-                
+
                 ctx.status = 200;
                 ctx.body = cachedResponse.body;
 
@@ -151,11 +151,17 @@ module.exports = () => {
                 }
 
                 ctx.set("X-Admin-Cache", "HIT-USER");
+                ctx.set("X-Admin-Cache-Status", "HIT");
                 return;
+              } else {
+                ctx.set("X-Admin-Cache-Status", "MISS-NOT-FOUND");
               }
             } catch (err) {
               strapi.log.error(`Admin Cache: Get Failed - ${err.message}`);
+              ctx.set("X-Admin-Cache-Status", "ERROR-GET");
             }
+          } else {
+            ctx.set("X-Admin-Cache-Status", "BYPASS-REDIS-DOWN");
           }
 
           strapi.log.info(`Admin Cache: MISS [User:${userId}] [${path}]`);
@@ -172,8 +178,10 @@ module.exports = () => {
               ctx.set("X-Admin-Cache", "MISS");
             } catch (err) {
               strapi.log.error(`Admin Cache: Set Failed - ${err.message}`);
+              ctx.set("X-Admin-Cache-Status", "ERROR-SET");
             }
           }
+
           return;
         }
 
