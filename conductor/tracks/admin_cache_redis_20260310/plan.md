@@ -1,7 +1,7 @@
 # Implementation Plan: Redis-based Admin Cache Management
 
 ## Phase 1: Preparation & Environment Setup
-- [ ] Task: Install `ioredis` as a project dependency
+- [x] Task: Install `ioredis` as a project dependency (b4dc6c0)
 - [ ] Task: Update `.env.example` with Redis configuration variables (`REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_DB`, `REDIS_KEY_PREFIX`)
 - [ ] Task: Conductor - User Manual Verification 'Preparation & Environment Setup' (Protocol in workflow.md)
 
