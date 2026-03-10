@@ -2,7 +2,7 @@
 
 ## Phase 1: Preparation & Environment Setup
 - [x] Task: Install `ioredis` as a project dependency (b4dc6c0)
-- [ ] Task: Update `.env.example` with Redis configuration variables (`REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_DB`, `REDIS_KEY_PREFIX`)
+- [x] Task: Update `.env.example` with Redis configuration variables (`REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_DB`, `REDIS_KEY_PREFIX`) (53f3d2a)
 - [ ] Task: Conductor - User Manual Verification 'Preparation & Environment Setup' (Protocol in workflow.md)
 
 ## Phase 2: Redis Client Integration (admin-cache plugin)
