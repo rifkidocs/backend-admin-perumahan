@@ -1,9 +1,9 @@
 # Implementation Plan: Redis-based Admin Cache Management
 
-## Phase 1: Preparation & Environment Setup
+## Phase 1: Preparation & Environment Setup [checkpoint: 44aaf52]
 - [x] Task: Install `ioredis` as a project dependency (b4dc6c0)
 - [x] Task: Update `.env.example` with Redis configuration variables (`REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_DB`, `REDIS_KEY_PREFIX`) (53f3d2a)
-- [ ] Task: Conductor - User Manual Verification 'Preparation & Environment Setup' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Preparation & Environment Setup' (Protocol in workflow.md) (44aaf52)
 
 ## Phase 2: Redis Client Integration (admin-cache plugin)
 - [ ] Task: Create a Redis client factory/service in `src/plugins/admin-cache/strapi-server.js`
