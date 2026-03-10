@@ -41,6 +41,9 @@ module.exports = () => {
         redis.on("connect", () => {
           isRedisAvailable = true;
           strapi.log.info(`Admin Cache: Connected to Redis at ${redisHost}:${redisPort}`);
+          if (strapi.plugin("admin-cache").onConnect) {
+            strapi.plugin("admin-cache").onConnect();
+          }
         });
 
         redis.on("error", (err) => {
@@ -59,38 +62,40 @@ module.exports = () => {
       strapi.plugin("admin-cache").purge = async () => {
         if (!isRedisAvailable) return;
 
-        try {
-          // Efficient clear using SCAN if prefix is used
-          const stream = redis.scanStream({
-            match: `${redisKeyPrefix}*`,
-          });
+        return new Promise((resolve, reject) => {
+          try {
+            // Efficient clear using SCAN if prefix is used
+            const stream = redis.scanStream({
+              match: `${redisKeyPrefix}*`,
+            });
 
-          stream.on("data", async (keys) => {
-            if (keys.length) {
-              // Keys returned by SCAN already include the prefix if keyPrefix is NOT set in ioredis
-              // But ioredis handles prefixing automatically. 
-              // Wait, ioredis scanStream matches WITHOUT prefix in 'match' if keyPrefix is set?
-              // No, 'match' should include prefix if we want to be safe, but ioredis handles it.
-              // Actually, with keyPrefix set, ioredis handles it for most commands.
-              // For SCAN, we should be careful.
-              const pipeline = redis.pipeline();
-              keys.forEach((key) => {
-                // Remove prefix from key because pipeline/del will re-add it
-                const keyWithoutPrefix = key.startsWith(redisKeyPrefix) 
-                  ? key.slice(redisKeyPrefix.length) 
-                  : key;
-                pipeline.del(keyWithoutPrefix);
-              });
-              await pipeline.exec();
-            }
-          });
+            stream.on("data", async (keys) => {
+              if (keys.length) {
+                const pipeline = redis.pipeline();
+                keys.forEach((key) => {
+                  const keyWithoutPrefix = key.startsWith(redisKeyPrefix) 
+                    ? key.slice(redisKeyPrefix.length) 
+                    : key;
+                  pipeline.del(keyWithoutPrefix);
+                });
+                await pipeline.exec();
+              }
+            });
 
-          stream.on("end", () => {
-            strapi.log.info("Admin Cache: Global Purge Executed (Redis)");
-          });
-        } catch (err) {
-          strapi.log.error(`Admin Cache: Purge Failed - ${err.message}`);
-        }
+            stream.on("end", () => {
+              strapi.log.info("Admin Cache: Global Purge Executed (Redis)");
+              resolve();
+            });
+
+            stream.on("error", (err) => {
+              strapi.log.error(`Admin Cache: Scan Error - ${err.message}`);
+              reject(err);
+            });
+          } catch (err) {
+            strapi.log.error(`Admin Cache: Purge Failed - ${err.message}`);
+            reject(err);
+          }
+        });
       };
 
       // Add Middleware to the Strapi middleware stack
@@ -115,7 +120,7 @@ module.exports = () => {
 
           // Purge cache on any successful CUD operation
           if (ctx.status >= 200 && ctx.status < 300) {
-            strapi.plugin("admin-cache").purge();
+            await strapi.plugin("admin-cache").purge();
           }
           return;
         }
