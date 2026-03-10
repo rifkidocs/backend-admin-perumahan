@@ -72,18 +72,64 @@ describe('Admin Cache Redis Integration', () => {
     expect(next).toHaveBeenCalled();
     expect(ctx.set).toHaveBeenCalledWith('X-Admin-Cache', 'MISS');
 
-    // Second Call: HIT (Shared)
+    // Second Call: HIT (User)
     next.mockClear();
     ctx.set.mockClear();
     ctx.body = null;
     
-    // In actual use, next() won't be called on HIT
     await middleware(ctx, next);
     
     expect(next).not.toHaveBeenCalled();
     expect(ctx.body).toEqual({ data: 'original' });
-    expect(ctx.set).toHaveBeenCalledWith('X-Admin-Cache', 'HIT-SHARED');
+    expect(ctx.set).toHaveBeenCalledWith('X-Admin-Cache', 'HIT-USER');
     expect(ctx.status).toBe(200);
+  });
+
+  test('should isolate cache per user', async () => {
+    // User 1 GET
+    const ctx1 = {
+      method: 'GET',
+      path: '/content-manager/collection-types/api::test.test',
+      querystring: '',
+      state: { user: { id: 1 } },
+      status: 200,
+      body: { data: 'user1' },
+      response: { get: jest.fn().mockReturnValue('application/json') },
+      set: jest.fn(),
+    };
+    await middleware(ctx1, jest.fn());
+    expect(ctx1.set).toHaveBeenCalledWith('X-Admin-Cache', 'MISS');
+
+    // User 2 GET (same path)
+    const ctx2 = {
+      method: 'GET',
+      path: '/content-manager/collection-types/api::test.test',
+      querystring: '',
+      state: { user: { id: 2 } },
+      status: 200,
+      body: { data: 'user2' },
+      response: { get: jest.fn().mockReturnValue('application/json') },
+      set: jest.fn(),
+    };
+    await middleware(ctx2, jest.fn());
+    
+    // Should be MISS because it's a different user
+    expect(ctx2.set).toHaveBeenCalledWith('X-Admin-Cache', 'MISS');
+    
+    // User 1 GET again (should be HIT)
+    const ctx1Again = {
+      method: 'GET',
+      path: '/content-manager/collection-types/api::test.test',
+      querystring: '',
+      state: { user: { id: 1 } },
+      status: 200,
+      body: null,
+      response: { get: jest.fn() },
+      set: jest.fn(),
+    };
+    await middleware(ctx1Again, jest.fn());
+    expect(ctx1Again.set).toHaveBeenCalledWith('X-Admin-Cache', 'HIT-USER');
+    expect(ctx1Again.body).toEqual({ data: 'user1' });
   });
 
   test('should purge Redis cache on CUD operation', async () => {

@@ -127,7 +127,9 @@ module.exports = () => {
 
         // 3. Handle Caching (GET)
         if (method === "GET") {
-          const rawKey = `${path}:${querystring}`;
+          // PER-USER CACHE: Use userId in cache key to ensure RBAC compatibility
+          const userId = ctx.state?.user?.id || "public";
+          const rawKey = `user:${userId}:${path}:${querystring}`;
           const cacheKey = crypto
             .createHash("sha256")
             .update(rawKey)
@@ -139,7 +141,7 @@ module.exports = () => {
               const cachedData = await redis.get(cacheKey);
               if (cachedData) {
                 const cachedResponse = JSON.parse(cachedData);
-                strapi.log.info(`Admin Cache: SHARED HIT [${path}]`);
+                strapi.log.info(`Admin Cache: HIT [User:${userId}] [${path}]`);
                 
                 ctx.status = 200;
                 ctx.body = cachedResponse.body;
@@ -148,7 +150,7 @@ module.exports = () => {
                   ctx.type = cachedResponse.contentType;
                 }
 
-                ctx.set("X-Admin-Cache", "HIT-SHARED");
+                ctx.set("X-Admin-Cache", "HIT-USER");
                 return;
               }
             } catch (err) {
@@ -156,7 +158,7 @@ module.exports = () => {
             }
           }
 
-          strapi.log.info(`Admin Cache: MISS [${path}]`);
+          strapi.log.info(`Admin Cache: MISS [User:${userId}] [${path}]`);
           await next();
 
           // Cache the response if it's successful

@@ -15,9 +15,9 @@ This track involves migrating the existing `admin-cache` plugin from an in-memor
         - `REDIS_DB` (default: `0`)
         - `REDIS_KEY_PREFIX` (default: `strapi:admin-cache:`)
 3.  **Caching Logic (GET)**:
-    - Maintain SHARED CACHE: Keys are derived from `path` and `querystring` (hashed with SHA-256).
+    - Implement PER-USER CACHE: Keys are derived from `userId`, `path`, and `querystring` (hashed with SHA-256) to ensure RBAC compatibility.
     - Cache successful `GET` responses from `/content-manager/collection-types/` and `/content-manager/single-types/`.
-    - Restore `Content-Type` and set `X-Admin-Cache: HIT-SHARED` header on cache hit.
+    - Restore `Content-Type` and set `X-Admin-Cache: HIT-USER` header on cache hit.
     - Default TTL: 1 Week (consistent with current logic).
 4.  **Invalidation Logic (CUD)**:
     - Maintain Global Purge: Clear all keys associated with the `admin-cache` plugin on any successful POST, PUT, PATCH, or DELETE operation in the Content Manager.
