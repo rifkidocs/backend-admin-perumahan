@@ -127,9 +127,14 @@ module.exports = () => {
 
         // 3. Handle Caching (GET)
         if (method === "GET") {
-          // PER-USER CACHE: Use userId in cache key to ensure RBAC compatibility
-          const userId = ctx.state?.user?.id || "public";
-          const rawKey = `user:${userId}:${path}:${querystring}`;
+          // PER-USER CACHE: Use userId and Authorization header in cache key to ensure RBAC compatibility
+          // In Strapi Admin, the user might be in ctx.state.user or ctx.state.admin
+          const userId = ctx.state?.user?.id || ctx.state?.admin?.id || "public";
+          const authHeader = ctx.get("Authorization") || "";
+          
+          // Using Authorization header ensures that even if ctx.state.user is not yet populated, 
+          // different users with different tokens will have different cache keys.
+          const rawKey = `user:${userId}:auth:${authHeader}:${path}:${querystring}`;
           const cacheKey = crypto
             .createHash("sha256")
             .update(rawKey)
@@ -141,7 +146,8 @@ module.exports = () => {
               const cachedData = await redis.get(cacheKey);
               if (cachedData) {
                 const cachedResponse = JSON.parse(cachedData);
-                strapi.log.info(`Admin Cache: HIT [User:${userId}] [${path}]`);
+                const identity = `User:${userId}${authHeader ? " (Auth)" : ""}`;
+                strapi.log.info(`Admin Cache: HIT [${identity}] [${path}]`);
 
                 ctx.status = 200;
                 ctx.body = cachedResponse.body;
@@ -164,7 +170,8 @@ module.exports = () => {
             ctx.set("X-Admin-Cache-Status", "BYPASS-REDIS-DOWN");
           }
 
-          strapi.log.info(`Admin Cache: MISS [User:${userId}] [${path}]`);
+          const identity = `User:${userId}${authHeader ? " (Auth)" : ""}`;
+          strapi.log.info(`Admin Cache: MISS [${identity}] [${path}]`);
           await next();
 
           // Cache the response if it's successful
