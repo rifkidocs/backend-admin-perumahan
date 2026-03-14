@@ -110,11 +110,30 @@ module.exports = {
 
     if (
       result.status_dokumen === "published" &&
-      result.statusReceiving === "completed" &&
-      result.list_materials &&
-      Array.isArray(result.list_materials)
+      result.statusReceiving === "completed"
     ) {
-      await updateStock(result);
+      // In Strapi 5, we need to fetch the full record with populate
+      // to ensure we have actual IDs for relations (not just summaries)
+      const fullRecord = await strapi.entityService.findOne(
+        "api::penerimaan-material.penerimaan-material",
+        result.id,
+        {
+          populate: {
+            list_materials: {
+              populate: ["material"],
+            },
+            gudang: true,
+          },
+        }
+      );
+
+      if (
+        fullRecord &&
+        fullRecord.list_materials &&
+        Array.isArray(fullRecord.list_materials)
+      ) {
+        await updateStock(fullRecord);
+      }
     }
   },
 
@@ -204,16 +223,37 @@ module.exports = {
   }
 };
 
+/**
+ * Robustly extract numeric ID from a relation field
+ * @param {any} relation - The relation field value
+ * @returns {number|null} - The numeric ID or null
+ */
+function getNumericId(relation) {
+  if (!relation) return null;
+  if (typeof relation === 'object') {
+    // If it has id, return it
+    if (relation.id) return relation.id;
+    // If it's a Strapi 5 summary object { count: 1 }, it has no ID here
+    return null;
+  }
+  // If it's already an ID (number or string)
+  return relation;
+}
+
 async function restoreStock(record) {
   console.log("📈 Restoring (removing) stock for record:", record.id);
 
-  const gudangId = record.gudang?.id || record.gudang;
-  if (!gudangId) return;
+  const gudangId = getNumericId(record.gudang);
+  if (!gudangId) {
+    console.error("❌ No valid warehouse ID (gudang) found for restore");
+    return;
+  }
 
   if (record.list_materials && Array.isArray(record.list_materials)) {
     for (const item of record.list_materials) {
       if (item.material && item.quantity) {
-        const materialId = item.material.id || item.material;
+        const materialId = getNumericId(item.material);
+        if (!materialId) continue;
 
         // Find existing material-gudang record
         const materialGudang = await strapi.db
@@ -251,16 +291,20 @@ async function restoreStock(record) {
 async function updateStock(record) {
   console.log("✅ Updating stock for record:", record.id);
 
-  const gudangId = record.gudang?.id || record.gudang;
+  const gudangId = getNumericId(record.gudang);
   if (!gudangId) {
-    console.error("❌ No warehouse (gudang) specified in receiving record");
+    console.error("❌ No valid warehouse ID (gudang) specified in receiving record");
     return;
   }
 
   if (record.list_materials && Array.isArray(record.list_materials)) {
     for (const item of record.list_materials) {
       if (item.material && item.quantity) {
-        const materialId = item.material.id || item.material;
+        const materialId = getNumericId(item.material);
+        if (!materialId) {
+          console.warn("⚠️ Skipping material item with no valid ID");
+          continue;
+        }
 
         console.log(
           `📦 Processing material ${materialId} for gudang ${gudangId}, quantity: ${item.quantity}`
