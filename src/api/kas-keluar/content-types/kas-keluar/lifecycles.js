@@ -23,8 +23,8 @@ module.exports = {
       data.invoiceNumber = `KK-${year}${month}-${random}`;
     }
 
-    if (data.amount && data.amount < 1000) {
-      throw new Error('Amount minimal 1.000');
+    if (data.amount && data.amount < 1) {
+      throw new Error('Amount minimal 1');
     }
   },
 
