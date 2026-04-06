@@ -43,7 +43,7 @@ Dokumentasi API untuk sistem manajemen booking dan pemesanan unit perumahan meng
 | `booking_id`     | String      | Yes      | ID unik booking        | Unique, Pattern: BK-YYYY-XXX                             |
 | `booking_date`   | Date        | Yes      | Tanggal booking dibuat | Auto-generated on create                                 |
 | `booking_fee`    | Decimal     | Yes      | Nominal booking fee    | Min: 0                                                   |
-| `payment_status` | Enumeration | Yes      | Status pembayaran      | Options: pending, lunas, overdue                         |
+| `payment_status` | Enumeration | Yes      | Status pembayaran      | Options: pending, lunas, overdue, free                   |
 | `booking_status` | Enumeration | Yes      | Status booking         | Options: aktif, menunggu-pembayaran, dibatalkan, selesai |
 | `payment_date`   | Date        | No       | Tanggal pembayaran     | Date format                                              |
 | `payment_method` | Enumeration | No       | Metode pembayaran      | Options: transfer, cash, check, kredit                   |
@@ -531,7 +531,7 @@ Dokumentasi API untuk sistem manajemen booking dan pemesanan unit perumahan meng
     },
     "payment_status": {
       "type": "enumeration",
-      "enum": ["pending", "lunas", "overdue"],
+      "enum": ["pending", "lunas", "overdue", "free"],
       "required": true,
       "default": "pending"
     },

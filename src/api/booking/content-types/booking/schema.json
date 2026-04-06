@@ -40,7 +40,8 @@
       "enum": [
         "pending",
         "lunas",
-        "overdue"
+        "overdue",
+        "free"
       ]
     },
     "booking_status": {
