@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "marketing_performances",
+  "info": {
+    "singularName": "marketing-performance",
+    "pluralName": "marketing-performances",
+    "displayName": "Marketing Performance",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "marketing_staff": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::karyawan.karyawan"
+    },
+    "periode": {
+      "type": "string",
+      "regex": "^[0-9]{4}-[0-9]{2}$"
+    },
+    "target_kunjungan_harian": {
+      "type": "integer",
+      "default": 10
+    },
+    "target_booking": {
+      "type": "integer",
+      "default": 0
+    },
+    "pencapaian_kunjungan": {
+      "type": "integer",
+      "default": 0
+    },
+    "pencapaian_booking": {
+      "type": "integer",
+      "default": 0
+    },
+    "target_penjualan": {
+      "type": "integer",
+      "default": 0
+    },
+    "pencapaian_penjualan": {
+      "type": "integer",
+      "default": 0
+    },
+    "skor_kinerja": {
+      "type": "decimal",
+      "default": 0
+    },
+    "rating": {
+      "type": "enumeration",
+      "enum": [
+        "poor",
+        "satisfactory",
+        "good",
+        "excellent"
+      ]
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

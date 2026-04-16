@@ -871,7 +871,7 @@ export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
     >;
     payment_proof: Schema.Attribute.Media<'images' | 'files'>;
     payment_status: Schema.Attribute.Enumeration<
-      ['pending', 'lunas', 'overdue']
+      ['pending', 'lunas', 'overdue', 'free']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'pending'>;
@@ -2495,7 +2495,7 @@ export interface ApiKasKeluarKasKeluar extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMax<
         {
           max: 9999999999;
-          min: 1000;
+          min: 1;
         },
         number
       >;
@@ -3360,6 +3360,55 @@ export interface ApiLokasiLokasi extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<50>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiMarketingPerformanceMarketingPerformance
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'marketing_performances';
+  info: {
+    description: '';
+    displayName: 'Marketing Performance';
+    pluralName: 'marketing-performances';
+    singularName: 'marketing-performance';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::marketing-performance.marketing-performance'
+    > &
+      Schema.Attribute.Private;
+    marketing_staff: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::karyawan.karyawan'
+    >;
+    notes: Schema.Attribute.Text;
+    pencapaian_booking: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    pencapaian_kunjungan: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    pencapaian_penjualan: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<0>;
+    periode: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    rating: Schema.Attribute.Enumeration<
+      ['poor', 'satisfactory', 'good', 'excellent']
+    >;
+    skor_kinerja: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    target_booking: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    target_kunjungan_harian: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<10>;
+    target_penjualan: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -8232,6 +8281,7 @@ declare module '@strapi/strapi' {
       'api::leave-policy.leave-policy': ApiLeavePolicyLeavePolicy;
       'api::leave-quota.leave-quota': ApiLeaveQuotaLeaveQuota;
       'api::lokasi.lokasi': ApiLokasiLokasi;
+      'api::marketing-performance.marketing-performance': ApiMarketingPerformanceMarketingPerformance;
       'api::marketing-video.marketing-video': ApiMarketingVideoMarketingVideo;
       'api::material-gudang.material-gudang': ApiMaterialGudangMaterialGudang;
       'api::material.material': ApiMaterialMaterial;
