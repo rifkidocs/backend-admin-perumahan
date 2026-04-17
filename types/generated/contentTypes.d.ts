@@ -3415,6 +3415,83 @@ export interface ApiMarketingPerformanceMarketingPerformance
   };
 }
 
+export interface ApiMarketingSettingMarketingSetting
+  extends Struct.SingleTypeSchema {
+  collectionName: 'marketing_settings';
+  info: {
+    displayName: 'Marketing Setting';
+    pluralName: 'marketing-settings';
+    singularName: 'marketing-setting';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    bobot_booking: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0.3>;
+    bobot_kunjungan: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0.25>;
+    bobot_leads: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0.15>;
+    bobot_penjualan: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0.3>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    default_target_booking: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<5>;
+    default_target_kunjungan_harian: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<5>;
+    default_target_leads: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<30>;
+    hari_kerja_per_bulan: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<22>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::marketing-setting.marketing-setting'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    threshold_excellent: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<95>;
+    threshold_good: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<80>;
+    threshold_satisfactory: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<60>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiMarketingVideoMarketingVideo
   extends Struct.CollectionTypeSchema {
   collectionName: 'marketing_videos';
@@ -8282,6 +8359,7 @@ declare module '@strapi/strapi' {
       'api::leave-quota.leave-quota': ApiLeaveQuotaLeaveQuota;
       'api::lokasi.lokasi': ApiLokasiLokasi;
       'api::marketing-performance.marketing-performance': ApiMarketingPerformanceMarketingPerformance;
+      'api::marketing-setting.marketing-setting': ApiMarketingSettingMarketingSetting;
       'api::marketing-video.marketing-video': ApiMarketingVideoMarketingVideo;
       'api::material-gudang.material-gudang': ApiMaterialGudangMaterialGudang;
       'api::material.material': ApiMaterialMaterial;

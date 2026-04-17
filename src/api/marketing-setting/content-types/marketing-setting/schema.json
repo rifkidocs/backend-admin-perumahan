@@ -1,0 +1,66 @@
+{
+  "kind": "singleType",
+  "collectionName": "marketing_settings",
+  "info": {
+    "singularName": "marketing-setting",
+    "pluralName": "marketing-settings",
+    "displayName": "Marketing Setting"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "default_target_leads": {
+      "type": "integer",
+      "default": 30,
+      "required": true
+    },
+    "default_target_kunjungan_harian": {
+      "type": "integer",
+      "default": 5,
+      "required": true
+    },
+    "default_target_booking": {
+      "type": "integer",
+      "default": 5,
+      "required": true
+    },
+    "hari_kerja_per_bulan": {
+      "type": "integer",
+      "default": 22,
+      "required": true
+    },
+    "bobot_leads": {
+      "type": "decimal",
+      "default": 0.15,
+      "max": 1
+    },
+    "bobot_kunjungan": {
+      "type": "decimal",
+      "default": 0.25,
+      "max": 1
+    },
+    "bobot_booking": {
+      "type": "decimal",
+      "default": 0.30,
+      "max": 1
+    },
+    "bobot_penjualan": {
+      "type": "decimal",
+      "default": 0.30,
+      "max": 1
+    },
+    "threshold_excellent": {
+      "type": "integer",
+      "default": 95
+    },
+    "threshold_good": {
+      "type": "integer",
+      "default": 80
+    },
+    "threshold_satisfactory": {
+      "type": "integer",
+      "default": 60
+    }
+  }
+}
